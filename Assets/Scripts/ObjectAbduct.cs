@@ -1,0 +1,58 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ObjectAbduct : MonoBehaviour
+{
+
+    public float speed;
+    private Rigidbody rb;
+
+    private bool canAbduct;
+    private PlayerController playerController;
+    public float playerScaleAdd;
+    public float playerEnergyAdd;
+    public GameObject AbductedPFX;
+
+    public static bool dropped;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        canAbduct = false;
+        //abductionPoint = null;
+        rb = this.gameObject.GetComponent<Rigidbody>();
+        StartCoroutine(ItemHasBeenDropped(this.gameObject, 2.0f));
+    }
+
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ItemCollector"))
+        {
+            //rb.isKinematic = false;
+            playerController = other.gameObject.GetComponentInParent<PlayerController>();
+            //            ufo.GetComponentInChildren<PlayerAbductCache>().AddObject(this.gameObject);
+
+            playerController.AddAbductedObject(this.gameObject, playerScaleAdd, playerEnergyAdd);
+            Instantiate(AbductedPFX, gameObject.transform.position, gameObject.transform.rotation);
+        }
+    }
+
+
+
+    public static IEnumerator ItemHasBeenDropped(GameObject go, float waitTime)
+    {
+
+        //go = this.gameObject;
+        //this.canAbduct == false;
+        go.gameObject.layer = 17;
+        yield return new WaitForSeconds(waitTime);
+        go.gameObject.layer = 9;
+        //this.canAbduct == true;
+
+    }
+
+}

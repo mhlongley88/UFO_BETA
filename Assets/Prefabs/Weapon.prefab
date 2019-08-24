@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4368824054990625636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1443128623047201264}
+  - component: {fileID: 7358461060587057828}
+  m_Layer: 0
+  m_Name: Weapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1443128623047201264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4368824054990625636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7358461060587057828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4368824054990625636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5323af2398e9c9542a2f8e82f839d01a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ufoCollider: {fileID: 0}
+  ufoRigidbody: {fileID: 0}
+  weaponDic:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues: 01000000000000000200000003000000040000000500000006000000
+    _keys: 01000000000000000200000003000000040000000500000006000000
+    _values:
+    - {fileID: 11400000, guid: e24bb54a687792043bcc84b4be29c65f, type: 2}
+    - {fileID: 11400000, guid: b6f72fb7914416d468d58c76830c14aa, type: 2}
+    - {fileID: 11400000, guid: 0d54b68a595b91349a89aa30dfdfbbc1, type: 2}
+    - {fileID: 11400000, guid: ab3107d973487fa40b9bb5fecbdde7cc, type: 2}
+    - {fileID: 11400000, guid: c41262495d07440408c89ec448b2e267, type: 2}
+    - {fileID: 11400000, guid: c48f4ed34d504964cbcc86002c049bcc, type: 2}
+    - {fileID: 11400000, guid: dad9373cdb3b8414da7d612e843ce765, type: 2}
+  weaponPlaceHolderMesh: {fileID: 4300022, guid: 1d4b6fa3440a8ca46879295a62fdafa4,
+    type: 3}
+  currentWeapon: 1

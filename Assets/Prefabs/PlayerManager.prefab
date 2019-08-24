@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1249960706750754302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1249960706750754300}
+  - component: {fileID: 1249960706750754301}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1249960706750754300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1249960706750754302}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1249960706750754301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1249960706750754302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90010daffc09e74c83cb0750ebeecb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues: 01000000000000000200000004000000
+    _keys: 01000000000000000200000004000000
+    _values:
+    - lives: 0
+      prefab: {fileID: 7220002100473890991, guid: 520528d3faa121142b1cb505d01aabb0,
+        type: 3}
+      spawnPoint: {fileID: 0}
+      rank: 0
+    - lives: 0
+      prefab: {fileID: 1614679558582057685, guid: bdf1a10ba67f0734591f6b6426d63f7a,
+        type: 3}
+      spawnPoint: {fileID: 0}
+      rank: 0
+    - lives: 0
+      prefab: {fileID: 1614679558582057685, guid: fe54c9785d8efad43a12e5b7e84dcb78,
+        type: 3}
+      spawnPoint: {fileID: 0}
+      rank: 0
+    - lives: 0
+      prefab: {fileID: 1614679558582057685, guid: d5dccb24facad394a920fe5fa22a756d,
+        type: 3}
+      spawnPoint: {fileID: 0}
+      rank: 0
+  spawnTimer: 1.5
+  debugP1join: 0
+  debugP2join: 0
+  debugP3join: 0
+  debugP4join: 0
+  gameHasEnded: 0
