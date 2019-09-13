@@ -125,6 +125,7 @@ public class PlayerHealthManager : MonoBehaviour
             }
             CurrHealth = Mathf.Clamp(CurrHealth + healAmount, minHealth, maxHealth);
             healthMeter.value = currHealth / maxHealth;
+
             if (CurrHealth <= minHealth)
             {
                 playerController.Die();

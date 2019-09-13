@@ -10,6 +10,7 @@ public class PlayerStats
     public int lives;
     public GameObject prefab;
     public Transform spawnPoint;
+    public GameObject instance;
 
     public int rank;
     //public LifeManager lifeManager;
@@ -40,7 +41,7 @@ public class PlayerManager : MonoBehaviour
     public bool debugP2join;
     public bool debugP3join;
     public bool debugP4join;
-    public Dictionary<Player, GameObject> spawnedPlayerDictionary = new Dictionary<Player, GameObject>();
+    public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
 
     public bool gameHasEnded = false;
 
@@ -94,11 +95,9 @@ public class PlayerManager : MonoBehaviour
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
                 LevelUIManager.Instance.EnableUI(i);
-                Instantiate(players[i].prefab, players[i].spawnPoint);
+                players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
             }
         }
-
-
     }
 
     public int GetPlayersLeft()
@@ -113,8 +112,11 @@ public class PlayerManager : MonoBehaviour
         }
         return playersLeft;
     }
-    public void PlayerDied(Player player)
+
+    public void PlayerDied(Player player, Transform playerModel)
     {
+        if (GameManager.Instance.gameOver) return;
+
         //GameManagerScript.Instance.PlayerDied(player);
 
         int currentLife = players[player].lives;
@@ -134,6 +136,11 @@ public class PlayerManager : MonoBehaviour
         }
         else if (playersLeft == 1)
         {
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
+            {
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, Instantiate(GameManager.Instance.GetPlayerModel(i)).transform);
+            }
+
             GameManager.Instance.GameEnds();
         }
     }
@@ -141,7 +148,9 @@ public class PlayerManager : MonoBehaviour
     private IEnumerator SpawnCoroutine(Player player)
     {
         yield return new WaitForSeconds(spawnTimer);
-        spawnedPlayerDictionary.Add(player, Instantiate(players[player].prefab, players[player].spawnPoint));
+        players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint);
+
+        spawnedPlayerDictionary.Add(player, players[player].instance);
     }
 
 }

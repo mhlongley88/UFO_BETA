@@ -133,6 +133,8 @@ public class PlayerController : MonoBehaviour
 
     private bool superWeaponActive = false;
 
+    bool dead = false;
+
     private Vector2 rightStickDirection;
 
     public GameObject specialReady;
@@ -140,6 +142,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform modelContainer;
 
+    GameObject playerModel;
 
     IEnumerator Start()
     {
@@ -152,9 +155,11 @@ public class PlayerController : MonoBehaviour
         originalScale = transform.localScale;
         originalMass = myRigidbody.mass;
         powerMin = 0.0f;
-        GameObject playerModel = Instantiate(GameManager.Instance.GetPlayerModel(player), modelContainer);
+
+        playerModel = Instantiate(GameManager.Instance.GetPlayerModel(player), modelContainer);
         playerModel.transform.localRotation = Quaternion.identity;
         playerModel.transform.localPosition = Vector3.zero;
+
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);
@@ -339,13 +344,17 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
+        if (dead) return;
+
+        dead = true;
+
         avgScaleOutput.RemovePlayer(this.gameObject.transform);
-        PlayerManager.Instance.PlayerDied(player);
+        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+
         Debug.LogWarning("Die");
         Destroy(this.gameObject);
+
         Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
-
-
     }
 
     public bool IsSuperWeaponReady()
@@ -392,6 +401,7 @@ public class PlayerController : MonoBehaviour
         {
             //ChangeHealth (other.gameObject.GetComponent<Bullet>().healthDamage);
             //ChangeScale(other.gameObject.GetComponent<Bullet>().scaleDamage);
+
             healthManager.ChangeHealth(other.gameObject.GetComponent<Bullet>().HealthDamage);
             //ChangeScale(defaultScaleDamage);
             DropAbductedObject(1);

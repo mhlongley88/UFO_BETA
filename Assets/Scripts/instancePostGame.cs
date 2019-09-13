@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class instancePostGame : MonoBehaviour
 {
-
     public static instancePostGame instance;
     // Start is called before the first frame update
     void Start()

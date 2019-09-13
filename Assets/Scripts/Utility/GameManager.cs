@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviour
         MyTargetGroup.AddMember(conquered_t, 0.25f, 0f);*/
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
+
         StartCoroutine(ReturnMainMenu());
     }
 
