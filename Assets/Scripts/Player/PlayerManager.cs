@@ -40,7 +40,7 @@ public class PlayerManager : MonoBehaviour
     public bool debugP2join;
     public bool debugP3join;
     public bool debugP4join;
-    public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
+    public Dictionary<Player, GameObject> spawnedPlayerDictionary = new Dictionary<Player, GameObject>();
 
     public bool gameHasEnded = false;
 
@@ -117,18 +117,24 @@ public class PlayerManager : MonoBehaviour
     {
         //GameManagerScript.Instance.PlayerDied(player);
 
+        int currentLife = players[player].lives;
+
+        bool canRespawn = currentLife >= 1;
+
         players[player].lives--;
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
+
         int playersLeft = GetPlayersLeft();
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
-        if (playersLeft == 1)
-        {
-            GameManager.Instance.GameEnds();
-        }
-        else
+
+        if (canRespawn)
         {
             StartCoroutine(SpawnCoroutine(player));
+        }
+        else if (playersLeft == 1)
+        {
+            GameManager.Instance.GameEnds();
         }
     }
 
