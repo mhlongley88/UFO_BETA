@@ -24,4 +24,8 @@ public class instancePostGame : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        //Debug.Log("Was activated");
+    }
 }

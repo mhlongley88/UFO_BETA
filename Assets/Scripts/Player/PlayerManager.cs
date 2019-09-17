@@ -138,7 +138,7 @@ public class PlayerManager : MonoBehaviour
         {
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
-                RankingPostGame.instance.SubmitPlayer(players[i].rank, Instantiate(GameManager.Instance.GetPlayerModel(i)).transform);
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
             GameManager.Instance.GameEnds();

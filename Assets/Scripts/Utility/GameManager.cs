@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
 
-        StartCoroutine(ReturnMainMenu());
+        //StartCoroutine(ReturnMainMenu());
     }
 
 

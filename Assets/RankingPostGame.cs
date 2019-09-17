@@ -8,20 +8,52 @@ public class RankingPostGame : MonoBehaviour
 
     public Transform[] ranks;
     public Transform firstPlaceTransform;
+    public GameObject[] ranksContainers;
     int place;
+
+    List<GameObject> instantiatedObjects = new List<GameObject>();
 
     private void Awake()
     {
         instance = this;
         place = ranks.Length - 1;
+
+        for (int i = 0; i < ranksContainers.Length; i++)
+        {
+            ranksContainers[i].SetActive(false);
+        }
     }
 
-    public void SubmitPlayer(int rankNumber, Transform t)
+    private void OnDestroy()
+    {
+        for (int i = 0; i < instantiatedObjects.Count; i++)
+            Destroy(instantiatedObjects[i]);
+
+        instantiatedObjects.Clear();
+    }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < instantiatedObjects.Count; i++)
+            Destroy(instantiatedObjects[i]);
+
+        instantiatedObjects.Clear();
+    }
+
+    public void SubmitPlayer(int rankNumber, GameObject playerModel)
     {
         if (rankNumber >= 0 && rankNumber < ranks.Length)
         {
+            GameObject obj = Instantiate(playerModel);
+            instantiatedObjects.Add(obj);
+
+            Transform t = obj.transform;
+
             Transform rank = ranks[rankNumber];
+            ranksContainers[rankNumber].SetActive(true);
+
             Debug.Log(rankNumber);
+
             t.gameObject.isStatic = false;
 
             Transform rankParent = rank.parent;
