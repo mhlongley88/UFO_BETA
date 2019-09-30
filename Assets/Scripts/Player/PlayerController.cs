@@ -59,8 +59,6 @@ public class PlayerController : MonoBehaviour
 
     public static float point_p1;
 
-    public GameObject bullet;
-
     // public string input_movementHorizontal;
     // public string input_movementVertical;
 
@@ -178,15 +176,31 @@ public class PlayerController : MonoBehaviour
         isAbducting = false;
     }
 
+    Vector2 GetInputAxis()
+    {
+        return GameManager.Instance.paused ? Vector2.zero :
+            new Vector2(
+                InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player),
+                InputManager.Instance.GetAxis(AxisEnum.LeftStickVertical, player)
+            );
+    }
+
     private void ProcessInput()
     {
-        horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
-        verticalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickVertical, player);
+        Vector2 axis = GetInputAxis();
+
+        horizontalInput = axis.x;
+        verticalInput = axis.y;
+
         moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+
+        if (GameManager.Instance.paused) return;
+
         if (horizontalInput != 0f || verticalInput != 0f)
         {
             this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
         }
+
 
         if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
         {
@@ -196,8 +210,11 @@ public class PlayerController : MonoBehaviour
         else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
         {
             DeactivateBeam();
-            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
 
+           /* GameObject beamInstance = PlayerManager.Instance.beamOffCache.GetInstance();
+            beamInstance.transform.position = gameObject.transform.position;
+            beamInstance.transform.rotation = gameObject.transform.rotation;
+            beamInstance.SetActive(true);*/
         }
         if (twinStick)
         {
@@ -275,7 +292,14 @@ public class PlayerController : MonoBehaviour
         }
         myRigidbody.velocity = Vector3.ClampMagnitude(myRigidbody.velocity.normalized, GetMaxSpeed());
         isBoosting = false;
+
+       /* GameObject dashPfxInstance = PlayerManager.Instance.dashCache.GetInstance();
+        dashPfxInstance.transform.position = gameObject.transform.position;
+        dashPfxInstance.transform.rotation = gameObject.transform.rotation;
+        dashPfxInstance.SetActive(true);*/
+
         Instantiate(DashPFX, gameObject.transform.position, gameObject.transform.rotation);
+
         yield return new WaitForSeconds(boostCooldown);
         boostReady = true;
     }
@@ -354,6 +378,11 @@ public class PlayerController : MonoBehaviour
         Debug.LogWarning("Die");
         Destroy(this.gameObject);
 
+       /* GameObject deathPfxInstance = PlayerManager.Instance.deathPfxCache.GetInstance();
+        deathPfxInstance.transform.position = gameObject.transform.position;
+        deathPfxInstance.transform.rotation = gameObject.transform.rotation;
+        deathPfxInstance.SetActive(true);*/
+
         Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
     }
 
@@ -407,8 +436,6 @@ public class PlayerController : MonoBehaviour
             DropAbductedObject(1);
             // if (scaleCount > 0)
             //     scaleToMinusInterval = 1;
-
-
         }
     }
 

@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
         public SuperWeaponTypes superWeaponType;
     }
     public bool gameOver;
+
+    public GameObject pauseScreen;
+    public bool paused = false;
     //public GameObject conquered_go;
     //private Transform conquered_t;
 
@@ -65,6 +68,7 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(this);
         }
+        // StartCoroutine(delayCheck());
     }
     // Use this for initialization
     void Start()
@@ -73,29 +77,106 @@ public class GameManager : MonoBehaviour
 
     }
 
+    IEnumerator delayCheck()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(1f);
+            ControllerCheck();
+
+            //for (int i = 0; i < Input.GetJoystickNames().Length; i++)
+            //{
+            //    if (!string.IsNullOrEmpty(Input.GetJoystickNames()[i]))
+            //    {
+            //        Debug.Log("Joystick Connected " + i);
+            //        Debug.Log(Input.GetJoystickNames()[i]);
+            //        i = Input.GetJoystickNames().Length;
+            //       // joystickDialogue = true;
+            //    }
+            //    else
+            //    {
+            //        Debug.Log("Joystick Disconnected");
+            //        i = Input.GetJoystickNames().Length;
+            //        //joystickDialogue = false;
+            //    }
+            //}
+        }
+    }
+
+    public bool playstationController, xboxController, keyboard;
+    public string[] currentControllers;
+    public float controllerCheckTimer = 2;
+    public float controllerCheckTimerOG = 2;
+
+    public void ControllerCheck()
+    {
+        System.Array.Clear(currentControllers, 0, currentControllers.Length);
+        System.Array.Resize<string>(ref currentControllers, Input.GetJoystickNames().Length);
+        int numberOfControllers = 0;
+
+        for (int i = 0; i < Input.GetJoystickNames().Length; i++)
+        {
+            currentControllers[i] = Input.GetJoystickNames()[i].ToLower();
+            if ((currentControllers[i] == "controller (xbox 360 for windows)" || currentControllers[i] == "controller (xbox 360 wireless receiver for windows)" || currentControllers[i] == "controller (xbox one for windows)"))
+            {
+                xboxController = true;
+                keyboard = false;
+                playstationController = false;
+            }
+            else if (currentControllers[i] == "wireless controller")
+            {
+                playstationController = true; //not sure if wireless controller is just super generic but that's what DS4 comes up as.
+                keyboard = false;
+                xboxController = false;
+            }
+            else if (currentControllers[i] == "")
+            {
+                numberOfControllers++;
+            }
+
+            Debug.Log(currentControllers[i] + " " + i);
+        }
+        if (numberOfControllers == Input.GetJoystickNames().Length)
+        {
+            keyboard = true;
+            xboxController = false;
+            playstationController = false;
+        }
+
+        Debug.Log(Input.GetJoystickNames().Length);
+    }
+
     // Update is called once per frame
     void Update()
     {
-
-
-
-        if (Input.GetKeyDown(KeyCode.R))
+        if (gameOver)
         {
-            gameOver = false;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            if(SceneManager.GetActiveScene().name != "MainMenu")
+            if (Input.GetButtonDown("Restart"))
             {
-                SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+                gameOver = false;
+                if (paused) TogglePause();
+
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                if (SceneManager.GetActiveScene().name != "MainMenu")
+                {
+                    SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+                }
             }
 
+            if (Input.GetButtonDown("GoToMainMenu"))
+            {
+
+                SceneManager.LoadScene("MainMenu");
+                gameOver = false;
+
+            }
         }
-
-        if (Input.GetKeyDown(KeyCode.M))
+        else
         {
-
-            SceneManager.LoadScene("MainMenu");
-            gameOver = false;
-
+            if (Input.GetButtonDown("Pause"))
+            {
+                TogglePause();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -135,15 +216,15 @@ public class GameManager : MonoBehaviour
 
         //winsText.SetActive(true);
         gameOver = true;
-            instanceMe.instance.gameObject.SetActive(true);
-            instanceUI.instance.gameObject.SetActive(false);
-            GamesCompletedTally.gameWasCompleted = true;
-            GamesCompletedTally.gamesCompleted++;
-       /* conquered_go = GameObject.Find("CAMERA/Conquered_UI_PFX");
-        conquered_t = conquered_go.transform;
-        MyTargetGroup = GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>();
-        conquered_go.SetActive(true);
-        MyTargetGroup.AddMember(conquered_t, 0.25f, 0f);*/
+        instanceMe.instance.gameObject.SetActive(true);
+        instanceUI.instance.gameObject.SetActive(false);
+        GamesCompletedTally.gameWasCompleted = true;
+        GamesCompletedTally.gamesCompleted++;
+        /* conquered_go = GameObject.Find("CAMERA/Conquered_UI_PFX");
+         conquered_t = conquered_go.transform;
+         MyTargetGroup = GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>();
+         conquered_go.SetActive(true);
+         MyTargetGroup.AddMember(conquered_t, 0.25f, 0f);*/
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
 
@@ -178,13 +259,13 @@ public class GameManager : MonoBehaviour
 
     public void SetPlayerCharacterChoice(Player p, int choice)
     {
-        if(playerSelectionDict.ContainsKey(p))
+        if (playerSelectionDict.ContainsKey(p))
         {
             playerSelectionDict[p] = choice;
         }
         else
         {
-        playerSelectionDict.Add(p, choice);
+            playerSelectionDict.Add(p, choice);
         }
     }
 
@@ -216,6 +297,20 @@ public class GameManager : MonoBehaviour
     internal NormalWeaponTypes GetCharacterNormalWeapon(int index)
     {
         return characters[index].defaultNormalWeaponType;
+    }
+
+    public void TogglePause()
+    {
+        paused = !paused;
+
+        if (paused)
+        {
+            pauseScreen.SetActive(true);
+        }
+        else
+        {
+            pauseScreen.SetActive(false);
+        }
     }
 
     public void postGame()
