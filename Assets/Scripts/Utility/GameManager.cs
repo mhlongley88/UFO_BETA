@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
         public SuperWeaponTypes superWeaponType;
     }
     public bool gameOver;
+    public bool canAdvance = false;
 
     public GameObject pauseScreen;
     public bool paused = false;
@@ -59,6 +60,8 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
+        Cursor.visible = false;
+
         if (instance != null && instance != this)
         {
             Destroy(this);
@@ -73,6 +76,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Cursor.visible = false;
         GamesCompletedTally.gameWasCompleted = false;
 
     }
@@ -151,9 +155,11 @@ public class GameManager : MonoBehaviour
     {
         if (gameOver)
         {
-            if (Input.GetButtonDown("Restart"))
+
+            if (canAdvance == true && Input.GetButtonDown("Restart"))
             {
                 gameOver = false;
+                canAdvance = false;
                 if (paused) TogglePause();
 
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -163,11 +169,12 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown("GoToMainMenu"))
+            if (canAdvance == true && Input.GetButtonDown("GoToMainMenu"))
             {
 
                 SceneManager.LoadScene("MainMenu");
                 gameOver = false;
+                canAdvance = false;
 
             }
         }
@@ -216,6 +223,7 @@ public class GameManager : MonoBehaviour
 
         //winsText.SetActive(true);
         gameOver = true;
+        StartCoroutine(DelayThis());
         instanceMe.instance.gameObject.SetActive(true);
         instanceUI.instance.gameObject.SetActive(false);
         GamesCompletedTally.gameWasCompleted = true;
@@ -239,6 +247,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         gameOver = false;
+        canAdvance = false;
         RemoveAllPlayersFromGame();
         SceneManager.LoadScene("MainMenu");
     }
@@ -317,5 +326,11 @@ public class GameManager : MonoBehaviour
     {
         new WaitForSeconds(2.0f);
         instancePostGame.instance.gameObject.SetActive(true);
+    }
+
+    IEnumerator DelayThis ()
+    {
+        yield return new WaitForSeconds(8.0f);
+        canAdvance = true;
     }
 }
