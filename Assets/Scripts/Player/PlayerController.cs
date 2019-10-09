@@ -437,6 +437,21 @@ public class PlayerController : MonoBehaviour
             // if (scaleCount > 0)
             //     scaleToMinusInterval = 1;
         }
+
+        if (other.collider.CompareTag("BulletFist"))
+        {
+            //ChangeHealth (other.gameObject.GetComponent<Bullet>().healthDamage);
+            //ChangeScale(other.gameObject.GetComponent<Bullet>().scaleDamage);
+
+           // myRigidbody.AddExplosionForce(140.0f, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), 100.0f);
+
+           // healthManager.ChangeHealth(other.gameObject.GetComponent<Bullet>().HealthDamage);
+            //ChangeScale(defaultScaleDamage);
+            DropAbductedObject(1);
+            // if (scaleCount > 0)
+            //     scaleToMinusInterval = 1;
+        }
+
     }
 
     public float GetScaleDelta()
