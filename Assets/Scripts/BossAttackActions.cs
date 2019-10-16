@@ -56,7 +56,7 @@ public class BossAttackActions : MonoBehaviour
             var projectile = Instantiate(spinningBulletsPrefab, point, Quaternion.identity);
             projectile.myCollider.enabled = false;
 
-            projectile.FireBullet(point - originP, null, bulletDamage, 1.0f, 110.0f);
+            projectile.FireBullet(point - originP, null, bulletDamage, 1.0f, 60.0f);
             DOVirtual.DelayedCall(0.3f, () => projectile.myCollider.enabled = true);
             yield return new WaitForSeconds(0.1f);
         }
