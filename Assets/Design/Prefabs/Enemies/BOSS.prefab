@@ -14592,6 +14592,7 @@ GameObject:
   - component: {fileID: 5933715171129676455}
   - component: {fileID: 1745265373946454352}
   - component: {fileID: 206895510180038079}
+  - component: {fileID: 557455161}
   m_Layer: 25
   m_Name: L_HAND_SphereCollider
   m_TagString: BulletFist
@@ -14706,6 +14707,24 @@ MonoBehaviour:
   HealthDamage: 20
   destroyOnCollision: 0
   babyBulletArray: []
+--- !u!114 &557455161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933715171129676449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16cfcfef8c7dd6649a3e03521625378f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ufoMask:
+    serializedVersion: 2
+    m_Bits: 524288
+  damage: -25
+  BulletHitPFX: {fileID: 1700747940156204, guid: 11a9320aad98b2f4cb5841ca764503f5,
+    type: 3}
 --- !u!1 &5933715171154561197
 GameObject:
   m_ObjectHideFlags: 0
@@ -14720,6 +14739,8 @@ GameObject:
   - component: {fileID: 5933715171154561187}
   - component: {fileID: 6377134047527266582}
   - component: {fileID: 3750874547976825284}
+  - component: {fileID: 557455157}
+  - component: {fileID: 557455162}
   m_Layer: 25
   m_Name: BODY_CapsuleCollider
   m_TagString: BulletFist
@@ -14835,6 +14856,53 @@ MonoBehaviour:
   HealthDamage: 20
   destroyOnCollision: 0
   babyBulletArray: []
+--- !u!114 &557455157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933715171154561197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a75b24ad398e36478b0902ab620fe3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletMask:
+    serializedVersion: 2
+    m_Bits: 262144
+  OnBossTakeDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1728224549}
+        m_MethodName: OnTakeDamage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &557455162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933715171154561197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16cfcfef8c7dd6649a3e03521625378f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ufoMask:
+    serializedVersion: 2
+    m_Bits: 524288
+  damage: -25
+  BulletHitPFX: {fileID: 1700747940156204, guid: 11a9320aad98b2f4cb5841ca764503f5,
+    type: 3}
 --- !u!1 &5933715171228076570
 GameObject:
   m_ObjectHideFlags: 0
@@ -14845,6 +14913,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5933715171228076568}
   - component: {fileID: 5933715171228076571}
+  - component: {fileID: 1728224549}
   m_Layer: 0
   m_Name: BOSS
   m_TagString: Untagged
@@ -14888,6 +14957,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1728224549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933715171228076570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6818461f633a0c344a02ebfeea6780c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 120
+  health: 120
 --- !u!1 &5933715171282611706
 GameObject:
   m_ObjectHideFlags: 0
@@ -15007,7 +15090,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5933715171659558703}
-  m_LocalRotation: {x: -0.036705986, y: -0.96149683, z: 0.22019932, w: -0.1602777}
+  m_LocalRotation: {x: -0.03670598, y: -0.96149683, z: 0.22019932, w: -0.1602777}
   m_LocalPosition: {x: 8.420006, y: 7.859997, z: 31.370005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -15077,6 +15160,7 @@ GameObject:
   - component: {fileID: 5933715171670903746}
   - component: {fileID: 1367940290203255260}
   - component: {fileID: 7831349592527124204}
+  - component: {fileID: 557455160}
   m_Layer: 25
   m_Name: R_HAND_SphereCollider
   m_TagString: BulletFist
@@ -15191,6 +15275,24 @@ MonoBehaviour:
   HealthDamage: 20
   destroyOnCollision: 0
   babyBulletArray: []
+--- !u!114 &557455160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933715171670903756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16cfcfef8c7dd6649a3e03521625378f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ufoMask:
+    serializedVersion: 2
+    m_Bits: 524288
+  damage: -25
+  BulletHitPFX: {fileID: 1700747940156204, guid: 11a9320aad98b2f4cb5841ca764503f5,
+    type: 3}
 --- !u!1 &5933715171896879083
 GameObject:
   m_ObjectHideFlags: 0
@@ -29978,6 +30080,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 154.13226
       objectReference: {fileID: 0}
+    - target: {fileID: -6123279561042469037, guid: 3475187c3bb545f4c8d77d2f0a35c767,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6aeec33a292e3e04c97a43350713d4dd, type: 2}
     - target: {fileID: -6057140222963153312, guid: 3475187c3bb545f4c8d77d2f0a35c767,
         type: 3}
       propertyPath: m_Controller
@@ -29988,37 +30095,8 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 0fc265258263efe4c95430660c7b4453, type: 2}
-    - target: {fileID: -6123279561042469037, guid: 3475187c3bb545f4c8d77d2f0a35c767,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6aeec33a292e3e04c97a43350713d4dd, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3475187c3bb545f4c8d77d2f0a35c767, type: 3}
---- !u!1 &2412002594822999895 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 3475187c3bb545f4c8d77d2f0a35c767,
-    type: 3}
-  m_PrefabInstance: {fileID: 5933715172172600926}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1667033678207270212 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 3475187c3bb545f4c8d77d2f0a35c767,
-    type: 3}
-  m_PrefabInstance: {fileID: 5933715172172600926}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &832969718597130291 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6473791464006618733, guid: 3475187c3bb545f4c8d77d2f0a35c767,
-    type: 3}
-  m_PrefabInstance: {fileID: 5933715172172600926}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &7390558482080213500 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -5420008163957686366, guid: 3475187c3bb545f4c8d77d2f0a35c767,
-    type: 3}
-  m_PrefabInstance: {fileID: 5933715172172600926}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &78789882498447911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3220319501169496967, guid: 3475187c3bb545f4c8d77d2f0a35c767,
@@ -30028,6 +30106,30 @@ Transform:
 --- !u!4 &1213909914231742402 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4431429744085825124, guid: 3475187c3bb545f4c8d77d2f0a35c767,
+    type: 3}
+  m_PrefabInstance: {fileID: 5933715172172600926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7390558482080213500 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5420008163957686366, guid: 3475187c3bb545f4c8d77d2f0a35c767,
+    type: 3}
+  m_PrefabInstance: {fileID: 5933715172172600926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &832969718597130291 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6473791464006618733, guid: 3475187c3bb545f4c8d77d2f0a35c767,
+    type: 3}
+  m_PrefabInstance: {fileID: 5933715172172600926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1667033678207270212 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 3475187c3bb545f4c8d77d2f0a35c767,
+    type: 3}
+  m_PrefabInstance: {fileID: 5933715172172600926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2412002594822999895 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 3475187c3bb545f4c8d77d2f0a35c767,
     type: 3}
   m_PrefabInstance: {fileID: 5933715172172600926}
   m_PrefabAsset: {fileID: 0}
@@ -30113,10 +30215,6 @@ PrefabInstance:
     - target: {fileID: 19800000, guid: d66db7c9eac8f3b4197bbeb3a8be2d71, type: 3}
       propertyPath: ShapeModule.radius.value
       value: 1.49
-      objectReference: {fileID: 0}
-    - target: {fileID: 19800000, guid: d66db7c9eac8f3b4197bbeb3a8be2d71, type: 3}
-      propertyPath: ShapeModule.radiusThickness
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d66db7c9eac8f3b4197bbeb3a8be2d71, type: 3}

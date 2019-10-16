@@ -131,7 +131,6 @@ public class SuperWeapon : Weapon
     }
 
 
-
     public override void Fire()
     {
         if (currentAmmo > 0 && canFire)

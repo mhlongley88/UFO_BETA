@@ -94,6 +94,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -567,6 +568,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -865,6 +867,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5796,6 +5799,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5897,6 +5901,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5994,6 +5999,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6359,10 +6365,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885743328481074}
     m_Modifications:
-    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
-      propertyPath: m_Name
-      value: ModularSci-FiWeapons_Barrel2 (1)
-      objectReference: {fileID: 0}
     - target: {fileID: 4020484374280554, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.015620232
@@ -6419,6 +6421,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.50923073
       objectReference: {fileID: 0}
+    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
+      propertyPath: m_Name
+      value: ModularSci-FiWeapons_Barrel2 (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 1477544962664924, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6443,10 +6449,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885743328481074}
     m_Modifications:
-    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
-      propertyPath: m_Name
-      value: ModularSci-FiWeapons_Barrel2
-      objectReference: {fileID: 0}
     - target: {fileID: 4020484374280554, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.015620232
@@ -6503,6 +6505,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.7033768
       objectReference: {fileID: 0}
+    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
+      propertyPath: m_Name
+      value: ModularSci-FiWeapons_Barrel2
+      objectReference: {fileID: 0}
     - target: {fileID: 1477544962664924, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6532,6 +6538,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterAnim1
       objectReference: {fileID: 0}
+    - target: {fileID: -8279560064957882368, guid: a4f8faf6718e8ae47bbcafff79afcba8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6b8b989b695f6eb4dbc2b902a4e01f0c, type: 2}
+    - target: {fileID: -6123279561042469037, guid: a4f8faf6718e8ae47bbcafff79afcba8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6b8b989b695f6eb4dbc2b902a4e01f0c, type: 2}
+    - target: {fileID: -6057140222963153312, guid: a4f8faf6718e8ae47bbcafff79afcba8,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 71e6a57cb01fcb14bbec1349411db554, type: 2}
     - target: {fileID: -4216859302048453862, guid: a4f8faf6718e8ae47bbcafff79afcba8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6602,21 +6623,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 100
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: a4f8faf6718e8ae47bbcafff79afcba8,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 71e6a57cb01fcb14bbec1349411db554, type: 2}
-    - target: {fileID: -6123279561042469037, guid: a4f8faf6718e8ae47bbcafff79afcba8,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6b8b989b695f6eb4dbc2b902a4e01f0c, type: 2}
-    - target: {fileID: -8279560064957882368, guid: a4f8faf6718e8ae47bbcafff79afcba8,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6b8b989b695f6eb4dbc2b902a4e01f0c, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4f8faf6718e8ae47bbcafff79afcba8, type: 3}
 --- !u!4 &2771525154279935619 stripped

@@ -9,6 +9,7 @@ using static InputManager;
 
 public class PlayerController : MonoBehaviour
 {
+    public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
 
     public Player player;
     public GameObject PlayerSpecialvCam;
@@ -141,6 +142,10 @@ public class PlayerController : MonoBehaviour
     private Transform modelContainer;
 
     GameObject playerModel;
+    private void Awake()
+    {
+        playerControllerByGameObject.Add(gameObject, this);
+    }
 
     IEnumerator Start()
     {
@@ -162,6 +167,11 @@ public class PlayerController : MonoBehaviour
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);
         healthManager.SetInvincible(false);
+    }
+
+    private void OnDestroy()
+    {
+        playerControllerByGameObject.Remove(gameObject);
     }
 
     private void ActivateBeam()
@@ -428,12 +438,12 @@ public class PlayerController : MonoBehaviour
     {
         if (other.collider.CompareTag("Bullet"))
         {
+            DoDamage(other.gameObject.GetComponent<Bullet>().HealthDamage);
+
             //ChangeHealth (other.gameObject.GetComponent<Bullet>().healthDamage);
             //ChangeScale(other.gameObject.GetComponent<Bullet>().scaleDamage);
 
-            healthManager.ChangeHealth(other.gameObject.GetComponent<Bullet>().HealthDamage);
             //ChangeScale(defaultScaleDamage);
-            DropAbductedObject(1);
             // if (scaleCount > 0)
             //     scaleToMinusInterval = 1;
         }
@@ -452,6 +462,17 @@ public class PlayerController : MonoBehaviour
             //     scaleToMinusInterval = 1;
         }
 
+    }
+
+    public void DoDamage(float healthDamage = -3.0f)
+    {
+        healthManager.ChangeHealth(healthDamage);
+        DropAbductedObject(1);
+    }
+
+    public void ApplyForce(Vector3 point)
+    {
+        myRigidbody.AddForce((point + transform.position).normalized * 60.0f, ForceMode.Impulse);
     }
 
     public float GetScaleDelta()

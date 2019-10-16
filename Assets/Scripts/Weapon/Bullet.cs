@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+[System.Serializable]
+public class OnCollisionEvent : UnityEvent<Collision> { }
 
 public abstract class Bullet : MonoBehaviour
 {
@@ -24,6 +28,8 @@ public abstract class Bullet : MonoBehaviour
 
     public bool destroyOnCollision = true;
 
+    public OnCollisionEvent OnCollide = new OnCollisionEvent();
+
     public void Start()
     {
         if(lifeTime >= 0)
@@ -35,7 +41,8 @@ public abstract class Bullet : MonoBehaviour
     public virtual void FireBullet(Vector3 direction, Collider parentUFO, float healthDamage, float scaleDamage, float velocity)
     {
         this.parentUFO = parentUFO;
-        Physics.IgnoreCollision(myCollider, parentUFO, true);
+        if(parentUFO)
+            Physics.IgnoreCollision(myCollider, parentUFO, true);
         myCollider.enabled = true;
         myRigidbody.AddForce(direction.normalized * velocity, ForceMode.VelocityChange);
         this.healthDamage = healthDamage;
@@ -62,6 +69,8 @@ public abstract class Bullet : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+
+        OnCollide.Invoke(coll);
     }
 
     public void OnDrawGizmos()
