@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Boss : MonoBehaviour
 {
+    public Animator animator;
+    public GameObject cmVCam6;
+
     public int maxHealth = 40;
     public int health = 40;
 
@@ -23,6 +26,9 @@ public class Boss : MonoBehaviour
         health -= 2;
         if(health <= 0)
         {
+            animator.SetTrigger("Die");
+            cmVCam6.SetActive(true);
+
             Debug.Log("Boss is Dead");
         }
     }
