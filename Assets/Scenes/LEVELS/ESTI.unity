@@ -94,8 +94,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -564,6 +564,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2188,22 +2189,22 @@ PrefabInstance:
     - target: {fileID: 1249960706750754301, guid: 9e143a7838cf3c443b370d117e8701ca,
         type: 3}
       propertyPath: players._values.Array.data[3].lives
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1249960706750754301, guid: 9e143a7838cf3c443b370d117e8701ca,
         type: 3}
       propertyPath: players._values.Array.data[2].lives
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1249960706750754301, guid: 9e143a7838cf3c443b370d117e8701ca,
         type: 3}
       propertyPath: players._values.Array.data[1].lives
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1249960706750754301, guid: 9e143a7838cf3c443b370d117e8701ca,
         type: 3}
       propertyPath: players._values.Array.data[0].lives
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1249960706750754301, guid: 9e143a7838cf3c443b370d117e8701ca,
         type: 3}
@@ -2811,11 +2812,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 75099608, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.07482361
+      value: 0.07482363
       objectReference: {fileID: 0}
     - target: {fileID: 75099608, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.08673831
+      value: -0.08673825
       objectReference: {fileID: 0}
     - target: {fileID: 75099608, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2845,6 +2846,14 @@ PrefabInstance:
         type: 3}
       propertyPath: field of view
       value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414006985, guid: a746040c8df78914499380e96fbedf4d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414006985, guid: a746040c8df78914499380e96fbedf4d, type: 3}
+      propertyPath: m_Name
+      value: //PostGame
       objectReference: {fileID: 0}
     - target: {fileID: 802634021, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_ColorGrading.colorWheels.shadows.r
@@ -2881,14 +2890,6 @@ PrefabInstance:
     - target: {fileID: 802634021, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_ColorGrading.colorWheels.highlights.b
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414006985, guid: a746040c8df78914499380e96fbedf4d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414006985, guid: a746040c8df78914499380e96fbedf4d, type: 3}
-      propertyPath: m_Name
-      value: //PostGame
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1574619695112852299, guid: a746040c8df78914499380e96fbedf4d, type: 3}
@@ -3290,6 +3291,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7728190428993745851, guid: 3e311fdbe535e8548b03a1086ca66fa5,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 866665971909907739, guid: 3e311fdbe535e8548b03a1086ca66fa5,
         type: 3}
       propertyPath: inGame
@@ -3300,11 +3306,6 @@ PrefabInstance:
       propertyPath: conquered_go
       value: 
       objectReference: {fileID: 584154502}
-    - target: {fileID: 7728190428993745851, guid: 3e311fdbe535e8548b03a1086ca66fa5,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e311fdbe535e8548b03a1086ca66fa5, type: 3}
 --- !u!1001 &638068977
@@ -3555,6 +3556,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3986,7 +3988,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 701407306}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalAxis: Horizontal
@@ -4005,7 +4007,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 701407306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
@@ -5915,6 +5917,61 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6466590141973042249, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590142943780708, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590142163520180, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590142636762923, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590142719873851, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590143643832563, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466590143688650165, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523941301676189474, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726524082699586482, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726524083375737050, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2073930375615559886, guid: ee51804ff2f31964db1385570dc9cb52,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee51804ff2f31964db1385570dc9cb52, type: 3}
 --- !u!1001 &1023814568
@@ -6934,38 +6991,24 @@ MonoBehaviour:
   onStart:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onPlay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onUpdate:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onRewind:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
@@ -7068,6 +7111,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7112,38 +7156,24 @@ MonoBehaviour:
   onStart:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onPlay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onUpdate:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onStepComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onComplete:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onRewind:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   targetIsSelf: 1
   targetGO: {fileID: 0}
   tweenTargetIsTargetGO: 1
