@@ -96,6 +96,8 @@ public class PlayerManager : MonoBehaviour
             {
                 LevelUIManager.Instance.EnableUI(i);
                 players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
+
+                spawnedPlayerDictionary.Add(i, players[i].instance);
             }
         }
     }

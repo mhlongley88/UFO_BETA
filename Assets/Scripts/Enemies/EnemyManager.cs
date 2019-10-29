@@ -4,36 +4,26 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    private Waypoint[] waypoints;
-
+    public GameObject enemyPrefab;
+    public float spawnRate = 20.0f;
     public Transform[] spawnPoints;
 
-    private static EnemyManager instance;
-
-    public static EnemyManager Instance
-    {
-        get
-        {
-            return instance;
-        }
-    }
     public void Awake()
     {
-        if(instance != null && instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-        }
-        waypoints = (Waypoint[])Component.FindObjectsOfTypeAll(typeof(Waypoint));
     }
 
-    public Vector3 GetNextWaypointPosition()
+    private void Start()
     {
-        return waypoints[Random.Range(0, waypoints.Length)].transform.position;
+        StartCoroutine(SpawnEnemies());
     }
 
+    IEnumerator SpawnEnemies()
+    {
+        Instantiate(enemyPrefab, spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
 
+        yield return new WaitForSeconds(spawnRate);
+        StartCoroutine(SpawnEnemies());
+
+        Debug.Log("Spawned another enemy");
+    }
 }
