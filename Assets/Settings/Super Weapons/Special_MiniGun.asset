@@ -12,27 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758cb5ee8db7cac4caf96bd203edc47f, type: 3}
   m_Name: Special_MiniGun
   m_EditorClassIdentifier: 
-  maxAmmo: 20
+  maxAmmo: 25
   reloadTime: 0.25
   bulletPrefab: {fileID: 1264118341366292, guid: 8739caae59b28fb449237b781abd496f,
     type: 3}
-  fireRate: 0.1
+  fireRate: 0.35
   healthDamage: -35
   scaleDamage: 0
   continuousFire: 1
-  recoilForce: 0
-  bulletVelocityMultiplier: 20
+  recoilForce: 0.05
+  bulletVelocityMultiplier: 75
   spread: 0
   shotsPerVolley: 1
   weaponFiringPositionOffsets:
-  - {x: 0, y: 0.15, z: 3.86}
-  - {x: 0.2, y: 0.32, z: 3.86}
-  - {x: -0.19, y: 0.39, z: 3.86}
-  - {x: 0, y: 0.56, z: 3.86}
+  - {x: 0, y: 0, z: 0}
   enableSpeedModifier: 1
   speedModifier: 10
   reloadable: 0
   timed: 1
-  autoFire: 0
+  autoFire: 1
   infiniteAmmo: 1
   weaponDuration: 8
