@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
+    public static List<Waypoint> AllWaypoints = new List<Waypoint>();
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        AllWaypoints.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        AllWaypoints.Remove(this);
     }
 
     // Update is called once per frame
@@ -19,6 +26,6 @@ public class Waypoint : MonoBehaviour
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(transform.position, 0.5f);
+        Gizmos.DrawSphere(transform.position, 0.3f);
     }
 }
