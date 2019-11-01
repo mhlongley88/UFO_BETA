@@ -112,7 +112,7 @@ public class SuperWeapon : Weapon
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
@@ -147,7 +147,7 @@ public class SuperWeapon : Weapon
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
