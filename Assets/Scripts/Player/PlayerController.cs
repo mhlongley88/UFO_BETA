@@ -6,7 +6,7 @@ using RotaryHeart.Lib.SerializableDictionary;
 using static Weapon;
 using System;
 using static InputManager;
-
+using Photon.Pun;
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
@@ -142,8 +142,10 @@ public class PlayerController : MonoBehaviour
     private Transform modelContainer;
 
     GameObject playerModel;
+    PhotonView pv;
     private void Awake()
     {
+        pv = this.GetComponent<PhotonView>();
         playerControllerByGameObject.Add(gameObject, this);
     }
 
@@ -193,6 +195,84 @@ public class PlayerController : MonoBehaviour
                 InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player),
                 InputManager.Instance.GetAxis(AxisEnum.LeftStickVertical, player)
             );
+    }
+
+    private void ProcessInput_PC()
+    {
+        horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
+        verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
+        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+        if (horizontalInput != 0f || verticalInput != 0f)
+        {
+            //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, this.transform.localEulerAngles.z);
+        }
+
+        if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
+        {
+            Debug.Log("Beam Input");
+            ActivateBeam();
+        }
+        else if (Input.GetButtonUp("P1_Beam_Keyboard"))
+        {
+            DeactivateBeam();
+            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+
+        }
+        if (twinStick)
+        {
+            rightStickDirection = new Vector2(Input.GetAxis("P1_Rotation_Hor_Keyboard"), Input.GetAxis("P1_Rotation_Ver_Keyboard"));
+            if (rightStickDirection.magnitude > 0.1)//rightStickDirection != Vector2.zero)
+            {
+                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                //Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+
+                ////Get the Screen position of the mouse
+                //Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                ////Get the angle between the points
+                //float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                ////Ta Daaa
+                //transform.rotation = Quaternion.Euler(new Vector3(0f, -angle , 0f));
+
+            }
+        }
+        currentWeapon.UpdateShootDirection(transform.forward);
+        if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */Input.GetButtonDown("P1_Fire1_Keyboard") /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
+        {
+            
+            pv.RPC("RPC_Fire", RpcTarget.All, transform.forward);
+        }
+        if (Input.GetButtonDown("P1_Dash_Keyboard") && boostReady)
+        {
+            tryToBoost();
+        }
+
+        if (IsSuperWeaponReady() && Input.GetAxis("P1_SuperWeapon1_Keyboard") > 0.5f /*&&*/ || Input.GetAxis("P1_SuperWeapon2_Keyboard") > 0.5f)
+        {
+            ToggleSuperWeapon(true);
+        }
+
+    }
+
+    float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
+    {
+        return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
+    }
+
+    [PunRPC]
+    void RPC_Fire(Vector3 fireDirection)
+    {
+        
+        if (pv.IsMine)
+        {
+            currentWeapon.Fire();
+        }
+        else
+        {
+            currentWeapon.Fire_OtherInstances(fireDirection);
+        }
+        Debug.Log("Fire1");
     }
 
     private void ProcessInput()
@@ -339,12 +419,25 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        ProcessInput();
-        avgScaleOutput.CalculateAndOutput();
-
-        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
         {
-            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+            ProcessInput_PC();
+            avgScaleOutput.CalculateAndOutput();
+
+            if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+            }
+        }
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            ProcessInput_PC();
+            avgScaleOutput.CalculateAndOutput();
+
+            if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+            }
         }
 
     }

@@ -36,6 +36,12 @@ public class PlayerManager : MonoBehaviour
     [Serializable]
     public class PlayerStatsDic : SerializableDictionaryBase<Player, PlayerStats> { }
     public PlayerStatsDic players;
+
+    [Serializable]
+    public class PlayerStatsDicMul : SerializableDictionaryBase<Player, PlayerStats> { }
+    public PlayerStatsDicMul playersMul;
+
+
     public float spawnTimer = 5.0f;
     public bool debugP1join;
     public bool debugP2join;
@@ -92,6 +98,25 @@ public class PlayerManager : MonoBehaviour
         }
         if (gameHasEnded != true)
         {
+            if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                SpawnLocalPlayers();
+            }
+            else
+            {
+                SpawnMulPlayer();
+                //foreach (Player i in GameManager.Instance.GetActivePlayers())
+                //{
+                //    LevelUIManager.Instance.EnableUI(i);
+                //    Instantiate(players[i].prefab, players[i].spawnPoint);
+                //}
+            }
+        }
+    }
+
+    void SpawnLocalPlayers()
+    {
+        
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
                 LevelUIManager.Instance.EnableUI(i);
@@ -99,6 +124,19 @@ public class PlayerManager : MonoBehaviour
 
                 spawnedPlayerDictionary.Add(i, players[i].instance);
             }
+        
+    }
+
+    void SpawnMulPlayer()
+    {
+        foreach (Player i in GameManager.Instance.GetActivePlayersMul())
+        {
+            Debug.Log("Spawning11");
+            LevelUIManager.Instance.EnableUI(i);
+
+            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(playersMul[i].prefab.name, playersMul[i].spawnPoint.position, Quaternion.identity);
+            //temp.GetComponent<PlayerController>().enabled = true;
+            temp.transform.SetParent(players[i].spawnPoint);
         }
     }
 
@@ -150,7 +188,14 @@ public class PlayerManager : MonoBehaviour
     private IEnumerator SpawnCoroutine(Player player)
     {
         yield return new WaitForSeconds(spawnTimer);
-        players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            SpawnMulPlayer();
+        }
+        else
+        {
+            players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint);
+        }
 
         spawnedPlayerDictionary.Add(player, players[player].instance);
     }

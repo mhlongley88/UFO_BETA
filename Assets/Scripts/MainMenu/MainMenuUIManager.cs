@@ -62,8 +62,20 @@ public class MainMenuUIManager : MonoBehaviour
     void Start()
     {
 
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        {
+            Debug.Log("PC");
+            isConsole = false;
+            isPC = true;
+        }
+        else if(Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+        {
+            Debug.Log("Console");
+            isPC = false;
+            isConsole = true;
+        }
 
-        vCam1.SetActive(true);
+            vCam1.SetActive(true);
         vCam2.SetActive(false);
 
 
@@ -97,19 +109,94 @@ public class MainMenuUIManager : MonoBehaviour
     }
 
 
-
+    bool isConsole = false, isPC = false;
     // Update is called once per frame
     void Update()
     {
 
 
         levelInt = ShowLevelTitle.levelStaticInt;
-
+        if (isPC)
+        {
+           // Debug.Log("PC_______");
+            PC_Controls();
+        }
+        else if(isConsole)
+        {
+            ConsoleControls();
+        }
         // if (inCharSelect && CharacterSelect.instance)
         // CharacterSelect.instance.BeginCharacterSelect();
-        foreach(Player p in Enum.GetValues(typeof(Player)))
+        
+    }
+
+    void PC_Controls()
+    {
+        foreach (Player p in Enum.GetValues(typeof(Player)))
         {
-            if(p != Player.None)
+            if (p != Player.None)
+            {
+                switch (currentMenu)
+                {
+                    case Menu.Splash:
+                        if (InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p))
+                        {
+
+                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+                            characterSelect.SetActive(true);
+                            myAudioSource.PlayOneShot(StartGameSFX);
+                            currentMenu = Menu.CharacterSelect;
+                        }
+                        break;
+                    case Menu.CharacterSelect:
+                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        {
+                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+                            currentMenu = Menu.Splash;
+                        }
+                        if (CharacterSelectPlayersReady())
+                        {
+                            // if (CharacterSelectPlayersReady())
+                            // {
+                            vCam1.SetActive(false);
+                            vCam2.SetActive(true);
+                            myAudioSource.PlayOneShot(toLevelSelect);
+                            levelSelect.SetActive(true);
+                            levelSelectCharacters.AddActivePlayers();
+                            characterSelect.SetActive(false);
+                            currentMenu = Menu.LevelSelect;
+                            // }
+                        }
+                        break;
+                    case Menu.LevelSelect:
+                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        {
+                            vCam2.SetActive(false);
+                            vCam1.SetActive(true);
+                            currentMenu = Menu.CharacterSelect;
+                            levelSelectCharacters.RemoveAllPlayers();
+                            levelSelect.SetActive(false);
+                            characterSelect.SetActive(true);
+                            foreach (var c in characterSelectMenus)
+                            {
+                                c.ReturnFromLevelSelect();
+                            }
+                        }
+                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        {
+                            SceneManager.LoadScene("LoadingRoom");
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    void ConsoleControls()
+    {
+        foreach (Player p in Enum.GetValues(typeof(Player)))
+        {
+            if (p != Player.None)
             {
                 switch (currentMenu)
                 {
@@ -133,13 +220,13 @@ public class MainMenuUIManager : MonoBehaviour
                         {
                             // if (CharacterSelectPlayersReady())
                             // {
-                                vCam1.SetActive(false);
-                                vCam2.SetActive(true);
-                                myAudioSource.PlayOneShot(toLevelSelect);
-                                levelSelect.SetActive(true);
-                                levelSelectCharacters.AddActivePlayers();
-                                characterSelect.SetActive(false);
-                                currentMenu = Menu.LevelSelect;
+                            vCam1.SetActive(false);
+                            vCam2.SetActive(true);
+                            myAudioSource.PlayOneShot(toLevelSelect);
+                            levelSelect.SetActive(true);
+                            levelSelectCharacters.AddActivePlayers();
+                            characterSelect.SetActive(false);
+                            currentMenu = Menu.LevelSelect;
                             // }
                         }
                         break;
@@ -152,7 +239,7 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelectCharacters.RemoveAllPlayers();
                             levelSelect.SetActive(false);
                             characterSelect.SetActive(true);
-                            foreach(var c in characterSelectMenus)
+                            foreach (var c in characterSelectMenus)
                             {
                                 c.ReturnFromLevelSelect();
                             }

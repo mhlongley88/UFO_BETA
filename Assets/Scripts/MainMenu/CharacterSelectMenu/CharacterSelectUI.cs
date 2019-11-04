@@ -52,10 +52,26 @@ public class CharacterSelectUI : MonoBehaviour
     {
         pressStart.SetActive(true);
 
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            playerNameText.text = playerName;
+            currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+        }
+        else
+        {
+            SpawnMultiplayer();
+        }
+
+
+    }
+
+    void SpawnMultiplayer()
+    {
+        Debug.Log("Spawning");
         playerNameText.text = playerName;
-        currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
-
-
+        currentCharacterModel = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.CharactersMul[selectedCharacterIndex].characterModel.name, Vector3.zero, Quaternion.identity);
+        currentCharacterModel.transform.SetParent(characterModelContainer);
+        currentCharacterModel.GetComponent<PlayerController>().enabled = true;
     }
 
     // Update is called once per frame

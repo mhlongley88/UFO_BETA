@@ -37,6 +37,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private CharacterAssets[] charactersMul;
+
+    public CharacterAssets[] CharactersMul
+    {
+        get
+        {
+            return charactersMul;
+        }
+    }
+
     private Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
 
     // private int player1CharacterSelection = 1;
@@ -252,6 +263,44 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public List<Player> GetActivePlayersMul()
+    {
+
+        List<Player> players = new List<Player>();
+
+        int spawnIndex = 0;
+        int counter = 0;
+        foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+        {
+            if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+            {
+                spawnIndex = counter;
+                break;
+            }
+            counter++;
+        }
+        Debug.Log("Spawn Number: " + spawnIndex);
+        switch (spawnIndex)
+        {
+            case 0:
+                players.Add(Player.One);
+                break;
+            case 1:
+                players.Add(Player.Two);
+                break;
+            case 2:
+                players.Add(Player.Three);
+                break;
+            case 3:
+                players.Add(Player.Four);
+                break;
+            default:
+                players.Add(Player.One);
+                break;
+        }
+
+        return players;
+    }
 
     public List<Player> GetActivePlayers()
     {

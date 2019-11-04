@@ -27,6 +27,10 @@ public abstract class Weapon : MonoBehaviour
 
     public abstract ScriptableWeapon GetCurrentWeaponSetting();
 
+    public virtual void Fire_OtherInstances(Vector3 fireDirection)
+    {
+
+    }
 
     public virtual void Fire()
     {

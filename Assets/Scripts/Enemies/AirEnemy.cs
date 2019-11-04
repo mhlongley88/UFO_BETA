@@ -49,7 +49,7 @@ public class AirEnemy : Enemy
         if (speedMultiplier < 1.0f) speedMultiplier = 1.0f;
 
         state = EnemyState.Traveling;
-
+        formationAnimator = this.GetComponent<Animator>();
         formationAnimator.SetInteger("Formation", Random.Range(0, 3));
         formationAnimator.SetFloat("Speed", speedMultiplier);
 

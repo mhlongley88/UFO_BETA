@@ -43,16 +43,24 @@ public class InputManager : MonoBehaviour
     [Serializable]
     public class ButtonDictionary : SerializableDictionaryBase<ButtonEnum, ButtonStrings> {}
  
-   // [SerializeField]
     public ButtonDictionary buttonDictionary = new ButtonDictionary();
+
+    [Serializable]
+    public class ButtonDictionaryKB : SerializableDictionaryBase<ButtonEnum, ButtonStrings> { }
+
+    public ButtonDictionary buttonDictionaryKB = new ButtonDictionary();
 
     [Serializable]
     public class AxisDictionary : SerializableDictionaryBase<AxisEnum, string> {}
 
-    //[SerializeField]
     public AxisDictionary axisDictionary = new AxisDictionary();
 
-  
+    [Serializable]
+    public class AxisDictionaryKB : SerializableDictionaryBase<AxisEnum, string> { }
+
+    public AxisDictionary axisDictionaryKB = new AxisDictionary();
+
+
     [SerializeField]
     private string player1InputPrefix;
     [SerializeField]
@@ -112,7 +120,16 @@ public class InputManager : MonoBehaviour
         return result;
     }
 
-    
+    public bool GetButtonDownKB(ButtonEnum input, Player player)
+    {
+        bool result = false;
+        for (int i = 0; i < buttonDictionary[input].Length; i++)
+        {
+            result = result || Input.GetButtonDown(GetPlayerPrefix(player) + buttonDictionary[input].buttonNames[i]);
+        }
+        return result;
+    }
+
     public bool GetButton(ButtonEnum input, Player player)
     {
         bool result = false;
