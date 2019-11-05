@@ -72,6 +72,7 @@ GameObject:
   - component: {fileID: 8141208200851854865}
   - component: {fileID: 5266821284360515293}
   - component: {fileID: 1571760347}
+  - component: {fileID: 1981765522}
   m_Layer: 27
   m_Name: Enemy_Helicopter
   m_TagString: Untagged
@@ -151,19 +152,37 @@ MonoBehaviour:
   targetTransform: {fileID: 0}
   formationAnimator: {fileID: 8141208200851854865}
   minMaxSpeedMultiplier: {x: 1, y: 3}
-  volleyCount: 3
-  fireRate: 0.2
+  volleyCount: 4
+  fireRate: 0.25
   minFireWaitTime: 2
   maxFireWaitTime: 4
   bulletPrefab: {fileID: 6402273875753405037, guid: 081f98d128b2af44baa407c3c3bb09c0,
     type: 3}
   firePoint: {fileID: 1762594437865607329}
-  bulletDamage: -10
+  bulletDamage: -5
   hitFx: {fileID: 100008, guid: c0c7cf5465f9c674f9847eb7f881a71f, type: 3}
   deathFx: {fileID: 1834853337257834, guid: 41a5da7f272d7ff4c82b5b333f0dbc59, type: 3}
   lookAtTarget: 1
   coll: {fileID: 5266821284360515293}
-  bulletVelocity: 120
+  bulletVelocity: 25
+--- !u!111 &1981765522
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8141208200851854867}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: 54f97c01f542b4d4d90d0379c126cb9b, type: 2}
+  - {fileID: 7400000, guid: 174288238bd54b1419cfb14a72e9fa86, type: 2}
+  - {fileID: 7400000, guid: d7505b1566d37f4498268e79475e8bc5, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 1
+  m_CullingType: 0
 --- !u!1001 &8141208202270752379
 PrefabInstance:
   m_ObjectHideFlags: 0
