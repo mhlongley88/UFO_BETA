@@ -11,6 +11,7 @@ public class LobbyUI : MonoBehaviour
     void Start()
     {
         instance = this;
+        Cursor.visible = true;
     }
 
     // Update is called once per frame

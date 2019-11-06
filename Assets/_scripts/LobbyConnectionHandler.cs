@@ -96,10 +96,10 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined Room");
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-        {
-            SceneManager.LoadScene("LoadingRoom");
-        }
+        //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        //{
+        //    SceneManager.LoadScene("LoadingRoom");
+        //}
     }
 
     void IInRoomCallbacks.OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -107,7 +107,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         Debug.Log("OnPlayerEnteredRoom");
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
         {
-            SceneManager.LoadScene("LoadingRoom");
+            if(PhotonNetwork.IsMasterClient)
+                SceneManager.LoadScene("LoadingRoom");
         }
     }
 

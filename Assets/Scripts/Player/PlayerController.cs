@@ -210,12 +210,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
-            ActivateBeam();
+            
+            pv.RPC("RPC_Beam", RpcTarget.All);
         }
         else if (Input.GetButtonUp("P1_Beam_Keyboard"))
         {
-            DeactivateBeam();
-            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+            pv.RPC("RPC_Beam_Off", RpcTarget.All);
 
         }
         if (twinStick)
@@ -223,17 +223,25 @@ public class PlayerController : MonoBehaviour
             rightStickDirection = new Vector2(Input.GetAxis("P1_Rotation_Hor_Keyboard"), Input.GetAxis("P1_Rotation_Ver_Keyboard"));
             if (rightStickDirection.magnitude > 0.1)//rightStickDirection != Vector2.zero)
             {
-                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
-                //Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+                //this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
                 ////Get the Screen position of the mouse
-                //Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
+                Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+                //Debug.Log(mouseOnScreen);
                 ////Get the angle between the points
-                //float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+                float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
 
                 ////Ta Daaa
-                //transform.rotation = Quaternion.Euler(new Vector3(0f, -angle , 0f));
+                transform.rotation = Quaternion.Euler(new Vector3(0f, -angle , 0f));
+
+                //Vector3 _direction = (transform.position - new Vector3(mouseOnScreen.x, mouseOnScreen.y, this.transform.position.z)).normalized;
+
+                ////create the rotation we need to be in to look at the target
+                //Quaternion _lookRotation = Quaternion.LookRotation(_direction);
+
+                ////rotate us over time according to speed until we are in the required rotation
+                //transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 1000);
 
             }
         }
@@ -250,14 +258,50 @@ public class PlayerController : MonoBehaviour
 
         if (IsSuperWeaponReady() && Input.GetAxis("P1_SuperWeapon1_Keyboard") > 0.5f /*&&*/ || Input.GetAxis("P1_SuperWeapon2_Keyboard") > 0.5f)
         {
-            ToggleSuperWeapon(true);
+            pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
         }
 
     }
 
     float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
     {
-        return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
+        return Mathf.Atan2(a.x - b.x, b.y - a.y) * Mathf.Rad2Deg;
+    }
+
+    [PunRPC]
+    void RPC_Beam()
+    {
+        if (pv.IsMine)
+        {
+            ActivateBeam();
+        }
+        else
+        {
+            ActivateBeam();
+        }
+        
+    }
+
+    [PunRPC]
+    void RPC_Beam_Off()
+    {
+        if (pv.IsMine)
+        {
+            DeactivateBeam();
+            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+        }
+        else
+        {
+            DeactivateBeam();
+            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+        }
+
+    }
+
+    [PunRPC]
+    void RPC_ToggleSpecialWeapon()
+    {
+        ToggleSuperWeapon(true);
     }
 
     [PunRPC]
@@ -334,6 +378,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    IEnumerator DeactivateSpecialCamera()
+    {
+        yield return new WaitForSeconds(2.5f);
+        PlayerSpecialvCam.SetActive(false);
+    }
 
     public void ToggleSuperWeapon(bool activate)
     {
@@ -341,11 +390,13 @@ public class PlayerController : MonoBehaviour
         if (activate)
         {
             //StartCoroutine(CameraController.Instance.ActivateSpecialCamera(1f));
-            PlayerSpecialvCam.SetActive(true);
+           // if(pv.IsMine)
+                PlayerSpecialvCam.SetActive(true);
             normalWeapon.gameObject.SetActive(false);
             superWeapon.gameObject.SetActive(true);
             superWeapon.ActivateWeapon();
             currentWeapon = superWeapon;
+            StartCoroutine(DeactivateSpecialCamera());
         }
         else
         {

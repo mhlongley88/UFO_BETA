@@ -94,8 +94,17 @@ public class SuperWeapon : Weapon
         superWeaponMapping[currentWeapon].weaponModel.SetActive(false);
 
         specialReady.SetActive(false);
-
+        
     }
+
+    //public void RPC_DeactivateWeapon()
+    //{
+    //    myPlayerController.ToggleSuperWeapon(false);
+    //    superWeaponMapping[currentWeapon].weaponModel.SetActive(false);
+
+    //    specialReady.SetActive(false);
+
+    //}
 
     public IEnumerator AutoFire()
     {

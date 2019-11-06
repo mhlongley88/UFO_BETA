@@ -89,7 +89,7 @@ public class AirEnemy : Enemy
             if (chosenPlayer == null || targetTransform == null || (chosenPlayer != null && chosenPlayer.lives < 0))
             {
                 var activePlayers = GameManager.Instance.GetActivePlayers();
-                var chosenPlayerEnum = activePlayers[Random.Range(0, PlayerManager.Instance.spawnedPlayerDictionary.Count)];
+                var chosenPlayerEnum = activePlayers[Random.Range(0, PlayerManager.Instance.spawnedPlayerDictionary.Count - 1)];
                 chosenPlayer = PlayerManager.Instance.players[chosenPlayerEnum];
 
                 targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;

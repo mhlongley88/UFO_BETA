@@ -12,12 +12,13 @@ public class NetworkCharacter : MonoBehaviour, IPunObservable, IPunInstantiateMa
     Vector3 toPos, toScale;
     Quaternion toRot;
 
-    public float lerpSpeed = 15;
+    public float lerpSpeed = 10;
 
     // Start is called before the first frame update
     void Start()
     {
         pv = this.GetComponent<PhotonView>();
+        lerpSpeed = 10;
     }
 
     // Update is called once per frame

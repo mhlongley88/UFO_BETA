@@ -49,6 +49,9 @@ public class PlayerManager : MonoBehaviour
     public bool debugP4join;
     public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
 
+
+    
+
     public bool gameHasEnded = false;
 
     private static PlayerManager instance;
@@ -129,14 +132,18 @@ public class PlayerManager : MonoBehaviour
 
     void SpawnMulPlayer()
     {
+        Debug.Log("Spawning");
         foreach (Player i in GameManager.Instance.GetActivePlayersMul())
         {
             Debug.Log("Spawning11");
             LevelUIManager.Instance.EnableUI(i);
 
             GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(playersMul[i].prefab.name, playersMul[i].spawnPoint.position, Quaternion.identity);
+           // temp.tag = "Player";
             //temp.GetComponent<PlayerController>().enabled = true;
             temp.transform.SetParent(players[i].spawnPoint);
+            Cursor.visible = true;
+            
         }
     }
 
@@ -169,12 +176,17 @@ public class PlayerManager : MonoBehaviour
         int playersLeft = GetPlayersLeft();
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
-
-        if (canRespawn)
+        //Debug.Log(playerModel.gameObject.name);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine)
+        {
+            Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject);
+            StartCoroutine(SpawnCoroutine(player));
+        }
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode &&  canRespawn)
         {
             StartCoroutine(SpawnCoroutine(player));
         }
-        else if (playersLeft == 1)
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft == 1)
         {
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
