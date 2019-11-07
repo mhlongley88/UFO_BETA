@@ -17,6 +17,7 @@ public class LevelSelectMovement : MonoBehaviour
     private void Start()
     {
         transform.position = this.gameObject.transform.position;
+        ShowLevelTitle.OnLevelIsHovered.AddListener(OnSelectTitleLevel);
     }
 
     void Update()
@@ -54,6 +55,11 @@ public class LevelSelectMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
 
         UpdatePositionRotation();
+    }
+
+    void OnSelectTitleLevel(Transform t)
+    {
+
     }
 
     void Rotate(float amount)
