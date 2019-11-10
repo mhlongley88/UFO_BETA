@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
+using Photon.Pun;
 public class AirEnemy : Enemy
 {
     [Flags]
@@ -89,7 +89,7 @@ public class AirEnemy : Enemy
             if (chosenPlayer == null || targetTransform == null || (chosenPlayer != null && chosenPlayer.lives < 0))
             {
                 var activePlayers = GameManager.Instance.GetActivePlayers();
-                var chosenPlayerEnum = activePlayers[Random.Range(0, PlayerManager.Instance.spawnedPlayerDictionary.Count - 1)];
+                var chosenPlayerEnum = activePlayers[Random.Range(0, /*PlayerManager.Instance.spawnedPlayerDictionary*/activePlayers.Count)];
                 chosenPlayer = PlayerManager.Instance.players[chosenPlayerEnum];
 
                 targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;
@@ -135,10 +135,22 @@ public class AirEnemy : Enemy
             if (health <= 0)
             {
                 Instantiate(deathFx, transform.position, deathFx.transform.rotation);
-
-                Destroy(gameObject);
+                if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+                    Destroy(gameObject);
+                else
+                    this.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
             }
         }
 
     }
+    
+    [PunRPC]
+    void Death()
+    {
+        if (this.GetComponent<PhotonView>().IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
+    }
+    
 }

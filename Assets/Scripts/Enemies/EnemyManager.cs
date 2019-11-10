@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class EnemyManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
@@ -19,7 +19,16 @@ public class EnemyManager : MonoBehaviour
 
     IEnumerator SpawnEnemies()
     {
-        Instantiate(enemyPrefab, spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            if(PhotonNetwork.IsMasterClient)
+                PhotonNetwork.Instantiate(enemyPrefab.name + "Mul", spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
+        }
+        else
+        {
+            Instantiate(enemyPrefab, spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
+        }
+        //Instantiate(enemyPrefab, spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
 
         yield return new WaitForSeconds(spawnRate);
         StartCoroutine(SpawnEnemies());

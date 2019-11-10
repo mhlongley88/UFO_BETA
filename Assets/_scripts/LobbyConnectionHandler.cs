@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PlayFab;
 public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks, IConnectionCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 {
     public static LobbyConnectionHandler instance;
@@ -28,7 +29,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         IsMultiplayerMode = false;
         PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.ConnectUsingSettings();
+        //PhotonNetwork.ConnectUsingSettings();
     }
 
     // Update is called once per frame
@@ -51,6 +52,16 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         PhotonNetwork.JoinRandomRoom(hash, (byte)0);
     }
 
+    public void ConnectToPhoton(string userID)
+    {
+        //PhotonNetwork.AuthValues = new AuthenticationValues();
+        //PhotonNetwork.AuthValues.AuthType = CustomAuthenticationType.Custom;
+        ////PhotonNetwork.AuthValues.AddAuthParameter("authenticated", "true");
+        //PhotonNetwork.AuthValues.AddAuthParameter("token", userID);
+        //PhotonNetwork.AuthValues.AddAuthParameter("token", PlayFabClientAPI.GetPhotonAuthenticationToken());
+        //PhotonNetwork.ConnectUsingSettings(); Debug.Log("Connecting to photon");
+
+    }
 
     void ILobbyCallbacks.OnJoinedLobby()
     {
@@ -137,6 +148,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnConnectedToMaster()
     {
+        LobbyUI.instance.AuthPanel.SetActive(false);
     }
 
     void IInRoomCallbacks.OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)

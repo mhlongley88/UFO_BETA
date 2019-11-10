@@ -18,7 +18,7 @@ public class NetworkCharacter : MonoBehaviour, IPunObservable, IPunInstantiateMa
     void Start()
     {
         pv = this.GetComponent<PhotonView>();
-        lerpSpeed = 10;
+        lerpSpeed = 8.5f;
     }
 
     // Update is called once per frame

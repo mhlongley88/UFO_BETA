@@ -150,11 +150,19 @@ public class PlayerManager : MonoBehaviour
     public int GetPlayersLeft()
     {
         int playersLeft = 0;
-        foreach (Player i in GameManager.Instance.GetActivePlayers())
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            if (players[i].lives >= 0)
+            PlayerController[] temp = FindObjectsOfType<PlayerController>();
+            playersLeft = temp.Length;
+        }
+        else
+        {
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
-                playersLeft++;
+                if (players[i].lives > 0)
+                {
+                    playersLeft++;
+                }
             }
         }
         return playersLeft;
@@ -172,15 +180,26 @@ public class PlayerManager : MonoBehaviour
 
         players[player].lives--;
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
-
+        Debug.Log("Lifes Left = " + players[player].lives);
         int playersLeft = GetPlayersLeft();
+        Debug.Log("Players Left = " + playersLeft);
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
         //Debug.Log(playerModel.gameObject.name);
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine)
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine && canRespawn)
         {
-            Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject);
+            //Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().gameObject);
+            //playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().RPC("Death", Photon.Pun.RpcTarget.All);
             StartCoroutine(SpawnCoroutine(player));
+        }
+        else if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
+            {
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+            }
+
+            GameManager.Instance.GameEnds();
         }
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode &&  canRespawn)
         {
@@ -202,11 +221,11 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(spawnTimer);
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            SpawnMulPlayer();
+            SpawnMulPlayer();Debug.Log("MulRespawn");
         }
         else
         {
-            players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint);
+            players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
         }
 
         spawnedPlayerDictionary.Add(player, players[player].instance);

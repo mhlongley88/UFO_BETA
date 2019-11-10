@@ -145,7 +145,11 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
     private void Awake()
     {
-        pv = this.GetComponent<PhotonView>();
+        
+        if (this.GetComponent<PhotonView>())
+        {
+            pv = this.GetComponent<PhotonView>();
+        }
         playerControllerByGameObject.Add(gameObject, this);
     }
 
@@ -169,6 +173,19 @@ public class PlayerController : MonoBehaviour
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);
         healthManager.SetInvincible(false);
+
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        {
+            Debug.Log("PC");
+            isConsole = false;
+            isPC = true;
+        }
+        else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+        {
+            Debug.Log("Console");
+            isPC = false;
+            isConsole = true;
+        }
     }
 
     private void OnDestroy()
@@ -296,6 +313,21 @@ public class PlayerController : MonoBehaviour
             Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
         }
 
+    }
+
+    [PunRPC]
+    void Death_RPC()
+    {
+        dead = true;
+
+        avgScaleOutput.RemovePlayer(this.gameObject.transform);
+        if (pv.IsMine)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+        Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+        
     }
 
     [PunRPC]
@@ -467,27 +499,53 @@ public class PlayerController : MonoBehaviour
             return maxSpeed;
         }
     }
-
+    bool isConsole = false, isPC = false;
     void Update()
     {
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+        if (isPC)
         {
-            ProcessInput_PC();
-            avgScaleOutput.CalculateAndOutput();
-
-            if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
             {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                ProcessInput_PC();
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
+            }
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                ProcessInput_PC();
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
             }
         }
-        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        else if(isConsole)
         {
-            ProcessInput_PC();
-            avgScaleOutput.CalculateAndOutput();
-
-            if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
             {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                ProcessInput();
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
+            }
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                ProcessInput();
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
             }
         }
 
@@ -526,18 +584,32 @@ public class PlayerController : MonoBehaviour
 
         dead = true;
 
-        avgScaleOutput.RemovePlayer(this.gameObject.transform);
-        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+        //avgScaleOutput.RemovePlayer(this.gameObject.transform);
+        //PlayerManager.Instance.PlayerDied(player, playerModel.transform);
 
         Debug.LogWarning("Die");
-        Destroy(this.gameObject);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            pv.RPC("Death_RPC", RpcTarget.All);
+        }
+
+        else
+        {
+            dead = true;
+
+            avgScaleOutput.RemovePlayer(this.gameObject.transform);
+            PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+            Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+            Destroy(this.gameObject);
+        }
+            
 
        /* GameObject deathPfxInstance = PlayerManager.Instance.deathPfxCache.GetInstance();
         deathPfxInstance.transform.position = gameObject.transform.position;
         deathPfxInstance.transform.rotation = gameObject.transform.rotation;
         deathPfxInstance.SetActive(true);*/
 
-        Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+        
     }
 
     public bool IsSuperWeaponReady()
