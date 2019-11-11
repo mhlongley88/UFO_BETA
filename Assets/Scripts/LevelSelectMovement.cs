@@ -59,7 +59,13 @@ public class LevelSelectMovement : MonoBehaviour
 
     void OnSelectTitleLevel(Transform t)
     {
+        Vector3 target = t.position + t.up * (t.position - transform.position).magnitude;
 
+        //Debug.DrawLine(t.position, transform.position, Color.red, 20.0f);
+        //Debug.DrawLine(t.position, target, Color.magenta, 20.0f);
+
+        rotation = Quaternion.LookRotation(target - transform.parent.position, Vector3.up);
+        UpdatePositionRotation();
     }
 
     void Rotate(float amount)
