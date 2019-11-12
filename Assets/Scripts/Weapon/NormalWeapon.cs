@@ -67,6 +67,10 @@ public class NormalWeapon : Weapon
                 if (weaponPlaceHolderMesh != null)
                 {
                     Gizmos.DrawWireMesh(weaponPlaceHolderMesh, transform.TransformPoint(pos), transform.rotation);
+                    
+                    //Gizmos.DrawWireMesh(weaponPlaceHolderMesh, transform.TransformPoint(pos), transform.rotation, transform.localScale);
+
+                    // Gizmos.DrawWireMesh(weaponPlaceHolderMesh, ufoRigidbody.transform.TransformPoint(pos), transform.rotation);
                 }
             }
         }

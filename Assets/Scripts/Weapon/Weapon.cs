@@ -48,7 +48,7 @@ public abstract class Weapon : MonoBehaviour
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
