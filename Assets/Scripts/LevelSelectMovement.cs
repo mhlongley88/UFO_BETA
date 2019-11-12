@@ -17,6 +17,7 @@ public class LevelSelectMovement : MonoBehaviour
     private void Start()
     {
         transform.position = this.gameObject.transform.position;
+        ShowLevelTitle.OnLevelIsHovered.AddListener(OnSelectTitleLevel);
     }
 
     void Update()
@@ -53,6 +54,17 @@ public class LevelSelectMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
         if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
 
+        UpdatePositionRotation();
+    }
+
+    void OnSelectTitleLevel(Transform t)
+    {
+        Vector3 target = t.position + t.up * (t.position - transform.position).magnitude;
+
+        //Debug.DrawLine(t.position, transform.position, Color.red, 20.0f);
+        //Debug.DrawLine(t.position, target, Color.magenta, 20.0f);
+
+        rotation = Quaternion.LookRotation(target - transform.parent.position, Vector3.up);
         UpdatePositionRotation();
     }
 

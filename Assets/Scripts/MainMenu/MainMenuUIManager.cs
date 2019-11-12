@@ -74,25 +74,25 @@ public class MainMenuUIManager : MonoBehaviour
 
     private bool CharacterSelectPlayersReady()
     {
+        bool ready = true;
+        int count = 0;
 
-        bool ready = false;
         foreach (var c in characterSelectMenus)
         {
-            if (c.GetCurSelectState() == CharacterSelectUI.CharacterSelectState.ReadyToStart)
+            if (c.GetCurSelectState() != CharacterSelectUI.CharacterSelectState.WaitingForPlayer)
             {
-                ready = true;
+                count++;
             }
         }
-        if (ready == true)
+
+        if (count < 2) return false;
+
+        foreach (var c in characterSelectMenus)
         {
-            foreach (var c in characterSelectMenus)
-            {
-                if (c.GetCurSelectState() == CharacterSelectUI.CharacterSelectState.SelectingCharacter)
-                {
-                    ready = false;
-                }
-            }
+            if (c.GetCurSelectState() != CharacterSelectUI.CharacterSelectState.ReadyToStart && c.GetCurSelectState() == CharacterSelectUI.CharacterSelectState.SelectingCharacter)
+                ready = false;                      
         }
+
         return ready;
     }
 

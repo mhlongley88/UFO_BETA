@@ -16,13 +16,14 @@ public class ObjectAbduct : MonoBehaviour
 
     public static bool dropped;
 
+    public bool notTrigger = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
+        if(!notTrigger) rb.isKinematic = true;
         canAbduct = false;
         //abductionPoint = null;
-        rb = this.gameObject.GetComponent<Rigidbody>();
         StartCoroutine(ItemHasBeenDropped(this.gameObject, 2.0f));
     }
 
@@ -30,6 +31,8 @@ public class ObjectAbduct : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        //if (notTrigger) return;
+
         if (other.CompareTag("ItemCollector"))
         {
             //rb.isKinematic = false;
@@ -41,7 +44,20 @@ public class ObjectAbduct : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision other)
+    {
+        if (!notTrigger) return;
 
+        if (other.gameObject.CompareTag("ItemCollector"))
+        {
+            //rb.isKinematic = false;
+            playerController = other.gameObject.GetComponentInParent<PlayerController>();
+            //            ufo.GetComponentInChildren<PlayerAbductCache>().AddObject(this.gameObject);
+
+            playerController.AddAbductedObject(this.gameObject, playerScaleAdd, playerEnergyAdd);
+            Instantiate(AbductedPFX, gameObject.transform.position, gameObject.transform.rotation);
+        }
+    }
 
     public static IEnumerator ItemHasBeenDropped(GameObject go, float waitTime)
     {

@@ -184,13 +184,22 @@ public class GameManager : MonoBehaviour
             {
                 TogglePause();
             }
+
+            if(paused)
+            {
+                if(Input.GetButtonDown("FromPauseToMenu"))
+                {
+                    TogglePause();
+                    SceneManager.LoadScene("MainMenu");
+                    gameOver = false;
+                    canAdvance = false;
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-
             Application.Quit();
-
         }
 
 

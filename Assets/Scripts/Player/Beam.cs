@@ -16,6 +16,7 @@ public class Beam : MonoBehaviour
     {
         if (other.CompareTag("canAbduct"))
         {
+            other.isTrigger = true;
             other.GetComponent<Rigidbody>().isKinematic = false;
             beamDirection = (abductionPoint.position - other.transform.position).normalized;
             other.attachedRigidbody.AddForce(

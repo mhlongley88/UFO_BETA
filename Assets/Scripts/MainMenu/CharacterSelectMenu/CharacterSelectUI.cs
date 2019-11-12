@@ -62,7 +62,11 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void UpdateSelection()
     {
-        selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
+        if (selectedCharacterIndex < 0) selectedCharacterIndex = GameManager.Instance.Characters.Length - 1;
+        else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
+
+        //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
+
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
