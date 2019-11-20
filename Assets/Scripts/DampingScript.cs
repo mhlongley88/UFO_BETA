@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using DG.DemiLib;
-
+using Photon.Pun;
 public class DampingScript : MonoBehaviour {
 
 	public Transform target;
@@ -12,12 +12,17 @@ public class DampingScript : MonoBehaviour {
 	private Vector3 velocity = Vector3.zero;
 
     public bool checkRotation;
+    public PhotonView pv;
+    //private GameObject otherPlayer;
 
-	//private GameObject otherPlayer;
+    //public float bumpAmount;
 
-	//public float bumpAmount;
+    private void Start()
+    {
+        
+    }
 
-	void Update()
+    void Update()
 	{
 		// Define a target position above and behind the target transform
 		Vector3 targetPosition = target.TransformPoint(new Vector3(0, 0, 0));

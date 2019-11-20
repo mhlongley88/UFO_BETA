@@ -21,8 +21,11 @@ public class EnemyManager : MonoBehaviour
     {
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            if(PhotonNetwork.IsMasterClient)
-                PhotonNetwork.Instantiate(enemyPrefab.name + "Mul", spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
+            GameObject temp;
+            if (PhotonNetwork.IsMasterClient) { 
+                temp = PhotonNetwork.Instantiate(enemyPrefab.name + "Mul", spawnPoints[Random.Range(0, spawnPoints.Length)].position, enemyPrefab.transform.rotation);
+                temp.GetComponent<AirEnemy>().enabled = true;
+            }
         }
         else
         {

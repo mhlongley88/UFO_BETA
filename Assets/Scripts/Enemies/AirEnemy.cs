@@ -53,28 +53,80 @@ public class AirEnemy : Enemy
         formationAnimator.SetInteger("Formation", Random.Range(0, 3));
         formationAnimator.SetFloat("Speed", speedMultiplier);
 
-        StartCoroutine(RandomlyPickAnEnemy());
-        StartCoroutine(FireCoroutine());
+        if(this.GetComponent<PhotonView>())
+            pv = this.GetComponent<PhotonView>();
+
+        
+        if (pv != null && pv.IsMine)
+        {
+            StartCoroutine(RandomlyPickAnEnemy());
+            StartCoroutine(FireCoroutine());
+        }
+        else if(pv == null)
+        {
+            StartCoroutine(RandomlyPickAnEnemy());
+            StartCoroutine(FireCoroutine());
+        }
+        
     }
     // Update is called once per frame
     public void Update()
     {
-        if(targetTransform != null && lookAtTarget)
+        if(targetTransform != null && lookAtTarget && pv != null && pv.IsMine)
+        {
+            Quaternion la = Quaternion.LookRotation(targetTransform.position - transform.position, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, la, Time.smoothDeltaTime * 1.7f);
+        }else if (targetTransform != null && lookAtTarget && pv == null)
         {
             Quaternion la = Quaternion.LookRotation(targetTransform.position - transform.position, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, la, Time.smoothDeltaTime * 1.7f);
         }
     }
 
+    [PunRPC]
     private void Fire()
     {
-        MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        
+        
+            MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-        Vector3 direction = transform.position + transform.forward * 5;
-        if (!lookAtTarget && targetTransform != null)
-            direction = (targetTransform.position);
+            Vector3 direction = transform.position + transform.forward * 5;
+            if (!lookAtTarget && targetTransform != null)
+                direction = (targetTransform.position);
 
-        bullet.FireBullet(direction - transform.position, coll, bulletDamage, 1.0f, bulletVelocity);
+            bullet.FireBullet(direction - transform.position, coll, bulletDamage, 1.0f, bulletVelocity);
+        
+
+        //Debug.DrawLine(transform.position, direction, Color.red, 20.0f);
+    }
+
+    [PunRPC]
+    private void Fire_RPC(Transform FireTransform)
+    {
+       // if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            if (pv.IsMine)
+            {
+                MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+                Vector3 direction = transform.position + transform.forward * 5;
+                if (!lookAtTarget && targetTransform != null)
+                    direction = (targetTransform.position);
+
+                bullet.FireBullet(direction - transform.position, coll, bulletDamage, 1.0f, bulletVelocity);
+            }
+            else
+            {
+                MommaBullet bullet = Instantiate(bulletPrefab, FireTransform.position, FireTransform.rotation);
+
+                Vector3 direction = FireTransform.position + FireTransform.forward * 5;
+                if (!lookAtTarget && targetTransform != null)
+                    direction = (targetTransform.position);
+
+                bullet.FireBullet(direction - FireTransform.position, coll, bulletDamage, 1.0f, bulletVelocity);
+            }
+        }
+        
 
         //Debug.DrawLine(transform.position, direction, Color.red, 20.0f);
     }
@@ -88,28 +140,48 @@ public class AirEnemy : Enemy
         {
             if (chosenPlayer == null || targetTransform == null || (chosenPlayer != null && chosenPlayer.lives < 0))
             {
-                var activePlayers = GameManager.Instance.GetActivePlayers();
-                var chosenPlayerEnum = activePlayers[Random.Range(0, /*PlayerManager.Instance.spawnedPlayerDictionary*/activePlayers.Count)];
+                List<Player> activePlayers;// = GameManager.Instance.GetActivePlayers();
+                if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+                {
+                    activePlayers = GameManager.Instance.GetActivePlayersMul(false);
+                }else
+                {
+                    activePlayers = GameManager.Instance.GetActivePlayers();
+                }
+                var chosenPlayerEnum = activePlayers[Random.Range(0, PlayerManager.Instance.spawnedPlayerDictionary.Count)];
+               // if(chosenPlayerEnum != Player.None)
                 chosenPlayer = PlayerManager.Instance.players[chosenPlayerEnum];
-
-                targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;
+                targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;// == null ? PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform: null;
             }
         }
 
         yield return new WaitForSeconds(Random.Range(0.2f, 0.5f));
         StartCoroutine(RandomlyPickAnEnemy());
     }
-
+    PhotonView pv;
     private IEnumerator FireCoroutine()
     {
         while(true)
         {
+
             yield return new WaitForSeconds(Random.Range(minFireWaitTime, maxFireWaitTime));
 
-            for(int i = 0; i < volleyCount; i++)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                Fire();
-                yield return new WaitForSeconds(fireRate);
+                
+                for (int i = 0; i < volleyCount; i++)
+                {
+                    pv.RPC("Fire", RpcTarget.All);
+                    yield return new WaitForSeconds(fireRate);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < volleyCount; i++)
+                {
+                    Fire();
+                    yield return new WaitForSeconds(fireRate);
+                }
             }
         }
     }

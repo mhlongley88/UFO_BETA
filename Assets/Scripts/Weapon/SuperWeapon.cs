@@ -56,18 +56,60 @@ public class SuperWeapon : Weapon
 
     public void ActivateWeapon()
     {
+        //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            canFire = true;
+            currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+            if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            if (GetCurrentWeaponSetting().AutoFire)
+            {
+                StartCoroutine(AutoFire());
+            }
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
+        }
+        else
+        {
+            ActivateWeaponMul();
+        }
+    }
+
+    public void ActivateWeaponMul()
+    {
         pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
-        canFire = true;
-        currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
-        if (GetCurrentWeaponSetting().Timed)
+        if (!pv.IsMine)
         {
-            StartCoroutine(WeaponDurationTimer());
+            //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+            //canFire = true;
+            //currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+           // if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            //if (GetCurrentWeaponSetting().AutoFire)
+            //{
+            //    StartCoroutine(AutoFire());
+            //}
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
         }
-        if (GetCurrentWeaponSetting().AutoFire)
+        else
         {
-            StartCoroutine(AutoFire());
+            pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+            canFire = true;
+            currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+            if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            if (GetCurrentWeaponSetting().AutoFire)
+            {
+                StartCoroutine(AutoFire());
+            }
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
         }
-        superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
     }
 
     public void ChangeWeapon(SuperWeaponTypes weaponType)
@@ -139,6 +181,7 @@ public class SuperWeapon : Weapon
 
         }
         DeactivateWeapon();
+        canFire = true;
     }
     //public override void Fire()
     //{

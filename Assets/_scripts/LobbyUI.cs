@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 public class LobbyUI : MonoBehaviour
 {
     public static LobbyUI instance;
@@ -46,5 +47,7 @@ public class LobbyUI : MonoBehaviour
     {
         LobbyConnectionHandler.instance.IsMultiplayerMode = false;
     }
+
+    
 
 }

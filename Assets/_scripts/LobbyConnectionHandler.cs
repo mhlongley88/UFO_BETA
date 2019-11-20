@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using DG.Tweening;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PlayFab;
 public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks, IConnectionCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
@@ -29,7 +30,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         IsMultiplayerMode = false;
         PhotonNetwork.AutomaticallySyncScene = true;
-        //PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     // Update is called once per frame
@@ -103,7 +104,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
 
 
-
+    public Player myPlayerMul;
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined Room");
@@ -111,21 +112,106 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //{
         //    SceneManager.LoadScene("LoadingRoom");
         //}
+        MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
+        RefreshCharacterSelectMul();
+
+        //MainMenuUIManager.Instance.PlayerEnterMul(myPlayerMul);
+
+
+        // foreach (Player p in playersMul)
+        // {
+        //GameManager.Instance.AddPlayerToGame(p);
+        //MainMenuUIManager.Instance.PlayerEnterMul(p);
+
+        //  }
+
+        //GameManager.Instance.AddPlayerToGame(myplayerNumber[0]);
+
     }
+    GameObject myPlayerInGame;
+    void RefreshCharacterSelectMul()
+    {
+        //MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
+        GameManager.Instance.RemoveAllPlayersFromGame();
+        if(myPlayerInGame != null)
+        {
+            PhotonNetwork.Destroy(myPlayerInGame);
+        }
+        //List<Player> playersMul = GameManager.Instance.GetActivePlayersMul(false);
+        List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
+        myPlayerMul = myplayerNumber[0];
+        GameObject temp;
+        switch (myPlayerMul)
+        {
+            case Player.One:
+                myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].name,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].transform.position,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].transform.rotation);
+                //Vector3 tempPos = temp.transform.position;
+                //temp.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+                ////Debug.Log();
+                //temp.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[0].gameObject.transform.localPosition;//new Vector3(-19.78f, 0f, 0.82f);
+                //temp.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localRotation;
+                //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localScale;
+                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                break;
+            case Player.Two:
+                myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].name,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.position,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.rotation);
+                //Vector3 tempPos1 = temp.transform.position;
+                //temp.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+                //temp.transform.position = tempPos1;
+                //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.rotation;
+                //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.localScale;
+                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                break;
+            case Player.Three:
+                myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].name,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].transform.position,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].transform.rotation);
+                //Vector3 tempPos2 = temp.transform.position;
+                //temp.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+                //temp.transform.position = tempPos2;
+                //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation;
+                //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.localScale;
+                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                break;
+            case Player.Four:
+                myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].name,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.position,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation);
+                //Vector3 tempPos3 = temp.transform.position;
+                //temp.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+                //temp.transform.position = tempPos3;
+                //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation;
+                //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.localScale;
+                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                break;
+            case Player.None:
+                break;
+        }
+    }
+
 
     void IInRoomCallbacks.OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         Debug.Log("OnPlayerEnteredRoom");
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
-        {
-            if(PhotonNetwork.IsMasterClient)
-                SceneManager.LoadScene("LoadingRoom");
-        }
+        //if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+        //{
+        //    if(PhotonNetwork.IsMasterClient)
+        //        SceneManager.LoadScene("LoadingRoom");
+        //}
+        //RefreshCharacterSelectMul();
+        //List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
+        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
     }
 
     void IInRoomCallbacks.OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-
+        RefreshCharacterSelectMul();
+        myPlayerInGame.GetComponent<CharacterSelectUI>().isSynced = false;
+        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -137,7 +223,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         hash.Add("LevelNumber", 1);
 
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2;
+        roomOptions.MaxPlayers = 4;
         roomOptions.PublishUserId = true;
         roomOptions.CustomRoomPropertiesForLobby = temp;
         roomOptions.CustomRoomProperties = hash;
@@ -148,7 +234,14 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnConnectedToMaster()
     {
-        LobbyUI.instance.AuthPanel.SetActive(false);
+        IsMultiplayerMode = false;
+       // if(LobbyUI.instance != null)
+        {
+            LobbyUI.instance.AuthPanel.SetActive(false);
+            MainMenuUIManager.Instance.MainPanel.SetActive(true);
+            MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+            MainMenuUIManager.Instance.currentMenu = MainMenuUIManager.Menu.Splash;
+        }
     }
 
     void IInRoomCallbacks.OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)

@@ -134,6 +134,8 @@ public class PlayerController : MonoBehaviour
 
     bool dead = false;
 
+    
+
     private Vector2 rightStickDirection;
 
     public GameObject specialReady;
@@ -151,6 +153,7 @@ public class PlayerController : MonoBehaviour
             pv = this.GetComponent<PhotonView>();
         }
         playerControllerByGameObject.Add(gameObject, this);
+        
     }
 
     IEnumerator Start()
@@ -178,7 +181,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("PC");
             isConsole = false;
-            isPC = true;
+           // isPC = true;
         }
         else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
         {
@@ -214,15 +217,70 @@ public class PlayerController : MonoBehaviour
             );
     }
 
+    Vector2 GetInputAxisKB()
+    {
+        return GameManager.Instance.paused ? Vector2.zero :
+            new Vector2(
+                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player),
+                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickVertical, player)
+            );
+    }
+    bool isControllerDecided = false;
     private void ProcessInput_PC()
     {
-        horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
-        verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
-        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-        if (horizontalInput != 0f || verticalInput != 0f)
+        //horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
+        //verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
+        //moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+
+        //Vector2 axis = GetInputAxis();
+
+        if (!isControllerDecided)
         {
-            //this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, this.transform.localEulerAngles.z);
+            if (GetInputAxis() != Vector2.zero)
+            {
+                isConsole = true;
+                isPC = false;
+                isControllerDecided = true;
+                
+            }
+            if (GetInputAxisKB() != Vector2.zero)
+            {
+                isPC = true;
+                isConsole = false;
+                isControllerDecided = true;
+
+            }
+            
         }
+        else
+        {
+            if (isPC)
+            {
+                Vector2 axisKB = GetInputAxisKB();
+                horizontalInputKB = axisKB.x;
+                verticalInputKB = axisKB.y;
+                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+            }
+            else if (isConsole)
+            {
+                Vector2 axis = GetInputAxis();
+                horizontalInput = axis.x;
+                verticalInput = axis.y;
+                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+            else
+            {
+                isControllerDecided = false;
+            }
+        }
+
+
+        if (isConsole && horizontalInput != 0f || verticalInput != 0f)
+        {
+            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, this.transform.localEulerAngles.z);
+        }
+
+        
 
         if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
         {
@@ -237,45 +295,64 @@ public class PlayerController : MonoBehaviour
         }
         if (twinStick)
         {
-            rightStickDirection = new Vector2(Input.GetAxis("P1_Rotation_Hor_Keyboard"), Input.GetAxis("P1_Rotation_Ver_Keyboard"));
-            if (rightStickDirection.magnitude > 0.1)//rightStickDirection != Vector2.zero)
+            
+            rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
+            if (isConsole)
             {
-                //this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
-                Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+                if (rightStickDirection != Vector2.zero)
+                {
 
-                ////Get the Screen position of the mouse
-                Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
-                //Debug.Log(mouseOnScreen);
-                ////Get the angle between the points
-                float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
 
-                ////Ta Daaa
-                transform.rotation = Quaternion.Euler(new Vector3(0f, -angle , 0f));
 
-                //Vector3 _direction = (transform.position - new Vector3(mouseOnScreen.x, mouseOnScreen.y, this.transform.position.z)).normalized;
+                }
+                Debug.Log("console");
+            }
+            else if(isPC)
+            {
+               // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
+                {
 
-                ////create the rotation we need to be in to look at the target
-                //Quaternion _lookRotation = Quaternion.LookRotation(_direction);
+                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
-                ////rotate us over time according to speed until we are in the required rotation
-                //transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * 1000);
 
+                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+
+
+                }
+               
             }
         }
         currentWeapon.UpdateShootDirection(transform.forward);
-        if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */Input.GetButtonDown("P1_Fire1_Keyboard") /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
+        if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player) /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
         {
             
             pv.RPC("RPC_Fire", RpcTarget.All, transform.forward);
         }
-        if (Input.GetButtonDown("P1_Dash_Keyboard") && boostReady)
+        if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
         {
             tryToBoost();
         }
 
-        if (IsSuperWeaponReady() && Input.GetAxis("P1_SuperWeapon1_Keyboard") > 0.5f /*&&*/ || Input.GetAxis("P1_SuperWeapon2_Keyboard") > 0.5f)
+        if (isConsole)
         {
-            pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
+            {
+                // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+            }
+        }
+        else
+        {
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
+            {
+                // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+            }
         }
 
     }
@@ -321,11 +398,14 @@ public class PlayerController : MonoBehaviour
         dead = true;
 
         avgScaleOutput.RemovePlayer(this.gameObject.transform);
+        
+        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+
         if (pv.IsMine)
         {
             PhotonNetwork.Destroy(this.gameObject);
         }
-        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+
         Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
         
     }
@@ -342,6 +422,7 @@ public class PlayerController : MonoBehaviour
         
         if (pv.IsMine)
         {
+            Debug.Log(currentWeapon.name);
             currentWeapon.Fire();
         }
         else
@@ -350,23 +431,60 @@ public class PlayerController : MonoBehaviour
         }
         Debug.Log("Fire1");
     }
-
+    float horizontalInputKB, verticalInputKB;
+    Vector3 moveInputVectorKB;
     private void ProcessInput()
     {
-        Vector2 axis = GetInputAxis();
+        if (!isControllerDecided)
+        {
+            if (GetInputAxis() != Vector2.zero)
+            {
+                isConsole = true;
+                isPC = false;
+                isControllerDecided = true;
 
-        horizontalInput = axis.x;
-        verticalInput = axis.y;
+            }
+            if (GetInputAxisKB() != Vector2.zero)
+            {
+                Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
+                isPC = true;
+                isConsole = false;
+                isControllerDecided = true;
 
-        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+
+        }
+        else
+        {
+            if (isPC)
+            {
+                Vector2 axisKB = GetInputAxisKB();
+                horizontalInputKB = axisKB.x;
+                verticalInputKB = axisKB.y;
+                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+            }
+            else if (isConsole)
+            {
+                Vector2 axis = GetInputAxis();
+                horizontalInput = axis.x;
+                verticalInput = axis.y;
+                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+            else
+            {
+                isControllerDecided = false;
+            }
+        }
+
 
         if (GameManager.Instance.paused) return;
 
-        if (horizontalInput != 0f || verticalInput != 0f)
-        {
-            this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
-        }
+        //if (horizontalInput != 0f || verticalInput != 0f)
+        //{
+        //    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
+        //}
 
+        
 
         if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
         {
@@ -385,10 +503,33 @@ public class PlayerController : MonoBehaviour
         if (twinStick)
         {
             rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
-            if (rightStickDirection != Vector2.zero)
+            if (isConsole)
             {
-                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                if (rightStickDirection != Vector2.zero)
+                {
 
+                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+
+
+                }
+                Debug.Log("console");
+            }
+            else if (isPC)
+            {
+                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
+                {
+
+                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+
+
+                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+
+
+                }
 
             }
         }
@@ -403,9 +544,19 @@ public class PlayerController : MonoBehaviour
             tryToBoost();
         }
 
-        if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.5f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.5f)
+        if (isConsole)
         {
-            ToggleSuperWeapon(true);
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+            {
+                ToggleSuperWeapon(true);
+            }
+        }
+        else
+        {
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+            {
+                ToggleSuperWeapon(true);
+            }
         }
 
     }
@@ -421,21 +572,29 @@ public class PlayerController : MonoBehaviour
         superWeaponActive = activate;
         if (activate)
         {
+           // superWeaponActive = activate;
             //StartCoroutine(CameraController.Instance.ActivateSpecialCamera(1f));
-           // if(pv.IsMine)
-                PlayerSpecialvCam.SetActive(true);
+            // if(pv.IsMine)
+            PlayerSpecialvCam.SetActive(true);
             normalWeapon.gameObject.SetActive(false);
             superWeapon.gameObject.SetActive(true);
             superWeapon.ActivateWeapon();
             currentWeapon = superWeapon;
+            Debug.Log(currentWeapon.name);
             StartCoroutine(DeactivateSpecialCamera());
         }
         else
         {
+            Debug.Log("Deactivating");
             PlayerSpecialvCam.SetActive(false);
             normalWeapon.gameObject.SetActive(true);
             superWeapon.gameObject.SetActive(false);
+            //superWeaponActive = false;
             currentWeapon = normalWeapon;
+            currentWeapon.canFire = true;
+            //superWeapon.DeactivateWeapon();
+            Debug.Log(currentWeapon.name);
+            //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
             energyMeter.fillAmount = 0f;
             scaleDelta = 0f;
         }
@@ -444,9 +603,19 @@ public class PlayerController : MonoBehaviour
 
     private void tryToBoost()
     {
-        if (horizontalInput != 0f || verticalInput != 0f)
+        if (isConsole)
         {
-            StartCoroutine(BoostCoroutine());
+            if (horizontalInput != 0f || verticalInput != 0f)
+            {
+                StartCoroutine(BoostCoroutine());
+            }
+        }
+        else if(isPC)
+        {
+            if (horizontalInputKB != 0f || verticalInputKB != 0f)
+            {
+                StartCoroutine(BoostCoroutine());
+            }
         }
     }
 
@@ -454,7 +623,15 @@ public class PlayerController : MonoBehaviour
     {
         boostReady = false;
         isBoosting = true;
-        Vector3 boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
+        Vector3 boostDirection;// = new Vector3(horizontalInput, 0.0f, verticalInput);
+        if (isConsole)
+        {
+            boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
+        }
+        else
+        {
+            boostDirection = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+        }
         float timer = 0f;
         myRigidbody.velocity = Vector3.zero;
         while (timer <= boostDuration)
@@ -499,37 +676,15 @@ public class PlayerController : MonoBehaviour
             return maxSpeed;
         }
     }
-    bool isConsole = false, isPC = false;
+    public bool isConsole = false, isPC = false;
     void Update()
     {
-        if (isPC)
+        //if (isPC)
         {
             if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
             {
                 ProcessInput_PC();
-                avgScaleOutput.CalculateAndOutput();
 
-                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
-                {
-                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
-                }
-            }
-            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
-            {
-                ProcessInput_PC();
-                avgScaleOutput.CalculateAndOutput();
-
-                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
-                {
-                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
-                }
-            }
-        }
-        else if(isConsole)
-        {
-            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
-            {
-                ProcessInput();
                 avgScaleOutput.CalculateAndOutput();
 
                 if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
@@ -548,6 +703,29 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        //else if(isConsole)
+        //{
+        //    if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+        //    {
+        //        ProcessInput();
+        //        avgScaleOutput.CalculateAndOutput();
+
+        //        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        //        {
+        //            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+        //        }
+        //    }
+        //    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        //    {
+        //        ProcessInput();
+        //        avgScaleOutput.CalculateAndOutput();
+
+        //        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        //        {
+        //            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+        //        }
+        //    }
+        //}
 
     }
 
@@ -555,7 +733,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!isBoosting)
         {
-            moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+            if (isConsole)
+            {
+                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+            }
+            else if(isPC)
+            {
+                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInputKB, verticalInputKB), acceleration * Time.fixedDeltaTime);
+            }
             //if (Vector3.Project(myRigidbody.velocity, moveInputVector).magnitude < maxSpeed)
             {
                 myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);

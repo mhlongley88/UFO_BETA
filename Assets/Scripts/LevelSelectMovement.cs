@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class LevelSelectMovement : MonoBehaviour
 {
     public int playersAmount = 4;
@@ -17,6 +17,24 @@ public class LevelSelectMovement : MonoBehaviour
     private void Start()
     {
         transform.position = this.gameObject.transform.position;
+        //if (LobbyConnectionHandler.instance.IsMultiplayerMode) //&& PhotonNetwork.IsMasterClient)
+        //{
+        //    //this.gameObject.AddComponent<PhotonView>();
+        //    this.gameObject.AddComponent<NetworkCharacter>();
+        //    List<Component> comp = new List<Component>();
+        //    comp.Add(this.gameObject.GetComponent<NetworkCharacter>());
+        //    this.GetComponent<PhotonView>().Synchronization = ViewSynchronization.UnreliableOnChange;
+        //    this.GetComponent<PhotonView>().ObservedComponents = comp;
+        //}
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+
+            
+            //List<Component> comp = new List<Component>();
+           // comp.Add(this.gameObject.GetComponent<NetworkCharacter>());
+            this.GetComponent<PhotonView>().Synchronization = ViewSynchronization.Off;
+            this.GetComponent<PhotonView>().ObservedComponents = null;
+        }
     }
 
     void Update()
@@ -42,16 +60,16 @@ public class LevelSelectMovement : MonoBehaviour
         }
 
         // Rotate with left/right arrows
-        if (Input.GetKey(KeyCode.LeftArrow)) Translate(translateSpeed, 0);
-        if (Input.GetKey(KeyCode.RightArrow)) Translate(-translateSpeed, 0);
-
-        // Translate forward/backward with up/down arrows
-        if (Input.GetKey(KeyCode.UpArrow)) Translate(0, translateSpeed);
-        if (Input.GetKey(KeyCode.DownArrow)) Translate(0, -translateSpeed);
-
-        // Translate left/right with A/D. Bad keys but quick test.
         if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
         if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
+
+        // Translate forward/backward with up/down arrows
+        if (Input.GetKey(KeyCode.W)) Translate(0, translateSpeed);
+        if (Input.GetKey(KeyCode.S)) Translate(0, -translateSpeed);
+
+        // Translate left/right with A/D. Bad keys but quick test.
+        //if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
+        //if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
 
         UpdatePositionRotation();
     }

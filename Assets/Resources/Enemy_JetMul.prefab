@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 3731582377577226936}
   - component: {fileID: 7432025131602942618}
   - component: {fileID: 1465631781232016111}
-  - component: {fileID: 274088705929424095}
+  - component: {fileID: 2911843823107130444}
   m_Layer: 27
   m_Name: Enemy_JetMul
   m_TagString: Untagged
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5481490604458005054}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f54f1d73a2facb74d97d850dee1d320a, type: 3}
   m_Name: 
@@ -153,11 +153,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 274088705929424095}
+  - {fileID: 2911843823107130444}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &274088705929424095
+--- !u!114 &2911843823107130444
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,12 +166,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5481490604458005054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 37edc8895ca754e499cb86517c110c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
+  lerpSpeed: 10
 --- !u!1001 &8587192811743899377
 PrefabInstance:
   m_ObjectHideFlags: 0

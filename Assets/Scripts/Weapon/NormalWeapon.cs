@@ -105,6 +105,7 @@ public class NormalWeapon : Weapon
 
     public override void Fire()
     {
+        Debug.Log(currentAmmo + "-" + canFire);
         if (currentAmmo > 0 && canFire)
         {
             Bullet b;
