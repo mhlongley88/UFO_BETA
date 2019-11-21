@@ -502,6 +502,7 @@ namespace DG.Tweening
 
         public void DOPlayById(string id)
         {
+            Debug.Log(this.gameObject + "---" + id);
             DOTween.Play(this.gameObject, id);
         }
         public void DOPlayAllById(string id)

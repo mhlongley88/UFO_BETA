@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RotaryHeart.Lib.SerializableDictionary;
 using Random = UnityEngine.Random;
+using Photon.Pun;
 public class NormalWeapon : Weapon
 {
 
@@ -36,14 +37,17 @@ public class NormalWeapon : Weapon
     [SerializeField]
     protected NormalWeaponTypes currentWeapon = NormalWeaponTypes.DualPistols;
 
-
+    public GameObject PlayerObj;
+    Photon.Pun.PhotonView pv;
     // Start is called before the first frame update
     void Start()
     {
+        pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
         currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
 
     }
 
+   
 
     public void ChangeWeapon(NormalWeaponTypes weaponType)
     {
@@ -80,5 +84,55 @@ public class NormalWeapon : Weapon
     public override ScriptableWeapon GetCurrentWeaponSetting()
     {
         return weaponDic[currentWeapon];
+    }
+
+    //public override void Fire()
+    //{
+    //    base.Fire();
+    //    pv.RPC("Fire1", RpcTarget.All);
+    //}
+    //[PunRPC]
+
+    public override void Fire_OtherInstances(Vector3 fireDirection)
+    {
+        float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+        Bullet b;
+        b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+        b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+
+    }
+
+
+    public override void Fire()
+    {
+        Debug.Log(currentAmmo + "-" + canFire);
+        if (currentAmmo > 0 && canFire)
+        {
+            Bullet b;
+            float shootAngle;
+            for (int i = 0; i < GetCurrentWeaponSetting().ShotsPerVolley; i++)
+            {
+                shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+                if (GetCurrentWeaponSetting().WeaponFiringPositionOffsets.Length > 0)
+                {
+                    if (firePositionIndex >= GetCurrentWeaponSetting().WeaponFiringPositionOffsets.Length)
+                    {
+                        firePositionIndex = 0;
+                    }
+
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+                    firePositionIndex++;
+                }
+                else
+                {
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position, Quaternion.identity).GetComponent<Bullet>();
+                }
+                b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+            }
+            currentAmmo--;
+            StartCoroutine(AmmoCooldownCoroutine());
+            StartCoroutine(WeaponCooldownCoroutine());
+            ufoRigidbody.AddExplosionForce(GetCurrentWeaponSetting().RecoilForce, shootDirection.normalized * 1.0f + transform.position, 1f, 0f, ForceMode.Impulse);
+        }
     }
 }

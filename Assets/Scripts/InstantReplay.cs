@@ -38,7 +38,7 @@ public class InstantReplay : MonoBehaviour
     {
         myAudioSource = GameObject.Find("/CAMERA/AudioManager").GetComponent<AudioSource>();
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
-        vCam1.SetActive(true);
+        //vCam1.SetActive(true);
         //     replayCam.SetActive(false);
         //   EZReplayManager.get.mark4Recording(trackMe);
         //    EZReplayManager.get.record();

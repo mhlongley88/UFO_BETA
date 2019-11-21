@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject pauseScreen;
     public bool paused = false;
+
+    public List<CharacterSelectUI> PlayerObjsMul;
+
     //public GameObject conquered_go;
     //private Transform conquered_t;
 
@@ -34,6 +37,17 @@ public class GameManager : MonoBehaviour
         get
         {
             return characters;
+        }
+    }
+
+    [SerializeField]
+    private CharacterAssets[] charactersMul;
+
+    public CharacterAssets[] CharactersMul
+    {
+        get
+        {
+            return charactersMul;
         }
     }
 
@@ -60,7 +74,7 @@ public class GameManager : MonoBehaviour
 
     public void Awake()
     {
-        Cursor.visible = false;
+        Cursor.visible = true;
 
         if (instance != null && instance != this)
         {
@@ -70,7 +84,9 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(this);
+            PlayerObjsMul = new List<CharacterSelectUI>();
         }
+
         // StartCoroutine(delayCheck());
     }
     // Use this for initialization
@@ -114,6 +130,7 @@ public class GameManager : MonoBehaviour
 
     public void ControllerCheck()
     {
+        Debug.Log(Input.GetJoystickNames().Length);
         System.Array.Clear(currentControllers, 0, currentControllers.Length);
         System.Array.Resize<string>(ref currentControllers, Input.GetJoystickNames().Length);
         int numberOfControllers = 0;
@@ -153,34 +170,57 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       // Debug.Log(Input.GetJoystickNames().Length);
         if (gameOver)
         {
 
-            if (canAdvance == true && Input.GetButtonDown("Restart"))
+            if (canAdvance == true && (Input.GetButtonDown("Restart") || Input.GetKeyDown(KeyCode.R)))
             {
                 gameOver = false;
                 canAdvance = false;
                 if (paused) TogglePause();
 
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                
                 if (SceneManager.GetActiveScene().name != "MainMenu")
                 {
-                    SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+                      //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                        {
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+                        }
                 }
             }
 
-            if (canAdvance == true && Input.GetButtonDown("GoToMainMenu"))
+            if (canAdvance == true && Input.GetButtonDown("GoToMainMenu") || Input.GetKeyDown(KeyCode.M))
             {
 
-                SceneManager.LoadScene("MainMenu");
                 gameOver = false;
                 canAdvance = false;
+                if (SceneManager.GetActiveScene().name != "MainMenu")
+                {
+                    if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
+                    {
+                        Photon.Pun.PhotonNetwork.LeaveRoom();
+                        
+                      //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                        {
+                            SceneManager.LoadScene("MainMenu");
+                            
+                        }
+                    }
+                    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+                    {
+                        
+                        SceneManager.LoadScene("MainMenu");
+                    }
+
+                }
 
             }
         }
         else
         {
-            if (Input.GetButtonDown("Pause"))
+            if (Input.GetButtonDown("Pause") && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
                 TogglePause();
             }
@@ -202,6 +242,11 @@ public class GameManager : MonoBehaviour
             Application.Quit();
         }
 
+
+    }
+
+    void GameOverControls()
+    {
 
     }
 
@@ -261,6 +306,169 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public List<Player> GetActivePlayersMul(bool onlyMine)
+    {
+
+        List<Player> players = new List<Player>();
+
+        if (onlyMine)
+        {
+            int spawnIndex = 0;
+            int counter = 0;
+            RemoveAllPlayersFromGame();
+            
+            foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+            {
+                
+                spawnIndex = counter;
+                counter++;
+              //  Debug.Log(spawnIndex);
+                switch (spawnIndex)
+                {
+                    case 0:
+                        AddPlayerToGame(Player.One);
+                       // players.Add(Player.One);
+                        break;
+                    case 1:
+                        AddPlayerToGame(Player.Two);
+                       // players.Add(Player.Two);
+                        break;
+                    case 2:
+                        AddPlayerToGame(Player.Three);
+                       // players.Add(Player.Three);
+                        break;
+                    case 3:
+                        AddPlayerToGame(Player.Four);
+                       // players.Add(Player.Four);
+                        break;
+                    default:
+                        AddPlayerToGame(Player.None);
+                      //  players.Add(Player.None);
+                        break;
+                }
+            }
+            spawnIndex = 0;
+            counter = 0;
+            foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+            {
+                if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+                {
+                    spawnIndex = counter;
+                    break;
+                }
+                counter++;
+            }
+           // Debug.Log("Spawn Number: " + spawnIndex);
+            switch (spawnIndex)
+            {
+                case 0:
+                    players.Add(Player.One);
+                    break;
+                case 1:
+                    players.Add(Player.Two);
+                    break;
+                case 2:
+                    players.Add(Player.Three);
+                    break;
+                case 3:
+                    players.Add(Player.Four);
+                    break;
+                default:
+                    players.Add(Player.One);
+                    break;
+            }
+        }
+        //else
+        //{
+        //    int spawnIndex = 0;
+        //    int counter = 0;
+        //    foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+        //    {
+        //      //  if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+        //        {
+        //            spawnIndex = counter;
+        //        //    break;
+        //        }
+        //        counter++;
+        //        switch (spawnIndex)
+        //        {
+        //            case 0:
+        //                players.Add(Player.One);
+        //                break;
+        //            case 1:
+        //                players.Add(Player.Two);
+        //                break;
+        //            case 2:
+        //                players.Add(Player.Three);
+        //                break;
+        //            case 3:
+        //                players.Add(Player.Four);
+        //                break;
+        //            default:
+        //                players.Add(Player.One);
+        //                break;
+        //        }
+        //    }
+        //    Debug.Log("Spawn Number: " + spawnIndex);
+
+        //}
+        //List<Player> players = new List<Player>();
+        else
+        {
+            RemoveAllPlayersFromGame();
+            int spawnIndex = 0;
+            int counter = 0;
+            foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+            {
+                spawnIndex = counter;
+                counter++;
+                switch (spawnIndex)
+                {
+                    case 0:
+                        AddPlayerToGame(Player.One);
+                        if(LevelUIManager.Instance != null)
+                            LevelUIManager.Instance.EnableUI(Player.One);
+                        //players.Add(Player.One);
+                        break;
+                    case 1:
+                        AddPlayerToGame(Player.Two);
+                        if (LevelUIManager.Instance != null)
+                            LevelUIManager.Instance.EnableUI(Player.Two);
+                        //players.Add(Player.Two);
+                        break;
+                    case 2:
+                        AddPlayerToGame(Player.Three);
+                        if (LevelUIManager.Instance != null)
+                            LevelUIManager.Instance.EnableUI(Player.Three);
+                        //players.Add(Player.Three);
+                        break;
+                    case 3:
+                        AddPlayerToGame(Player.Four);
+                        if (LevelUIManager.Instance != null)
+                            LevelUIManager.Instance.EnableUI(Player.Four);
+                        //players.Add(Player.Four);
+                        break;
+                    default:
+                        //AddPlayerToGame(Player.None);
+                        //players.Add(Player.None);
+                        break;
+                }
+            }
+        
+
+            foreach (Player p in Player.GetValues(typeof(Player)))
+            {
+
+                if (IsPlayerInGame(p))
+                {
+                    
+                    players.Add(p);
+                }
+            }
+            
+        }
+        return players;
+    }
 
     public List<Player> GetActivePlayers()
     {

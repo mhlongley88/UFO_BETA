@@ -13,6 +13,7 @@ public class LevelLoad : MonoBehaviour
     IEnumerator Start()
     {
         yield return new WaitForSeconds(3.0f);
+        //ShowLevelTitle.levelStaticInt = 1;
         SceneManager.LoadScene(levelSceneNames[ShowLevelTitle.levelStaticInt - 1]);
         SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
 

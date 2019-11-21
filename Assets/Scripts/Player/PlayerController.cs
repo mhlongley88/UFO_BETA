@@ -6,7 +6,7 @@ using RotaryHeart.Lib.SerializableDictionary;
 using static Weapon;
 using System;
 using static InputManager;
-
+using Photon.Pun;
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
@@ -134,6 +134,8 @@ public class PlayerController : MonoBehaviour
 
     bool dead = false;
 
+    
+
     private Vector2 rightStickDirection;
 
     public GameObject specialReady;
@@ -142,9 +144,16 @@ public class PlayerController : MonoBehaviour
     private Transform modelContainer;
 
     GameObject playerModel;
+    PhotonView pv;
     private void Awake()
     {
+        
+        if (this.GetComponent<PhotonView>())
+        {
+            pv = this.GetComponent<PhotonView>();
+        }
         playerControllerByGameObject.Add(gameObject, this);
+        
     }
 
     IEnumerator Start()
@@ -167,6 +176,19 @@ public class PlayerController : MonoBehaviour
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);
         healthManager.SetInvincible(false);
+
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        {
+            Debug.Log("PC");
+            isConsole = false;
+           // isPC = true;
+        }
+        else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+        {
+            Debug.Log("Console");
+            isPC = false;
+            isConsole = true;
+        }
     }
 
     private void OnDestroy()
@@ -195,22 +217,274 @@ public class PlayerController : MonoBehaviour
             );
     }
 
+    Vector2 GetInputAxisKB()
+    {
+        return GameManager.Instance.paused ? Vector2.zero :
+            new Vector2(
+                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player),
+                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickVertical, player)
+            );
+    }
+    bool isControllerDecided = false;
+    private void ProcessInput_PC()
+    {
+        //horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
+        //verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
+        //moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+
+        //Vector2 axis = GetInputAxis();
+
+        if (!isControllerDecided)
+        {
+            if (GetInputAxis() != Vector2.zero)
+            {
+                isConsole = true;
+                isPC = false;
+                isControllerDecided = true;
+                
+            }
+            if (GetInputAxisKB() != Vector2.zero)
+            {
+                isPC = true;
+                isConsole = false;
+                isControllerDecided = true;
+
+            }
+            
+        }
+        else
+        {
+            if (isPC)
+            {
+                Vector2 axisKB = GetInputAxisKB();
+                horizontalInputKB = axisKB.x;
+                verticalInputKB = axisKB.y;
+                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+            }
+            else if (isConsole)
+            {
+                Vector2 axis = GetInputAxis();
+                horizontalInput = axis.x;
+                verticalInput = axis.y;
+                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+            else
+            {
+                isControllerDecided = false;
+            }
+        }
+
+
+        if (isConsole && horizontalInput != 0f || verticalInput != 0f)
+        {
+            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, this.transform.localEulerAngles.z);
+        }
+
+        
+
+        if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
+        {
+            Debug.Log("Beam Input");
+            
+            pv.RPC("RPC_Beam", RpcTarget.All);
+        }
+        else if (Input.GetButtonUp("P1_Beam_Keyboard"))
+        {
+            pv.RPC("RPC_Beam_Off", RpcTarget.All);
+
+        }
+        if (twinStick)
+        {
+            
+            rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
+            if (isConsole)
+            {
+                if (rightStickDirection != Vector2.zero)
+                {
+
+                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+
+
+                }
+                Debug.Log("console");
+            }
+            else if(isPC)
+            {
+               // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
+                {
+
+                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+
+
+                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+
+
+                }
+               
+            }
+        }
+        currentWeapon.UpdateShootDirection(transform.forward);
+        if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player) /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
+        {
+            
+            pv.RPC("RPC_Fire", RpcTarget.All, transform.forward);
+        }
+        if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
+        {
+            tryToBoost();
+        }
+
+        if (isConsole)
+        {
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
+            {
+                // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+            }
+        }
+        else
+        {
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
+            {
+                // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+            }
+        }
+
+    }
+
+    float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
+    {
+        return Mathf.Atan2(a.x - b.x, b.y - a.y) * Mathf.Rad2Deg;
+    }
+
+    [PunRPC]
+    void RPC_Beam()
+    {
+        if (pv.IsMine)
+        {
+            ActivateBeam();
+        }
+        else
+        {
+            ActivateBeam();
+        }
+        
+    }
+
+    [PunRPC]
+    void RPC_Beam_Off()
+    {
+        if (pv.IsMine)
+        {
+            DeactivateBeam();
+            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+        }
+        else
+        {
+            DeactivateBeam();
+            Instantiate(beamOff, gameObject.transform.position, gameObject.transform.rotation);
+        }
+
+    }
+
+    [PunRPC]
+    void Death_RPC()
+    {
+        dead = true;
+
+        avgScaleOutput.RemovePlayer(this.gameObject.transform);
+        
+        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+
+        if (pv.IsMine)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+
+        Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+        
+    }
+
+    [PunRPC]
+    void RPC_ToggleSpecialWeapon()
+    {
+        ToggleSuperWeapon(true);
+    }
+
+    [PunRPC]
+    void RPC_Fire(Vector3 fireDirection)
+    {
+        
+        if (pv.IsMine)
+        {
+            Debug.Log(currentWeapon.name);
+            currentWeapon.Fire();
+        }
+        else
+        {
+            currentWeapon.Fire_OtherInstances(fireDirection);
+        }
+        Debug.Log("Fire1");
+    }
+    float horizontalInputKB, verticalInputKB;
+    Vector3 moveInputVectorKB;
     private void ProcessInput()
     {
-        Vector2 axis = GetInputAxis();
+        if (!isControllerDecided)
+        {
+            if (GetInputAxis() != Vector2.zero)
+            {
+                isConsole = true;
+                isPC = false;
+                isControllerDecided = true;
 
-        horizontalInput = axis.x;
-        verticalInput = axis.y;
+            }
+            if (GetInputAxisKB() != Vector2.zero)
+            {
+                Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
+                isPC = true;
+                isConsole = false;
+                isControllerDecided = true;
 
-        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+
+        }
+        else
+        {
+            if (isPC)
+            {
+                Vector2 axisKB = GetInputAxisKB();
+                horizontalInputKB = axisKB.x;
+                verticalInputKB = axisKB.y;
+                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+            }
+            else if (isConsole)
+            {
+                Vector2 axis = GetInputAxis();
+                horizontalInput = axis.x;
+                verticalInput = axis.y;
+                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            }
+            else
+            {
+                isControllerDecided = false;
+            }
+        }
+
 
         if (GameManager.Instance.paused) return;
 
-        if (horizontalInput != 0f || verticalInput != 0f)
-        {
-            this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
-        }
+        //if (horizontalInput != 0f || verticalInput != 0f)
+        //{
+        //    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
+        //}
 
+        
 
         if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
         {
@@ -229,10 +503,33 @@ public class PlayerController : MonoBehaviour
         if (twinStick)
         {
             rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
-            if (rightStickDirection != Vector2.zero)
+            if (isConsole)
             {
-                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                if (rightStickDirection != Vector2.zero)
+                {
 
+                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+
+
+                }
+                Debug.Log("console");
+            }
+            else if (isPC)
+            {
+                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
+                {
+
+                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+
+
+                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+
+
+                }
 
             }
         }
@@ -247,32 +544,57 @@ public class PlayerController : MonoBehaviour
             tryToBoost();
         }
 
-        if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.5f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.5f)
+        if (isConsole)
         {
-            ToggleSuperWeapon(true);
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+            {
+                ToggleSuperWeapon(true);
+            }
+        }
+        else
+        {
+            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+            {
+                ToggleSuperWeapon(true);
+            }
         }
 
     }
 
+    IEnumerator DeactivateSpecialCamera()
+    {
+        yield return new WaitForSeconds(2.5f);
+        PlayerSpecialvCam.SetActive(false);
+    }
 
     public void ToggleSuperWeapon(bool activate)
     {
         superWeaponActive = activate;
         if (activate)
         {
+           // superWeaponActive = activate;
             //StartCoroutine(CameraController.Instance.ActivateSpecialCamera(1f));
+            // if(pv.IsMine)
             PlayerSpecialvCam.SetActive(true);
             normalWeapon.gameObject.SetActive(false);
             superWeapon.gameObject.SetActive(true);
             superWeapon.ActivateWeapon();
             currentWeapon = superWeapon;
+            Debug.Log(currentWeapon.name);
+            StartCoroutine(DeactivateSpecialCamera());
         }
         else
         {
+            Debug.Log("Deactivating");
             PlayerSpecialvCam.SetActive(false);
             normalWeapon.gameObject.SetActive(true);
             superWeapon.gameObject.SetActive(false);
+            //superWeaponActive = false;
             currentWeapon = normalWeapon;
+            currentWeapon.canFire = true;
+            //superWeapon.DeactivateWeapon();
+            Debug.Log(currentWeapon.name);
+            //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
             energyMeter.fillAmount = 0f;
             scaleDelta = 0f;
         }
@@ -281,9 +603,19 @@ public class PlayerController : MonoBehaviour
 
     private void tryToBoost()
     {
-        if (horizontalInput != 0f || verticalInput != 0f)
+        if (isConsole)
         {
-            StartCoroutine(BoostCoroutine());
+            if (horizontalInput != 0f || verticalInput != 0f)
+            {
+                StartCoroutine(BoostCoroutine());
+            }
+        }
+        else if(isPC)
+        {
+            if (horizontalInputKB != 0f || verticalInputKB != 0f)
+            {
+                StartCoroutine(BoostCoroutine());
+            }
         }
     }
 
@@ -291,7 +623,15 @@ public class PlayerController : MonoBehaviour
     {
         boostReady = false;
         isBoosting = true;
-        Vector3 boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
+        Vector3 boostDirection;// = new Vector3(horizontalInput, 0.0f, verticalInput);
+        if (isConsole)
+        {
+            boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
+        }
+        else
+        {
+            boostDirection = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+        }
         float timer = 0f;
         myRigidbody.velocity = Vector3.zero;
         while (timer <= boostDuration)
@@ -336,16 +676,56 @@ public class PlayerController : MonoBehaviour
             return maxSpeed;
         }
     }
-
+    public bool isConsole = false, isPC = false;
     void Update()
     {
-        ProcessInput();
-        avgScaleOutput.CalculateAndOutput();
-
-        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        //if (isPC)
         {
-            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+            {
+                ProcessInput_PC();
+
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
+            }
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                ProcessInput();
+                avgScaleOutput.CalculateAndOutput();
+
+                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                {
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                }
+            }
         }
+        //else if(isConsole)
+        //{
+        //    if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+        //    {
+        //        ProcessInput();
+        //        avgScaleOutput.CalculateAndOutput();
+
+        //        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        //        {
+        //            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+        //        }
+        //    }
+        //    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        //    {
+        //        ProcessInput();
+        //        avgScaleOutput.CalculateAndOutput();
+
+        //        if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+        //        {
+        //            transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+        //        }
+        //    }
+        //}
 
     }
 
@@ -353,7 +733,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!isBoosting)
         {
-            moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+            if (isConsole)
+            {
+                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+            }
+            else if(isPC)
+            {
+                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInputKB, verticalInputKB), acceleration * Time.fixedDeltaTime);
+            }
             //if (Vector3.Project(myRigidbody.velocity, moveInputVector).magnitude < maxSpeed)
             {
                 myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
@@ -382,18 +769,32 @@ public class PlayerController : MonoBehaviour
 
         dead = true;
 
-        avgScaleOutput.RemovePlayer(this.gameObject.transform);
-        PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+        //avgScaleOutput.RemovePlayer(this.gameObject.transform);
+        //PlayerManager.Instance.PlayerDied(player, playerModel.transform);
 
         Debug.LogWarning("Die");
-        Destroy(this.gameObject);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            pv.RPC("Death_RPC", RpcTarget.All);
+        }
+
+        else
+        {
+            dead = true;
+
+            avgScaleOutput.RemovePlayer(this.gameObject.transform);
+            PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+            Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+            Destroy(this.gameObject);
+        }
+            
 
        /* GameObject deathPfxInstance = PlayerManager.Instance.deathPfxCache.GetInstance();
         deathPfxInstance.transform.position = gameObject.transform.position;
         deathPfxInstance.transform.rotation = gameObject.transform.rotation;
         deathPfxInstance.SetActive(true);*/
 
-        Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+        
     }
 
     public bool IsSuperWeaponReady()

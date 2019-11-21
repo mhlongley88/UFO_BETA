@@ -36,12 +36,21 @@ public class PlayerManager : MonoBehaviour
     [Serializable]
     public class PlayerStatsDic : SerializableDictionaryBase<Player, PlayerStats> { }
     public PlayerStatsDic players;
+
+    [Serializable]
+    public class PlayerStatsDicMul : SerializableDictionaryBase<Player, PlayerStats> { }
+    public PlayerStatsDicMul playersMul;
+
+
     public float spawnTimer = 5.0f;
     public bool debugP1join;
     public bool debugP2join;
     public bool debugP3join;
     public bool debugP4join;
     public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
+
+
+    
 
     public bool gameHasEnded = false;
 
@@ -86,12 +95,42 @@ public class PlayerManager : MonoBehaviour
     }
     public void Start()
     {
-        foreach (Player p in GameManager.Instance.GetActivePlayers())
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+            foreach (Player p in GameManager.Instance.GetActivePlayersMul(false))
+            {
+                LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+            }
+
+        }
+        else
+        {
+            foreach (Player p in GameManager.Instance.GetActivePlayers())
+            {
+                LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+            }
         }
         if (gameHasEnded != true)
         {
+            if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                SpawnLocalPlayers();
+            }
+            else
+            {
+                SpawnMulPlayer();
+                //foreach (Player i in GameManager.Instance.GetActivePlayers())
+                //{
+                //    LevelUIManager.Instance.EnableUI(i);
+                //    Instantiate(players[i].prefab, players[i].spawnPoint);
+                //}
+            }
+        }
+    }
+
+    void SpawnLocalPlayers()
+    {
+        
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
                 LevelUIManager.Instance.EnableUI(i);
@@ -99,19 +138,56 @@ public class PlayerManager : MonoBehaviour
 
                 spawnedPlayerDictionary.Add(i, players[i].instance);
             }
+        
+    }
+
+    void SpawnMulPlayer()
+    {
+        //Debug.Log("Spawning:  " + GameManager.Instance.GetActivePlayersMul(true)[0]);
+        foreach (Player i in GameManager.Instance.GetActivePlayersMul(true))
+        {
+            Debug.Log("Spawning11" + playersMul[i].prefab.name);
+            
+
+            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(playersMul[i].prefab.name, playersMul[i].spawnPoint.position, Quaternion.identity);
+           // temp.tag = "Player";
+            //temp.GetComponent<PlayerController>().enabled = true;
+            temp.transform.SetParent(players[i].spawnPoint);
+            spawnedPlayerDictionary.Add(i, players[i].instance);
+            Cursor.visible = true;
+            
         }
     }
 
     public int GetPlayersLeft()
     {
         int playersLeft = 0;
-        foreach (Player i in GameManager.Instance.GetActivePlayers())
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            if (players[i].lives >= 0)
+            //PlayerController[] temp = FindObjectsOfType<PlayerController>();
+            //playersLeft = temp.Length;
+            foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
             {
-                playersLeft++;
+                Debug.Log("GetPlayerLeft" + players[i].lives + "---" + i.ToString());
+                if (players[i].lives > 0)
+                {
+                    Debug.Log("Alive player spotted" + players[i].lives + "---" + i.ToString());
+                    playersLeft++;
+                }
+            }
+
+        }
+        else
+        {
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
+            {
+                if (players[i].lives > 0)
+                {
+                    playersLeft++;
+                }
             }
         }
+      //  Debug.Log("GetPlayerLeft" + playersLeft);
         return playersLeft;
     }
 
@@ -123,20 +199,39 @@ public class PlayerManager : MonoBehaviour
 
         int currentLife = players[player].lives;
 
-        bool canRespawn = currentLife >= 1;
-
+        bool canRespawn = currentLife > 1;
+        Debug.Log(player + "???????");
         players[player].lives--;
+       // Debug.Log(players[player].lives + "???????");
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
-
+        Debug.Log("Lifes Left = " + players[player].lives);
         int playersLeft = GetPlayersLeft();
+        Debug.Log("Players Left = " + playersLeft);
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
+        Debug.Log(playerModel.gameObject.name);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine && canRespawn)
+        {
+            //Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().gameObject);
+            //playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().RPC("Death", Photon.Pun.RpcTarget.All);
+            StartCoroutine(SpawnCoroutine(player));
+        }
+        else
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
+        {
+            foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+            {
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+                Debug.Log("Rank of " + i + " :  " + players[i].rank);
+            }
 
-        if (canRespawn)
+            GameManager.Instance.GameEnds();
+        }
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode &&  canRespawn)
         {
             StartCoroutine(SpawnCoroutine(player));
         }
-        else if (playersLeft == 1)
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft == 1)
         {
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
@@ -150,7 +245,14 @@ public class PlayerManager : MonoBehaviour
     private IEnumerator SpawnCoroutine(Player player)
     {
         yield return new WaitForSeconds(spawnTimer);
-        players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            SpawnMulPlayer();Debug.Log("MulRespawn");
+        }
+        else
+        {
+            players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
+        }
 
         spawnedPlayerDictionary.Add(player, players[player].instance);
     }

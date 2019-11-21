@@ -4,7 +4,7 @@ using System;
 using RotaryHeart.Lib.SerializableDictionary;
 using Random = UnityEngine.Random;
 using System.Collections;
-
+using Photon.Pun;
 public class SuperWeapon : Weapon
 {
 
@@ -50,22 +50,66 @@ public class SuperWeapon : Weapon
         public GameObject weaponModel;
     }
 
-
+    public GameObject PlayerObj;
+    Photon.Pun.PhotonView pv;
 
 
     public void ActivateWeapon()
     {
-        canFire = true;
-        currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
-        if (GetCurrentWeaponSetting().Timed)
+        //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            StartCoroutine(WeaponDurationTimer());
+            canFire = true;
+            currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+            if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            if (GetCurrentWeaponSetting().AutoFire)
+            {
+                StartCoroutine(AutoFire());
+            }
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
         }
-        if (GetCurrentWeaponSetting().AutoFire)
+        else
         {
-            StartCoroutine(AutoFire());
+            ActivateWeaponMul();
         }
-        superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
+    }
+
+    public void ActivateWeaponMul()
+    {
+        pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+        if (!pv.IsMine)
+        {
+            //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+            //canFire = true;
+            //currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+           // if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            //if (GetCurrentWeaponSetting().AutoFire)
+            //{
+            //    StartCoroutine(AutoFire());
+            //}
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
+        }
+        else
+        {
+            pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+            canFire = true;
+            currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+            if (GetCurrentWeaponSetting().Timed)
+            {
+                StartCoroutine(WeaponDurationTimer());
+            }
+            if (GetCurrentWeaponSetting().AutoFire)
+            {
+                StartCoroutine(AutoFire());
+            }
+            superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
+        }
     }
 
     public void ChangeWeapon(SuperWeaponTypes weaponType)
@@ -92,8 +136,17 @@ public class SuperWeapon : Weapon
         superWeaponMapping[currentWeapon].weaponModel.SetActive(false);
 
         specialReady.SetActive(false);
-
+        
     }
+
+    //public void RPC_DeactivateWeapon()
+    //{
+    //    myPlayerController.ToggleSuperWeapon(false);
+    //    superWeaponMapping[currentWeapon].weaponModel.SetActive(false);
+
+    //    specialReady.SetActive(false);
+
+    //}
 
     public IEnumerator AutoFire()
     {
@@ -128,8 +181,25 @@ public class SuperWeapon : Weapon
 
         }
         DeactivateWeapon();
+        canFire = true;
     }
+    //public override void Fire()
+    //{
+    //    if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+    //        pv.RPC("Fire1", RpcTarget.All);
+    //    else
+    //        Fire1();
+    //}
+    //[PunRPC]
 
+    public override void Fire_OtherInstances(Vector3 fireDirection)
+    {
+        float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+        Bullet b;
+        b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+        b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+
+    }
 
     public override void Fire()
     {

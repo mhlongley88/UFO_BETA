@@ -21,15 +21,20 @@ public abstract class Weapon : MonoBehaviour
 
     protected int currentAmmo;
 
-    protected bool canFire = true;
+    public bool canFire = true;
 
     protected int firePositionIndex = 0;
 
     public abstract ScriptableWeapon GetCurrentWeaponSetting();
 
+    public virtual void Fire_OtherInstances(Vector3 fireDirection)
+    {
+
+    }
 
     public virtual void Fire()
     {
+        Debug.Log(currentAmmo + "-" + canFire);
         if (currentAmmo > 0 && canFire)
         {
             Bullet b;

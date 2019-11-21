@@ -50,8 +50,11 @@ public class AverageScaleOutput : MonoBehaviour
 
         for (int i = 0; i < playerCharactersTransforms.Count; i++)
         {
-            Transform t = playerCharactersTransforms[i];
-            sumOfAll += t.localScale;
+            if (playerCharactersTransforms[i] != null)
+            {
+                Transform t = playerCharactersTransforms[i];
+                sumOfAll += t.localScale;
+            }
         }
 
         if (playerCharactersTransforms.Count > 0)
@@ -78,8 +81,11 @@ public class AverageScaleOutput : MonoBehaviour
 
         for (int i = 0; i < playerCharactersTransforms.Count; i++)
         {
-            Transform t = playerCharactersTransforms[i];
-            posOfAll += t.localPosition;
+            if (playerCharactersTransforms[i] != null)
+            {
+                Transform t = playerCharactersTransforms[i];
+                posOfAll += t.localPosition;
+            }
         }
         if (playerCharactersTransforms.Count > 0)
         {
@@ -94,8 +100,11 @@ public class AverageScaleOutput : MonoBehaviour
 
         for (int i = 0; i < playerCharactersTransforms.Count; i++)
         {
-            Transform t = playerCharactersTransforms[i];
-            sumOfAll += t.localScale;
+            if (playerCharactersTransforms[i] != null)
+            {
+                Transform t = playerCharactersTransforms[i];
+                sumOfAll += t.localScale;
+            }
         }
 
         if (playerCharactersTransforms.Count > 0)
