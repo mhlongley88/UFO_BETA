@@ -86,6 +86,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -132,6 +133,10 @@ MonoBehaviour:
   lifeTime: 8
   BulletHitPFX: {fileID: 1595328032440598, guid: 30bf5c07a1826754c82439c9d1cc9528,
     type: 3}
+  destroyOnCollision: 1
+  OnCollide:
+    m_PersistentCalls:
+      m_Calls: []
   babyBulletArray: []
 --- !u!1001 &301255985592281237
 PrefabInstance:
@@ -663,7 +668,7 @@ PrefabInstance:
         type: 3}
       propertyPath: prefabSound
       value: 
-      objectReference: {fileID: 1297775994297274, guid: 95270ff779ec9ed4889c50b8d4f2812e,
+      objectReference: {fileID: 469741376865198843, guid: dc690c5012b97b04b9c72903e6e3ad8f,
         type: 3}
     - target: {fileID: 198376850587459018, guid: d5b752a9f98cd1b4489cece449476ced,
         type: 3}

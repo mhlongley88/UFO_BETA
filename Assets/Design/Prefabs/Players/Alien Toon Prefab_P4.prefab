@@ -5177,6 +5177,7 @@ Transform:
   - {fileID: 8603058635067051176}
   - {fileID: 5446263611906285916}
   - {fileID: 1013662221633945168}
+  - {fileID: 1412140008098183775}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7443,6 +7444,133 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &2396944758369035596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412140008098183775}
+  - component: {fileID: 4572531794292330391}
+  m_Layer: 0
+  m_Name: P4_EET_SFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1412140008098183775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396944758369035596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4150960495693706}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &4572531794292330391
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396944758369035596}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: e383a69352e5778438afd072c1acfef0, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2404523156385402527
 GameObject:
   m_ObjectHideFlags: 0
@@ -8807,11 +8935,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SuperWeapon
       objectReference: {fileID: 0}
-    - target: {fileID: 1758054719726547781, guid: 82b8753cb804b9646a3bd504945eca90,
-        type: 3}
-      propertyPath: currentWeapon
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 1443128623047201264, guid: 82b8753cb804b9646a3bd504945eca90,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8866,6 +8989,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1758054719726547781, guid: 82b8753cb804b9646a3bd504945eca90,
+        type: 3}
+      propertyPath: currentWeapon
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82b8753cb804b9646a3bd504945eca90, type: 3}
@@ -9004,15 +9132,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: faef7308e0444b14e977ec90caea661f, type: 3}
---- !u!4 &8603058635067051176 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: faef7308e0444b14e977ec90caea661f,
-    type: 3}
-  m_PrefabInstance: {fileID: 3611465727608809394}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1973435712490400351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2989701457832414701, guid: faef7308e0444b14e977ec90caea661f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3611465727608809394}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8603058635067051176 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: faef7308e0444b14e977ec90caea661f,
     type: 3}
   m_PrefabInstance: {fileID: 3611465727608809394}
   m_PrefabAsset: {fileID: 0}
@@ -9228,12 +9356,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 89.68301
       objectReference: {fileID: 0}
-    - target: {fileID: 7045435229238125227, guid: b191bb512c50e024f95fadb6b6370076,
+    - target: {fileID: 8451018937056934257, guid: b191bb512c50e024f95fadb6b6370076,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 1a556b0c18ece8647931f982e1c860f1, type: 2}
-    - target: {fileID: 8451018937056934257, guid: b191bb512c50e024f95fadb6b6370076,
+    - target: {fileID: 7045435229238125227, guid: b191bb512c50e024f95fadb6b6370076,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
