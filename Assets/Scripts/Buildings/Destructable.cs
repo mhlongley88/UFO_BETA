@@ -8,6 +8,7 @@ public class Destructable : MonoBehaviour
 
     private Rigidbody[] childRigidBodies;
     ObjectAbduct[] childsAbducts;
+    public GameObject destroyedPFX;
 
     public void Awake()
     {
@@ -41,15 +42,17 @@ public class Destructable : MonoBehaviour
 
     public void Shatter()
     {
+        destroyedPFX.SetActive(true);
         for (int i = 0; i < childRigidBodies.Length; i++)
         {
+
             childsAbducts[i].enabled = true;
 
             childRigidBodies[i].isKinematic = false;
             childRigidBodies[i].transform.parent = null;
 
         }
-        gameObject.SetActive(false);
+       // gameObject.SetActive(false);
     }
 
 }
