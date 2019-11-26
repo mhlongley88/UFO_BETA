@@ -292,6 +292,8 @@ public class GameManager : MonoBehaviour
         GamesCompletedTally.gamesCompleted++;
 
         //StartCoroutine(ReturnMainMenu());
+
+        UnlockSystem.instance.SaveMatchesCompleted();
     }
 
 
