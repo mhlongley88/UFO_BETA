@@ -28,6 +28,8 @@ public class UnlockSystem : MonoBehaviour
     void Start()
     {
         matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
+
+        Debug.Log("Getting matches completed at initialization: " + matchesCompleted);
     }
 
     public void SaveMatchesCompleted()
@@ -38,6 +40,9 @@ public class UnlockSystem : MonoBehaviour
         PlayerPrefs.Save();
 
         onBattlesCompletedChange.Invoke();
+
+        Debug.Log("One more match completed!");
+        Debug.Log("Matches Completed: " + matchesCompleted);
     }
 
     public int GetMatchesCompleted()
