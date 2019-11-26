@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
         public GameObject characterModel;
         public NormalWeaponTypes defaultNormalWeaponType;
         public SuperWeaponTypes superWeaponType;
+        public int matchThreshold = 0;
     }
     public bool gameOver;
     public bool canAdvance = false;

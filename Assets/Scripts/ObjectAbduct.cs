@@ -5,13 +5,13 @@ using UnityEngine;
 public class ObjectAbduct : MonoBehaviour
 {
 
-    public float speed;
+    public float speed = 20.0f;
     private Rigidbody rb;
 
     private bool canAbduct;
     private PlayerController playerController;
-    public float playerScaleAdd;
-    public float playerEnergyAdd;
+    public float playerScaleAdd = 0.3f;
+    public float playerEnergyAdd = 0.1f;
     public GameObject AbductedPFX;
 
     public static bool dropped;

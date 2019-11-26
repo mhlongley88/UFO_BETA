@@ -18,18 +18,12 @@ public class CharacterSelectUI : MonoBehaviour
     public Player player;
     public GameObject charSelect;
 
-
     public GameObject pressStart;
-
 
     public GameObject readyObject;
 
-
-
     public AudioClip playerReadySFX;
     public AudioSource myAudioSource;
-
-
 
     public string playerName;
     public TextMeshPro playerNameText;
@@ -37,7 +31,6 @@ public class CharacterSelectUI : MonoBehaviour
     public Transform characterModelContainer;
     private GameObject currentCharacterModel;
 
-    private int selectedCharacterIndex = 0;
 
     private CharacterSelectState selectState = CharacterSelectState.WaitingForPlayer;
 
@@ -46,10 +39,25 @@ public class CharacterSelectUI : MonoBehaviour
 
     public PhotonView pv;
 
+    int _selectedCharacterIndex = 0;
+    private int selectedCharacterIndex { get { return _selectedCharacterIndex; }
+        set
+        {
+            if (value < 0 || value >= GameManager.Instance.Characters.Length) return;
+
+            int wonBattles = UnlockSystem.instance.GetMatchesCompleted();
+            int characterUnlockedAtWonBattles = GameManager.Instance.Characters[value].matchThreshold;
+
+            if(wonBattles >= characterUnlockedAtWonBattles)
+                _selectedCharacterIndex = value;
+        }
+    }
+
     public CharacterSelectState GetCurSelectState()
     {
         return selectState;
     }
+
     // Start is called before the first frame update
     void Start()
     {
