@@ -20,6 +20,8 @@ public class UnlockSystem : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
     }
 
     int matchesCompleted = 0;
@@ -27,7 +29,7 @@ public class UnlockSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
+        //matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
 
         //Debug.Log("Getting matches completed at initialization: " + matchesCompleted);
     }

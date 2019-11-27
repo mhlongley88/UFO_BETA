@@ -10,6 +10,9 @@ public class LevelUnlockCheck : MonoBehaviour
     void Start()
     {
         int matchesComplete = UnlockSystem.instance.GetMatchesCompleted();
+
+        //Debug.Log(gameObject.name + " - Threshold " + matchThreshold + " and Matches Now " + matchesComplete + " - " + (matchesComplete >= matchThreshold).ToString());
+
         gameObject.SetActive(matchesComplete >= matchThreshold);
 
         UnlockSystem.instance.onBattlesCompletedChange.AddListener(OnRefresh);
