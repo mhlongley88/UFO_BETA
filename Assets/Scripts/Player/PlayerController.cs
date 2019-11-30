@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviour
     private AveragePosition avgPos;
     private bool isBoosting = false;
     private Vector2 moveDirection = Vector2.zero;
+    float boostCounter = 0.0f;
 
     [SerializeField]
     private NormalWeapon normalWeapon;
@@ -641,6 +642,8 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         myRigidbody.velocity = Vector3.ClampMagnitude(myRigidbody.velocity.normalized, GetMaxSpeed());
+
+        boostCounter = 0.0f;
         isBoosting = false;
 
        /* GameObject dashPfxInstance = PlayerManager.Instance.dashCache.GetInstance();
@@ -727,6 +730,17 @@ public class PlayerController : MonoBehaviour
         //    }
         //}
 
+        if(!isBoosting && !boostReady)
+        {
+            boostCounter += Time.deltaTime;
+            boostCounter = Mathf.Clamp(boostCounter, 0.0f, boostCooldown);
+            LevelUIManager.Instance.ChangeDashMeter(player, (boostCounter * 100.0f) / boostCooldown);
+        }
+
+        if(boostReady)
+        {
+            LevelUIManager.Instance.ChangeDashMeter(player, 100.0f);
+        }
     }
 
     void FixedUpdate()
@@ -746,6 +760,7 @@ public class PlayerController : MonoBehaviour
                 myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
             }
         }
+
     }
 
 
