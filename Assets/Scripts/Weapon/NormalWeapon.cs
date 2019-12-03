@@ -17,7 +17,8 @@ public class NormalWeapon : Weapon
         MachineGun = 3,
         LaserSpear = 4,
         Canon = 5,
-        Launcher = 6
+        Launcher = 6,
+        Shotgun1 = 7
     }
 
 
