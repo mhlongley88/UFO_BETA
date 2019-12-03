@@ -7,12 +7,19 @@ public class Destructable : MonoBehaviour
     public static string[] tags = { "Bullet" };
 
     private Rigidbody[] childRigidBodies;
+    ObjectAbduct[] childsAbducts;
+    public GameObject destroyedPFX;
 
     public void Awake()
     {
         childRigidBodies = GetComponentsInChildren<Rigidbody>();
-    }
+        childsAbducts = GetComponentsInChildren<ObjectAbduct>();
 
+        for (int i = 0; i < childsAbducts.Length; i++)
+        {
+            childsAbducts[i].notTrigger = true;
+        }
+    }
 
 
     // public void Start()
@@ -35,12 +42,17 @@ public class Destructable : MonoBehaviour
 
     public void Shatter()
     {
+        destroyedPFX.SetActive(true);
         for (int i = 0; i < childRigidBodies.Length; i++)
         {
+
+            childsAbducts[i].enabled = true;
+
             childRigidBodies[i].isKinematic = false;
             childRigidBodies[i].transform.parent = null;
+
         }
-        gameObject.SetActive(false);
+       // gameObject.SetActive(false);
     }
 
 }

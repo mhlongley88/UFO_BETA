@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
 
     public Player player;
-    public GameObject PlayerSpecialvCam;
+   // public GameObject PlayerSpecialvCam;
     public bool twinStick = false;
     private float timeStamp;
     private Rigidbody myRigidbody;
@@ -575,7 +575,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator DeactivateSpecialCamera()
     {
         yield return new WaitForSeconds(2.5f);
-        PlayerSpecialvCam.SetActive(false);
+       // PlayerSpecialvCam.SetActive(false);
     }
 
     public void ToggleSuperWeapon(bool activate)
@@ -586,7 +586,7 @@ public class PlayerController : MonoBehaviour
            // superWeaponActive = activate;
             //StartCoroutine(CameraController.Instance.ActivateSpecialCamera(1f));
             // if(pv.IsMine)
-            PlayerSpecialvCam.SetActive(true);
+           // PlayerSpecialvCam.SetActive(true);
             normalWeapon.gameObject.SetActive(false);
             superWeapon.gameObject.SetActive(true);
             superWeapon.ActivateWeapon();
@@ -597,7 +597,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             Debug.Log("Deactivating");
-            PlayerSpecialvCam.SetActive(false);
+           // PlayerSpecialvCam.SetActive(false);
             normalWeapon.gameObject.SetActive(true);
             superWeapon.gameObject.SetActive(false);
             //superWeaponActive = false;
