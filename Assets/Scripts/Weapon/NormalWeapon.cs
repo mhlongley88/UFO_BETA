@@ -42,7 +42,11 @@ public class NormalWeapon : Weapon
     // Start is called before the first frame update
     void Start()
     {
-        pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            pv = PlayerObj.GetComponentInParent<Photon.Pun.PhotonView>();
+        }
+        
         currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
 
     }
@@ -95,17 +99,22 @@ public class NormalWeapon : Weapon
 
     public override void Fire_OtherInstances(Vector3 fireDirection)
     {
-        float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
-        Bullet b;
-        b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
-        b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+       // if (currentAmmo > 0 && canFire)
+        {
+            float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+            Bullet b;
+            b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+            b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
 
+        }
     }
 
 
+
+    //override PhotonView pv;
     public override void Fire()
     {
-        Debug.Log(currentAmmo + "-" + canFire);
+     //   Debug.Log(currentAmmo + "-" + canFire);
         if (currentAmmo > 0 && canFire)
         {
             Bullet b;
@@ -133,6 +142,7 @@ public class NormalWeapon : Weapon
             StartCoroutine(AmmoCooldownCoroutine());
             StartCoroutine(WeaponCooldownCoroutine());
             ufoRigidbody.AddExplosionForce(GetCurrentWeaponSetting().RecoilForce, shootDirection.normalized * 1.0f + transform.position, 1f, 0f, ForceMode.Impulse);
+            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }
     }
 }

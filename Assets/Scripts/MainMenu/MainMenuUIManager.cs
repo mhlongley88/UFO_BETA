@@ -16,11 +16,8 @@ public class MainMenuUIManager : MonoBehaviour
         LevelSelect,
         CharacterSelect
     }
-
-    public Text debugText;
-    public Text debugText2;
-    public Text debugText3;
-    public Text debugText4;
+    public GameObject PV_GameObj;
+    public GameObject OnlineButton;
     public GameObject MainPanel;
     public GameObject OfflineCharacterSelectionPanel;
     public GameObject OnlineCharacterSelectionPanel;
@@ -95,6 +92,13 @@ public class MainMenuUIManager : MonoBehaviour
 
     }
 
+    public void OnlineButtonDisabledListener()
+    {
+        if (Photon.Pun.PhotonNetwork.NetworkClientState == Photon.Realtime.ClientState.ConnectedToMasterServer)
+        {
+            OnlineButton.SetActive(false);
+        }
+    }
 
     private bool CharacterSelectPlayersReady()
     {
@@ -229,10 +233,21 @@ public class MainMenuUIManager : MonoBehaviour
         }
     }
 
+    public void OfflineButtonListener()
+    {
+        LobbyConnectionHandler.instance.IsMultiplayerMode = false;
+    }
+
     public void SwitchToCharacterSelect()
     {
-        cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+        LobbyConnectionHandler.instance.IsMultiplayerMode = false;
+        GameManager.Instance.RemoveAllPlayersFromGame();
+        cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+                                  cameraMoveObject.transform.position.z - 24f);
+        // characterSelect.transform.localScale = new Vector3(0.3229257f, 0.3229257f, 0.3229257f); 
+        //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
         characterSelect.SetActive(true);
+        //characterSelect.transform.localScale = new Vector3(0.3229257f, 0.3229257f, 0.3229257f);
         myAudioSource.PlayOneShot(StartGameSFX);
         currentMenu = Menu.CharacterSelect;
         foreach (var c in characterSelectMenus)
@@ -246,17 +261,23 @@ public class MainMenuUIManager : MonoBehaviour
 
     public void SwitchToCharacterSelectMul()
     {
-        cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+        //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+        LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+        GameManager.Instance.RemoveAllPlayersFromGame();
+      //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
+
+        cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+                                  cameraMoveObject.transform.position.z - 24f);
         characterSelect.SetActive(true);
         myAudioSource.PlayOneShot(StartGameSFX);
         currentMenu = Menu.CharacterSelect;
-        foreach (var c in characterSelectMenusMul)
-        {
-            c.gameObject.SetActive(true);
-            c.gameObject.transform.localScale = Vector3.one;
-        }
+        //foreach (var c in characterSelectMenusMul)
+        //{
+        //    c.gameObject.SetActive(true);
+        //    c.gameObject.transform.localScale = Vector3.one;
+        //}
         OfflineCharacterSelectionPanel.SetActive(false);
-        //OnlineCharacterSelectionPanel.SetActive(true);
+        OnlineCharacterSelectionPanel.SetActive(true);
     }
     public Player myPlayerMul;
     public void PlayerEnterMul(Player p)
@@ -278,7 +299,7 @@ public class MainMenuUIManager : MonoBehaviour
         else
             OfflineMode();
     }
-
+    public bool selectingCharacters = false;
     void OfflineMode()
     {
         foreach (Player p in Enum.GetValues(typeof(Player)))
@@ -287,26 +308,31 @@ public class MainMenuUIManager : MonoBehaviour
             {
                 switch (currentMenu)
                 {
-                    case Menu.Splash:
+                    //case Menu.Splash:
 
                         
 
 
-                        if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, p))
-                        {
+                    //    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, p))
+                    //    {
 
-                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
-                            characterSelect.SetActive(true);
-                            myAudioSource.PlayOneShot(StartGameSFX);
+                    //        cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+                    //        characterSelect.SetActive(true);
+                    //        myAudioSource.PlayOneShot(StartGameSFX);
                             
-                            currentMenu = Menu.CharacterSelect;
-                        }
-                        break;
+                    //        currentMenu = Menu.CharacterSelect;
+                    //    }
+                    //    break;
                     case Menu.CharacterSelect:
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
                         {
-                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+                          //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
                             currentMenu = Menu.Splash;
+                           
+                            characterSelect.SetActive(false);
+                           
+                            cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y, 
+                            cameraMoveObject.transform.position.z + 24f);
                             MainPanel.SetActive(true);
                         }
                         if (CharacterSelectPlayersReady())
@@ -319,6 +345,7 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelect.SetActive(true);
                             levelSelectCharacters.AddActivePlayers();
                             characterSelect.SetActive(false);
+                            
                             currentMenu = Menu.LevelSelect;
                             // }
                         }
@@ -384,6 +411,7 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelectCharacters.AddActivePlayers();
                             characterSelect.SetActive(false);
                             currentMenu = Menu.LevelSelect;
+                            Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
                             Debug.Log("shouldnt be here");
                             // }
                         }
@@ -404,7 +432,8 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
                         {
-                            SceneManager.LoadScene("LoadingRoom");
+                            //SceneManager.LoadScene("LoadingRoom");
+                            LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
                         }
                         break;
                 }

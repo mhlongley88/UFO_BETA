@@ -50,7 +50,7 @@ public class LevelSelectPlayers : MonoBehaviour
     [PunRPC]
     void SyncTransforms(int n)
     {
-
+        Debug.Log(n + "#############");
         Player p = Player.None;
         switch (n)
         {
@@ -77,30 +77,30 @@ public class LevelSelectPlayers : MonoBehaviour
                 this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1);
                 this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localPosition;
                 this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localRotation;
-                this.transform.localScale = Vector3.one;
+                this.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 break;
             case Player.Two:
                 this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p2);
-                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localRotation;
-                this.transform.localScale = Vector3.one;
+                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p2.transform.localPosition;
+                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p2.transform.localRotation;
+                this.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 break;
             case Player.Three:
                 this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p3);
-                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localRotation;
-                this.transform.localScale = Vector3.one;
+                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p3.transform.localPosition;
+                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p3.transform.localRotation;
+                this.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 break;
             case Player.Four:
                 this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p4);
-                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1.transform.localRotation;
-                this.transform.localScale = Vector3.one;
+                this.transform.localPosition = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p4.transform.localPosition;
+                this.transform.localRotation = MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p4.transform.localRotation;
+                this.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 break;
             case Player.None:
-                //this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1);
+                this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1);
                 break;
         }
-        this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1);
+       // this.transform.SetParent(MainMenuUIManager.Instance.levelSelectCharacters.GetComponent<LevelSelectCharacters>().p1);
     }
 }

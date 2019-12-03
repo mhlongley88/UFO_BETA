@@ -177,18 +177,18 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(invincibleDuration);
         healthManager.SetInvincible(false);
 
-        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-        {
-            Debug.Log("PC");
-            isConsole = false;
-           // isPC = true;
-        }
-        else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
-        {
-            Debug.Log("Console");
-            isPC = false;
-            isConsole = true;
-        }
+        //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        //{
+        //    Debug.Log("PC");
+        //    isConsole = false;
+        //   // isPC = true;
+        //}
+        //else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+        //{
+        //    Debug.Log("Console");
+        //    isPC = false;
+        //    isConsole = true;
+        //}
     }
 
     private void OnDestroy()
@@ -330,8 +330,9 @@ public class PlayerController : MonoBehaviour
         currentWeapon.UpdateShootDirection(transform.forward);
         if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player) /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
         {
-            
-            pv.RPC("RPC_Fire", RpcTarget.All, transform.forward);
+
+            //pv.RPC("RPC_Fire_Others", RpcTarget.All, transform.forward);
+            RPC_Fire(transform.forward);
         }
         if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
         {
@@ -348,6 +349,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) + "1");
+            //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) + "2");
             if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
@@ -416,7 +419,7 @@ public class PlayerController : MonoBehaviour
         ToggleSuperWeapon(true);
     }
 
-    [PunRPC]
+    //[PunRPC]
     void RPC_Fire(Vector3 fireDirection)
     {
         
@@ -425,12 +428,20 @@ public class PlayerController : MonoBehaviour
             Debug.Log(currentWeapon.name);
             currentWeapon.Fire();
         }
-        else
-        {
-            currentWeapon.Fire_OtherInstances(fireDirection);
-        }
-        Debug.Log("Fire1");
+        //else if(currentWeapon.canFire && currentWeapon.currentAmmo > 0)
+        //{
+        //    currentWeapon.Fire_OtherInstances(fireDirection);
+        //}
+        // Debug.Log("Fire1");
     }
+
+    [PunRPC]
+    void RPC_Fire_Others(Vector3 fireDirection)
+    {
+        currentWeapon.Fire_OtherInstances(fireDirection);
+    }
+
+
     float horizontalInputKB, verticalInputKB;
     Vector3 moveInputVectorKB;
     private void ProcessInput()
@@ -446,7 +457,7 @@ public class PlayerController : MonoBehaviour
             }
             if (GetInputAxisKB() != Vector2.zero)
             {
-                Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
+               // Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
                 isPC = true;
                 isConsole = false;
                 isControllerDecided = true;
@@ -591,7 +602,7 @@ public class PlayerController : MonoBehaviour
             superWeapon.gameObject.SetActive(false);
             //superWeaponActive = false;
             currentWeapon = normalWeapon;
-            currentWeapon.canFire = true;
+           // currentWeapon.canFire = true;
             //superWeapon.DeactivateWeapon();
             Debug.Log(currentWeapon.name);
             //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));

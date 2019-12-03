@@ -11,24 +11,69 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     public static LobbyConnectionHandler instance;
     public bool IsMultiplayerMode;
+    public PhotonView pv;
+    public Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
     // Start is called before the first frame update
     void Start()
     {
-        if (instance != null && instance != this)
+        //if (instance != null && instance != this)
+        //{
+        //    Destroy(this);
+        //}
+        //else
+        //{
+        //    instance = this;
+        //    DontDestroyOnLoad(this);
+        //}
+
+        if (instance != null)
         {
-            Destroy(this);
+            //GameObject.Destroy(instance);
+            Destroy(this.gameObject);
+            // Destroy(this.GetComponent<PhotonView>());
         }
         else
         {
             instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(this.gameObject);
         }
         Init();
     }
 
+    public void LoadSceneMaster(string sceneName)
+    {
+        pv.RPC("RPC_ChangeScene", RpcTarget.All, sceneName);
+    }
+
+    [PunRPC]
+    void RPC_ChangeScene(string sceneName)
+    {
+        GameManager.Instance.gameOver = false;
+        GameManager.Instance.canAdvance = false;
+        if(GameManager.Instance.paused) //= false;
+        {
+            GameManager.Instance.TogglePause();
+        }
+        if (pv.IsMine)
+        {
+            if (sceneName == "MainMenu" || sceneName == "LoadingRoom")
+            {
+                SceneManager.LoadScene(sceneName);
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneName);
+                SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+            }
+        }
+            
+    }
+
+
     void Init()
     {
         IsMultiplayerMode = false;
+        pv = this.GetComponent<PhotonView>();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -133,7 +178,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         //MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
         GameManager.Instance.RemoveAllPlayersFromGame();
-        if(myPlayerInGame != null)
+        GameManager.Instance.PlayerObjsMul.Clear();
+        if (myPlayerInGame != null)
         {
             PhotonNetwork.Destroy(myPlayerInGame);
         }
@@ -235,12 +281,27 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public override void OnConnectedToMaster()
     {
         IsMultiplayerMode = false;
-       // if(LobbyUI.instance != null)
+        if(LobbyUI.instance != null)
         {
+            MainMenuUIManager.Instance.OnlineButton.SetActive(false);
+            if (!this.GetComponent<PhotonView>())
+                pv = this.gameObject.AddComponent<PhotonView>();//MainMenuUIManager.Instance.PV_GameObj.GetComponent<PhotonView>();
+            //else
+            //{
+            //    destro
+            //}
             LobbyUI.instance.AuthPanel.SetActive(false);
             MainMenuUIManager.Instance.MainPanel.SetActive(true);
-            MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+            MainMenuUIManager.Instance.characterSelect.SetActive(false);
+            //  MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+            MainMenuUIManager.Instance.cameraMoveObject.transform.position = new Vector3(MainMenuUIManager.Instance.cameraMoveObject.transform.position.x,
+                MainMenuUIManager.Instance.cameraMoveObject.transform.position.y, 42f);
+//                            MainMenuUIManager.Instance.cameraMoveObject.transform.position.z + 24f);
             MainMenuUIManager.Instance.currentMenu = MainMenuUIManager.Menu.Splash;
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 

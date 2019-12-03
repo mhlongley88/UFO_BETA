@@ -84,9 +84,20 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(this);
-            PlayerObjsMul = new List<CharacterSelectUI>();
+            
         }
-
+        PlayerObjsMul = new List<CharacterSelectUI>();
+        //if (instance != null)
+        //{
+        //    GameObject.Destroy(instance);
+        //}
+        //else
+        //{
+        //    instance = this;
+        //    DontDestroyOnLoad(this);
+        //   // PlayerObjsMul = new List<CharacterSelectUI>();
+        //}
+        //   PlayerObjsMul = new List<CharacterSelectUI>();
         // StartCoroutine(delayCheck());
     }
     // Use this for initialization
@@ -170,7 +181,10 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // Debug.Log(Input.GetJoystickNames().Length);
+        // Debug.Log(Input.GetJoystickNames().Length);
+
+      //  Debug.Log(playerSelectionDict.Count);
+
         if (gameOver)
         {
 
@@ -181,13 +195,36 @@ public class GameManager : MonoBehaviour
                 if (paused) TogglePause();
 
                 
-                if (SceneManager.GetActiveScene().name != "MainMenu")
-                {
+            //    if (SceneManager.GetActiveScene().name != "MainMenu")
+          //      {
                       //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
                         {
+                        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        //SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+
+                       // LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
+
+           //         }
+
+                    if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
+                    {
+
+
+
+
+                        //SceneManager.LoadScene("MainMenu");
+                        //LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
+                        //LobbyConnectionHandler.instance.LoadSceneMaster("LevelUI");
+                        LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
+
+                    }
+                    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+                    {
+
                         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                         SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
-                        }
+                    }
+
                 }
             }
 
@@ -200,12 +237,13 @@ public class GameManager : MonoBehaviour
                 {
                     if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
                     {
-                        Photon.Pun.PhotonNetwork.LeaveRoom();
+                        //Photon.Pun.PhotonNetwork.LeaveRoom();
                         
                       //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
                         {
-                            SceneManager.LoadScene("MainMenu");
-                            
+                            //SceneManager.LoadScene("MainMenu");
+                            LobbyConnectionHandler.instance.LoadSceneMaster("MainMenu");
+
                         }
                     }
                     else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -479,19 +517,35 @@ public class GameManager : MonoBehaviour
         if (playerSelectionDict.ContainsKey(p))
         {
             playerSelectionDict[p] = choice;
+            
+            Debug.Log(choice);
         }
         else
         {
             playerSelectionDict.Add(p, choice);
         }
+
+        if (LobbyConnectionHandler.instance.playerSelectionDict.ContainsKey(p))
+        {
+            LobbyConnectionHandler.instance.playerSelectionDict[p] = choice;
+
+            Debug.Log(choice);
+        }
+        else
+        {
+            LobbyConnectionHandler.instance.playerSelectionDict.Add(p, choice);
+        }
+        
+
     }
 
 
     public int GetPlayerCharacterChoice(Player p)
     {
+        Debug.Log(p.ToString());
         try
         {
-            return playerSelectionDict[p];
+            return /*LobbyConnectionHandler.instance.*/playerSelectionDict[p];
         }
         catch (KeyNotFoundException e)
         {
@@ -503,6 +557,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject GetPlayerModel(Player player)
     {
+        Debug.Log(this.name);
         return characters[GetPlayerCharacterChoice(player)].characterModel;
     }
 

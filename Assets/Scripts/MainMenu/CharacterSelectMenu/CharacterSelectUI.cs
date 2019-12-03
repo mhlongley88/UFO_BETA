@@ -388,10 +388,14 @@ public class CharacterSelectUI : MonoBehaviour
                     //    Debug.Log("Back");
                     //}
 
-
+                    //if (MainMenuUIManager.Instance.selectingCharacters)
+                    //{
+                    //    MainMenuUIManager.Instance.selectingCharacters = false;
+                    //}
                     if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
                     {
                         PlayerEnterGame();
+                        MainMenuUIManager.Instance.selectingCharacters = true;
                     }
                     break;
                 case CharacterSelectState.SelectingCharacter:
@@ -403,6 +407,7 @@ public class CharacterSelectUI : MonoBehaviour
                         charSelect.SetActive(false);
                         selectState = CharacterSelectState.WaitingForPlayer;
                         GameManager.Instance.RemovePlayerFromGame(player);
+                        MainMenuUIManager.Instance.selectingCharacters = false;
                     }
 
                     if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))

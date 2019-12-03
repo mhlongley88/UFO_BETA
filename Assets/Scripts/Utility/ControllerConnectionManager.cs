@@ -46,7 +46,7 @@ public class ControllerConnectionManager : MonoBehaviour
     public void Awake()
     {
  
-        DontDestroyOnLoad(this);
+      //  DontDestroyOnLoad(this);
     }
 
     private void Start()

@@ -51,12 +51,22 @@ public class SuperWeapon : Weapon
     }
 
     public GameObject PlayerObj;
-    Photon.Pun.PhotonView pv;
+    public PhotonView pv;
 
+    void Start()
+    {
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            pv = PlayerObj.GetComponentInParent<Photon.Pun.PhotonView>();
+        }
+
+      //  currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+
+    }
 
     public void ActivateWeapon()
     {
-        //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+        
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             canFire = true;
@@ -79,25 +89,25 @@ public class SuperWeapon : Weapon
 
     public void ActivateWeaponMul()
     {
-        pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+      //  pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
         if (!pv.IsMine)
         {
             //pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
-            //canFire = true;
-            //currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
-           // if (GetCurrentWeaponSetting().Timed)
+            canFire = true;
+            currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+            if (GetCurrentWeaponSetting().Timed)
             {
                 StartCoroutine(WeaponDurationTimer());
             }
-            //if (GetCurrentWeaponSetting().AutoFire)
-            //{
-            //    StartCoroutine(AutoFire());
-            //}
+            if (GetCurrentWeaponSetting().AutoFire)
+            {
+                StartCoroutine(AutoFire());
+            }
             superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
         }
         else
         {
-            pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
+           // pv = PlayerObj.GetComponent<Photon.Pun.PhotonView>();
             canFire = true;
             currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
             if (GetCurrentWeaponSetting().Timed)
@@ -194,13 +204,16 @@ public class SuperWeapon : Weapon
 
     public override void Fire_OtherInstances(Vector3 fireDirection)
     {
-        float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
-        Bullet b;
-        b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
-        b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+        if (currentAmmo > 0 && canFire)
+        {
+            float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+            Bullet b;
+            b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+            b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
 
+        }
     }
-
+    //PhotonView pv;
     public override void Fire()
     {
         if (currentAmmo > 0 && canFire)
@@ -237,6 +250,7 @@ public class SuperWeapon : Weapon
             {
                 DeactivateWeapon();
             }
+            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }
     }
 

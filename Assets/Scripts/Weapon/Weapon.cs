@@ -19,7 +19,7 @@ public abstract class Weapon : MonoBehaviour
 
     protected Vector3 shootDirection = Vector3.forward;
 
-    protected int currentAmmo;
+    public int currentAmmo;
 
     public bool canFire = true;
 
@@ -31,7 +31,7 @@ public abstract class Weapon : MonoBehaviour
     {
 
     }
-
+    //Photon.Pun.PhotonView pv;
     public virtual void Fire()
     {
         Debug.Log(currentAmmo + "-" + canFire);

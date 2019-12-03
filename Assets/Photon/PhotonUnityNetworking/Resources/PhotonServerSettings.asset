@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 
+    AppIdRealtime: f5a76905-dc3c-495e-bffa-4b7e1c035b31
     AppIdChat: 
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: asia
     Server: 
     Port: 0
     Protocol: 0
@@ -29,18 +29,23 @@ MonoBehaviour:
   EnableSupportLogger: 0
   RunInBackground: 1
   RpcList:
-  - Death
-  - Death_RPC
   - Fire
-  - Fire_RPC
-  - PlayerEnterSync
-  - RPC_Beam
-  - RPC_Beam_Off
+  - Fire1
   - RPC_Fire
   - RPC_ToggleSpecialWeapon
-  - SyncBackCharacterSelection
+  - RPC_Beam
+  - RPC_Beam_Off
+  - Death
+  - Death_RPC
+  - Fire_RPC
+  - PlayerEnterSync
+  - SyncSelection
   - SyncMulSpawn
   - SyncPlayerReady
   - SyncTransforms
+  - SyncBackCharacterSelection
+  - ForceMovementFromOtherInstances
+  - RPC_ChangeScene
+  - RPC_Fire_Others
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1

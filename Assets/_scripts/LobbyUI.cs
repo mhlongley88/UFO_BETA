@@ -24,6 +24,8 @@ public class LobbyUI : MonoBehaviour
     void Start()
     {
         instance = this;
+        if(PhotonNetwork.CurrentRoom != null)
+            PhotonNetwork.LeaveRoom();
         Cursor.visible = true;
     }
 

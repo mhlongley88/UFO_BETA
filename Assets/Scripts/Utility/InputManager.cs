@@ -393,7 +393,7 @@ public class InputManager : MonoBehaviour
         {
             if (player == Player.Four)
             {
-                value = Input.GetAxis(GetPlayerPrefix(player) + axisDictionaryKB[input]);
+                value = Input.GetAxisRaw(GetPlayerPrefix(player) + axisDictionaryKB[input]);
             }
 
         }
@@ -404,7 +404,7 @@ public class InputManager : MonoBehaviour
             //{
 
             //}
-            value = Input.GetAxis(GetPlayerPrefix(player) + axisDictionaryKB[input]);
+            value = Input.GetAxisRaw(GetPlayerPrefix(player) + axisDictionaryKB[input]);
         }
         return value;//Input.GetAxis(GetPlayerPrefix(player) + axisDictionaryKB[input]);
     }
