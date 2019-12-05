@@ -51,7 +51,15 @@ public class LevelSelectMovement : MonoBehaviour
 
     private void Start()
     {
-        
+        ShowLevelTitle.OnLevelIsHovered.AddListener(OnSelectTitleLevel);
+    }
+
+    void OnSelectTitleLevel(Transform t)
+    {
+        Vector3 target = t.position + t.up * (t.position - transform.position).magnitude;
+
+        rotation = Quaternion.LookRotation(target - transform.parent.position, Vector3.up);
+        UpdatePositionRotation();
     }
 
     void Update()
