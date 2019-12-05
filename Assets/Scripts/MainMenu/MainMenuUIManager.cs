@@ -24,6 +24,7 @@ public class MainMenuUIManager : MonoBehaviour
     public GameObject characterSelect;
     public GameObject characterSelectMul;
     public GameObject levelSelect;
+    public GameObject mainTitle;
 
     public GameObject cameraMoveObject;
 
@@ -153,7 +154,7 @@ public class MainMenuUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        mainTitle.SetActive(!levelSelect.activeInHierarchy);
 
         levelInt = ShowLevelTitle.levelStaticInt;
         if (isPC)
