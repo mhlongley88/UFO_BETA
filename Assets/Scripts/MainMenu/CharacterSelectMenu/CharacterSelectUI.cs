@@ -37,7 +37,19 @@ public class CharacterSelectUI : MonoBehaviour
     public Transform characterModelContainer;
     private GameObject currentCharacterModel;
 
-    private int selectedCharacterIndex = 0;
+    int _selectedCharacterIndex = 0;
+    private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
+        set 
+        {
+            if(value < 0 || value >= GameManager.Instance.Characters.Length) return;
+
+            int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
+            int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
+
+            if(wonMatches >= characterUnlockedAtWonMatches)
+                _selectedCharacterIndex = value;
+        }
+    }
 
     private CharacterSelectState selectState = CharacterSelectState.WaitingForPlayer;
 
