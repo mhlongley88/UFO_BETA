@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
         public GameObject characterModel;
         public NormalWeaponTypes defaultNormalWeaponType;
         public SuperWeaponTypes superWeaponType;
+        public int matchThreshold;
     }
     public bool gameOver;
     public bool canAdvance = false;
@@ -327,6 +328,8 @@ public class GameManager : MonoBehaviour
          MyTargetGroup.AddMember(conquered_t, 0.25f, 0f);*/
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
+
+        UnlockSystem.instance.SaveMatchesCompleted();
 
         //StartCoroutine(ReturnMainMenu());
     }

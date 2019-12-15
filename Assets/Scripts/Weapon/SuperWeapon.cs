@@ -99,10 +99,10 @@ public class SuperWeapon : Weapon
             {
                 StartCoroutine(WeaponDurationTimer());
             }
-            if (GetCurrentWeaponSetting().AutoFire)
-            {
-                StartCoroutine(AutoFire());
-            }
+            //if (GetCurrentWeaponSetting().AutoFire)
+            //{
+            //    StartCoroutine(AutoFire());
+            //}
             superWeaponMapping[currentWeapon].weaponModel.SetActive(true);
         }
         else
@@ -187,6 +187,7 @@ public class SuperWeapon : Weapon
             currentAmmo--;
             //StartCoroutine(AmmoCooldownCoroutine());
             ufoRigidbody.AddForce(-shootDirection.normalized * GetCurrentWeaponSetting().RecoilForce, ForceMode.Impulse);
+            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
             yield return new WaitForSeconds(GetCurrentWeaponSetting().FireRate);
 
         }

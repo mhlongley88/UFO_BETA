@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bb51f5127d20e04d9b75e83fbcf7d9f, type: 3}
+  m_Name: GS Steam Settings
+  m_EditorClassIdentifier: 
+  EnableGameServerInit: 1
+  UserData: {fileID: 11400000, guid: 8c590c7159e50d84c97006cbb6570534, type: 2}
+  ApplicationId:
+    m_AppId: 480
+  stats:
+  - {fileID: 11400000, guid: 33170ed9304fbcc4c8bd68b7bdf78923, type: 2}
+  achievements:
+  - {fileID: 11400000, guid: b3d95a50957e4e249bd99eeb9a1a1401, type: 2}
+  - {fileID: 11400000, guid: 5d1bb34d9e3e7614b9877e8a19cf3b84, type: 2}
+  - {fileID: 11400000, guid: de706af3605dba54c8d81eacab7f6810, type: 2}
+  - {fileID: 11400000, guid: cc286999ab8717b429886bed2288be23, type: 2}
+  NotificationPosition: 3
+  NotificationInset: {x: 0, y: 0}
+  OnAvatarLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.SteamTools.UnityAvatarImageLoadedEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnPersonaStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.SteamTools.UnityPersonaStateChangeEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnUserStatsReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.SteamTools.UnityUserStatsReceivedEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnUserStatsStored:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.SteamTools.UnityUserStatsStoredEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnOverlayActivated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.Serializable.UnityBoolEvent, HeathenSystemsCore,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnAchievementStored:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HeathenEngineering.SteamTools.UnityUserAchievementStoredEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
