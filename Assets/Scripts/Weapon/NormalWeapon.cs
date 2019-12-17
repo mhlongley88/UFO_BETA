@@ -143,7 +143,7 @@ public class NormalWeapon : Weapon
             StartCoroutine(AmmoCooldownCoroutine());
             StartCoroutine(WeaponCooldownCoroutine());
             ufoRigidbody.AddExplosionForce(GetCurrentWeaponSetting().RecoilForce, shootDirection.normalized * 1.0f + transform.position, 1f, 0f, ForceMode.Impulse);
-            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
+            if(pv) pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }
     }
 }
