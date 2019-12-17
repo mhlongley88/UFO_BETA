@@ -335,7 +335,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private IEnumerator ReturnMainMenu()
+    public IEnumerator ReturnMainMenu()
     {
         while (!Input.GetButton("MenuConfirm"))
         {
