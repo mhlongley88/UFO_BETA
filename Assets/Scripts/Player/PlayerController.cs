@@ -287,11 +287,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Beam Input");
             
-            pv.RPC("RPC_Beam", RpcTarget.All);
+            pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
         }
         else if (Input.GetButtonUp("P1_Beam_Keyboard"))
         {
-            pv.RPC("RPC_Beam_Off", RpcTarget.All);
+            pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
 
         }
         if (twinStick)
@@ -345,7 +345,7 @@ public class PlayerController : MonoBehaviour
             if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
-                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
             }
         }
         else
@@ -355,7 +355,7 @@ public class PlayerController : MonoBehaviour
             if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
-                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.All);
+                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
             }
         }
 
@@ -603,7 +603,7 @@ public class PlayerController : MonoBehaviour
             superWeapon.gameObject.SetActive(false);
             //superWeaponActive = false;
             currentWeapon = normalWeapon;
-           // currentWeapon.canFire = true;
+            currentWeapon.canFire = true;
             //superWeapon.DeactivateWeapon();
             Debug.Log(currentWeapon.name);
             //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
@@ -798,7 +798,7 @@ public class PlayerController : MonoBehaviour
         Debug.LogWarning("Die");
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            pv.RPC("Death_RPC", RpcTarget.All);
+            pv.RPC("Death_RPC", RpcTarget.AllBuffered);
         }
 
         else

@@ -100,43 +100,43 @@ public class LevelSelectMovement : MonoBehaviour
 
             UpdatePositionRotation();
         }
-        else if(LobbyConnectionHandler.instance.IsMultiplayerMode && !pv.IsMine)
-        {
-            direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));
-            Debug.Log("Client End Trying");
-            for (int i = 0; i < playersAmount; i++)
-            {
-                float h = Input.GetAxisRaw("P" + (i + 1) + "_Horizontal");
-                float v = Input.GetAxisRaw("P" + (i + 1) + "_Vertical");
+        //else if(LobbyConnectionHandler.instance.IsMultiplayerMode && !pv.IsMine)
+        //{
+        //    direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));
+        //    Debug.Log("Client End Trying");
+        //    for (int i = 0; i < playersAmount; i++)
+        //    {
+        //        float h = Input.GetAxisRaw("P" + (i + 1) + "_Horizontal");
+        //        float v = Input.GetAxisRaw("P" + (i + 1) + "_Vertical");
 
-                bool right = h > .2f;
-                bool left = h < -.2f;
+        //        bool right = h > .2f;
+        //        bool left = h < -.2f;
 
-                bool up = v > .6f;
-                bool down = v < -.6f;
+        //        bool up = v > .6f;
+        //        bool down = v < -.6f;
 
-                if (left) TranslateMul(translateSpeed, 0);
-                if (right) TranslateMul(-translateSpeed, 0);
+        //        if (left) TranslateMul(translateSpeed, 0);
+        //        if (right) TranslateMul(-translateSpeed, 0);
 
-                if (up) TranslateMul(0, translateSpeed);
-                if (down) TranslateMul(0, -translateSpeed);
-            }
+        //        if (up) TranslateMul(0, translateSpeed);
+        //        if (down) TranslateMul(0, -translateSpeed);
+        //    }
 
-            // Rotate with left/right arrows
-            if (Input.GetKey(KeyCode.A)) TranslateMul(translateSpeed, 0);
-            if (Input.GetKey(KeyCode.D)) TranslateMul(-translateSpeed, 0);
+        //    // Rotate with left/right arrows
+        //    if (Input.GetKey(KeyCode.A)) TranslateMul(translateSpeed, 0);
+        //    if (Input.GetKey(KeyCode.D)) TranslateMul(-translateSpeed, 0);
 
-            // Translate forward/backward with up/down arrows
-            if (Input.GetKey(KeyCode.W)) TranslateMul(0, translateSpeed);
-            if (Input.GetKey(KeyCode.S)) TranslateMul(0, -translateSpeed);
+        //    // Translate forward/backward with up/down arrows
+        //    if (Input.GetKey(KeyCode.W)) TranslateMul(0, translateSpeed);
+        //    if (Input.GetKey(KeyCode.S)) TranslateMul(0, -translateSpeed);
 
-            // Translate left/right with A/D. Bad keys but quick test.
-            //if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
-            //if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
+        //    // Translate left/right with A/D. Bad keys but quick test.
+        //    //if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
+        //    //if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
 
-            //   UpdatePositionRotation();
-        }
-        else
+        //    //   UpdatePositionRotation();
+        //}
+        else if(!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));
 

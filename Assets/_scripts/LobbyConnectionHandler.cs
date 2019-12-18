@@ -5,16 +5,18 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using DG.Tweening;
+using Steamworks;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PlayFab;
 public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks, IConnectionCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 {
     public static LobbyConnectionHandler instance;
+    public string myUserId, myDisplayName;
     public bool IsMultiplayerMode;
     public PhotonView pv;
     public Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //if (instance != null && instance != this)
         //{
@@ -42,7 +44,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public void LoadSceneMaster(string sceneName)
     {
-        pv.RPC("RPC_ChangeScene", RpcTarget.All, sceneName);
+        pv.RPC("RPC_ChangeScene", RpcTarget.AllBuffered, sceneName);
     }
 
     [PunRPC]
@@ -70,11 +72,12 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
 
 
-    void Init()
+    public void Init()
     {
         IsMultiplayerMode = false;
         pv = this.GetComponent<PhotonView>();
         PhotonNetwork.AutomaticallySyncScene = true;
+       // PhotonNetwork.AuthValues.UserId = SteamUser.GetSteamID().ToString();
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -283,9 +286,13 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         IsMultiplayerMode = false;
         if(LobbyUI.instance != null)
         {
+            Debug.Log(PhotonNetwork.LocalPlayer.UserId);
             MainMenuUIManager.Instance.OnlineButton.SetActive(false);
             if (!this.GetComponent<PhotonView>())
+            {
                 pv = this.gameObject.AddComponent<PhotonView>();//MainMenuUIManager.Instance.PV_GameObj.GetComponent<PhotonView>();
+                pv.ViewID = 1;
+            }
             //else
             //{
             //    destro

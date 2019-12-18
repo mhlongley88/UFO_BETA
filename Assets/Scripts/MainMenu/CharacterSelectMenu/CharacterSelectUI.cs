@@ -117,7 +117,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             pv = this.GetComponent<PhotonView>();
             if(pv.IsMine)
-                pv.RPC("SyncMulSpawn", RpcTarget.All, selectedCharacterIndex);
+                pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
             //SpawnMultiplayer();
         }
 
@@ -157,7 +157,7 @@ public class CharacterSelectUI : MonoBehaviour
 
     public void UpdateSelectionMul()
     {
-        pv.RPC("SyncMulSpawn", RpcTarget.All, selectedCharacterIndex);
+        pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
         //SpawnMultiplayer();
     }
 
@@ -308,13 +308,22 @@ public class CharacterSelectUI : MonoBehaviour
         }
         else
         {
-            pv.RPC("PlayerEnterSync", RpcTarget.All);
-            pv.RPC("SyncMulSpawn", RpcTarget.All, selectedCharacterIndex);
+            int ready = 0;
+            if(CharacterSelectState.ReadyToStart == selectState)
+            {
+                ready = 1;
+            }
+            else
+            {
+                ready = 0;
+            }
+            pv.RPC("PlayerEnterSync", RpcTarget.AllBuffered, LobbyConnectionHandler.instance.myDisplayName,ready);//hunz
+            pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
         }
     }
     public bool isSynced = false;
     [PunRPC]
-    void PlayerEnterSync()
+    void PlayerEnterSync(string displayName, int isReady)
     {
         //pressStart.SetActive(false);
         if (!isSynced)
@@ -328,6 +337,11 @@ public class CharacterSelectUI : MonoBehaviour
                 GameManager.Instance.PlayerObjsMul.Add(this);
             }
             SyncTransforms();
+            playerName = playerNameText.text = displayName;
+            if(isReady == 1)
+            {
+                selectState = CharacterSelectState.ReadyToStart;
+            }
             isSynced = true;
         }
     }
@@ -412,13 +426,13 @@ public class CharacterSelectUI : MonoBehaviour
 
                     if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
                     {
-                        pv.RPC("SyncPlayerReady", RpcTarget.All);
+                        pv.RPC("SyncPlayerReady", RpcTarget.AllBuffered);
                     }
                     break;
                 case CharacterSelectState.ReadyToStart:
                     if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
                     {
-                        pv.RPC("SyncBackCharacterSelection", RpcTarget.All);
+                        pv.RPC("SyncBackCharacterSelection", RpcTarget.AllBuffered);
                     }
                     break;
             }

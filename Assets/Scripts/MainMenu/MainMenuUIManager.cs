@@ -401,7 +401,7 @@ public class MainMenuUIManager : MonoBehaviour
                         //    //currentMenu = Menu.Splash;
                         //    Photon.Pun.PhotonNetwork.LeaveRoom();
                         //}
-                        if (CharacterSelectPlayersReady())
+                        if (CharacterSelectPlayersReady() && Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount > 1)
                         {
                             // if (CharacterSelectPlayersReady())
                             // {

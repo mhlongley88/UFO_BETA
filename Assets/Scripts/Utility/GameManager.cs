@@ -276,10 +276,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+       /* if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
-        }
+        }*/
 
 
     }
@@ -335,7 +335,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private IEnumerator ReturnMainMenu()
+    public IEnumerator ReturnMainMenu()
     {
         while (!Input.GetButton("MenuConfirm"))
         {
