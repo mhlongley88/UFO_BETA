@@ -648,7 +648,8 @@ public class PlayerController : MonoBehaviour
         myRigidbody.velocity = Vector3.zero;
         while (timer <= boostDuration)
         {
-            myRigidbody.MovePosition(boostDirection.normalized * boostSpeed * Time.fixedDeltaTime + transform.position);
+            //myRigidbody.MovePosition(boostDirection.normalized * boostSpeed * Time.fixedDeltaTime + transform.position);
+            myRigidbody.velocity = (transform.position + boostDirection.normalized * boostSpeed) - transform.position;
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -766,7 +767,9 @@ public class PlayerController : MonoBehaviour
             }
             //if (Vector3.Project(myRigidbody.velocity, moveInputVector).magnitude < maxSpeed)
             {
-                myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
+                //myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
+
+                myRigidbody.velocity = (transform.position + new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed()) - transform.position;
             }
         }
     }

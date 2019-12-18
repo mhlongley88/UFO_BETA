@@ -239,19 +239,11 @@ public class PlayerManager : MonoBehaviour
             StartCoroutine(SpawnCoroutine(player));
         }
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
-        {
-            if (Enemy.enemies.Count > 0 && playersLeft == 1)
-            {
+        {   
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
 
-            }
-            
-            else
-            {
-                foreach (Player i in GameManager.Instance.GetActivePlayers())
-                    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-
-                GameManager.Instance.GameEnds();
-            }
+            GameManager.Instance.GameEnds();      
         }
     }
 
