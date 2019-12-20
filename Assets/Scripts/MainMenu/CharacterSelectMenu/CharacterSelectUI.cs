@@ -37,6 +37,8 @@ public class CharacterSelectUI : MonoBehaviour
     public Transform characterModelContainer;
     private GameObject currentCharacterModel;
 
+    public TextMeshPro characterLabel;
+
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
         set 
@@ -112,6 +114,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             playerNameText.text = playerName;
             currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+            characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
         }
         else
         {
@@ -140,6 +143,8 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.SetParent(characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
+
+        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
     }
 
     void SpawnMultiplayer()
@@ -171,6 +176,7 @@ public class CharacterSelectUI : MonoBehaviour
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
+        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
     }
 
    // [PunRPC]

@@ -11,10 +11,13 @@ public class LevelSelectMovement : MonoBehaviour
     public float rotateSpeed = 360.0f;
 
     float angle = 0.0f;
+    [SerializeField]
     Vector3 direction = Vector3.one;
     Quaternion rotation = Quaternion.identity;
     PhotonView pv;
 
+    public Transform limitUp, limitDown;
+    Quaternion oldRotation;
 
     private void OnEnable()
     {
@@ -181,6 +184,7 @@ public class LevelSelectMovement : MonoBehaviour
 
     void Translate(float x, float y)
     {
+        oldRotation = rotation;
         var perpendicular = new Vector3(-direction.y, direction.x);
         var verticalRotation = Quaternion.AngleAxis(y * Time.deltaTime, perpendicular);
         var horizontalRotation = Quaternion.AngleAxis(x * Time.deltaTime, direction);
@@ -209,13 +213,24 @@ public class LevelSelectMovement : MonoBehaviour
 
     void UpdatePositionRotation()
     {
+        var oldPos = transform.localPosition;
+        var oldRot = transform.rotation;
+
         transform.localPosition = rotation * Vector3.forward * radius;
         transform.rotation = rotation * Quaternion.LookRotation(direction, Vector3.forward);
+
+        if (transform.position.y >= limitUp.position.y || transform.position.y <= limitDown.position.y)
+        {
+            transform.localPosition = oldPos;
+            transform.rotation = oldRot;
+            rotation = oldRotation;
+        }
     }
 
     [PunRPC]
     void ForceMovementFromOtherInstances(float x, float y)
     {
+        oldRotation = rotation;
         var perpendicular = new Vector3(-direction.y, direction.x);
         var verticalRotation = Quaternion.AngleAxis(y * Time.deltaTime, perpendicular);
         var horizontalRotation = Quaternion.AngleAxis(x * Time.deltaTime, direction);
