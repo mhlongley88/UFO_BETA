@@ -37,17 +37,60 @@ public class CharacterSelectUI : MonoBehaviour
     public Transform characterModelContainer;
     private GameObject currentCharacterModel;
 
+    public TextMeshPro characterLabel;
+
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
         set 
         {
-            if(value < 0 || value >= GameManager.Instance.Characters.Length) return;
-
             int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
+
+            if(value >= GameManager.Instance.Characters.Length)
+            {
+                _selectedCharacterIndex = 0;
+                return;
+            }
+
+            if(value < 0)
+            {
+                for(int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
+                {
+                    if(wonMatches >= GameManager.Instance.Characters[e].matchThreshold)
+                    {
+                        _selectedCharacterIndex = e;
+                        break;
+                    }
+                }
+
+                return;
+            }
+
             int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
 
             if(wonMatches >= characterUnlockedAtWonMatches)
                 _selectedCharacterIndex = value;
+            else 
+            {
+                if(value > _selectedCharacterIndex)
+                {
+                    for(int e = value; e < GameManager.Instance.Characters.Length; e++)
+                    {
+                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+                        if(wonMatches >= characterUnlockedAtWonMatches)
+                        {
+                            _selectedCharacterIndex = e;
+                            break;
+                        }
+                        else 
+                        {
+                            if(e == GameManager.Instance.Characters.Length - 1)
+                            {
+                                e = -1;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -71,6 +114,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             playerNameText.text = playerName;
             currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+            characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
         }
         else
         {
@@ -99,6 +143,8 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.SetParent(characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
+
+        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
     }
 
     void SpawnMultiplayer()
@@ -130,6 +176,7 @@ public class CharacterSelectUI : MonoBehaviour
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
+        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
     }
 
    // [PunRPC]
@@ -138,6 +185,7 @@ public class CharacterSelectUI : MonoBehaviour
         if (forward)
         {
             selectedCharacterIndex++;
+            
             canCycle = false;
             UpdateSelectionMul();
         }

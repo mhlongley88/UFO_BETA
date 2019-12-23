@@ -205,11 +205,16 @@ public class PlayerManager : MonoBehaviour
        // Debug.Log(players[player].lives + "???????");
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
         Debug.Log("Lifes Left = " + players[player].lives);
+
         int playersLeft = GetPlayersLeft();
         Debug.Log("Players Left = " + playersLeft);
+
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
+
         Debug.Log(playerModel.gameObject.name);
+
+        // Online handling
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine && canRespawn)
         {
             //Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().gameObject);
@@ -227,18 +232,18 @@ public class PlayerManager : MonoBehaviour
 
             GameManager.Instance.GameEnds();
         }
+
+        //Offline handling
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode &&  canRespawn)
         {
             StartCoroutine(SpawnCoroutine(player));
         }
-        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft == 1)
-        {
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
+        {   
             foreach (Player i in GameManager.Instance.GetActivePlayers())
-            {
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-            }
 
-            GameManager.Instance.GameEnds();
+            GameManager.Instance.GameEnds();      
         }
     }
 

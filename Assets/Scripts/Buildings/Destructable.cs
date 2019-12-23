@@ -42,7 +42,7 @@ public class Destructable : MonoBehaviour
 
     public void Shatter()
     {
-        destroyedPFX.SetActive(true);
+        if(destroyedPFX) destroyedPFX.SetActive(true);
         for (int i = 0; i < childRigidBodies.Length; i++)
         {
 

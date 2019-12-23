@@ -151,7 +151,9 @@ public class AirEnemy : Enemy
                 var chosenPlayerEnum = activePlayers[Random.Range(0, PlayerManager.Instance.spawnedPlayerDictionary.Count)];
                // if(chosenPlayerEnum != Player.None)
                 chosenPlayer = PlayerManager.Instance.players[chosenPlayerEnum];
-                targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;// == null ? PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform: null;
+
+                if(PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(chosenPlayerEnum))
+                    targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;// == null ? PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform: null;
             }
         }
 
@@ -210,7 +212,13 @@ public class AirEnemy : Enemy
                 if (LobbyConnectionHandler.instance.IsMultiplayerMode)
                     Destroy(gameObject);
                 else
-                    this.GetComponent<PhotonView>().RPC("Death", RpcTarget.All);
+                {
+                    PhotonView pv = null;
+                    if(TryGetComponent< PhotonView>(out pv))
+                    {
+                        pv.RPC("Death", RpcTarget.All);
+                    }
+                }
             }
         }
 
