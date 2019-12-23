@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class LobbyUI : MonoBehaviour
 {
     public static LobbyUI instance;
@@ -10,7 +12,7 @@ public class LobbyUI : MonoBehaviour
     public GameObject CharacterSelectMul;
 
     public GameObject AuthPanel;
-
+    public bool isPublicMatch, isPrivateMatch;
     //Sign In
     public Text userEmailTextSI;
     public Text userPasswordTextSI;
@@ -26,6 +28,7 @@ public class LobbyUI : MonoBehaviour
         instance = this;
         if(PhotonNetwork.CurrentRoom != null)
             PhotonNetwork.LeaveRoom();
+        isPublicMatch = isPrivateMatch = false;
         Cursor.visible = true;
     }
 
@@ -35,10 +38,39 @@ public class LobbyUI : MonoBehaviour
 
     }
 
-    public void MatchMaking()
+    public void MatchMaking(bool _isPrivateMatch)
     {
-        LobbyConnectionHandler.instance.StartMatchMaking();
+        isPrivateMatch = _isPrivateMatch ? true : false;
+        isPublicMatch = !_isPrivateMatch ? true : false;
+        if (!_isPrivateMatch)
+        {
+            LobbyConnectionHandler.instance.StartMatchMaking();
+        }
+        else
+        {
+            PrivateMatch();
+        }
     }
+
+    public void PrivateMatch()
+    {
+        string[] temp = new string[1];
+        temp[0] = "LevelNumber";
+
+        Hashtable hash = new Hashtable();
+        hash.Add("LevelNumber", 1);
+
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 4;
+        roomOptions.PublishUserId = true;
+        roomOptions.CustomRoomPropertiesForLobby = temp;
+        roomOptions.CustomRoomProperties = hash;
+        
+        roomOptions.IsOpen = false;
+        
+        PhotonNetwork.CreateRoom(PhotonNetwork.LocalPlayer.UserId, roomOptions);
+    }
+
 
     public void EnterMultiplayerMode()
     {

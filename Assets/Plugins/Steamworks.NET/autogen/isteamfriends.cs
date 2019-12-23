@@ -454,18 +454,21 @@ namespace Steamworks {
 			InteropHelp.TestIfAvailableClient();
 			NativeMethods.ISteamFriends_RequestFriendRichPresence(CSteamAPIContext.GetSteamFriends(), steamIDFriend);
 		}
-
-		/// <summary>
-		/// <para> Rich invite support.</para>
-		/// <para> If the target accepts the invite, a GameRichPresenceJoinRequested_t callback is posted containing the connect string.</para>
-		/// <para> (Or you can configure yout game so that it is passed on the command line instead.  This is a deprecated path; ask us if you really need this.)</para>
-		/// <para> Invites can only be sent to friends.</para>
-		/// </summary>
-		public static bool InviteUserToGame(CSteamID steamIDFriend, string pchConnectString) {
-			InteropHelp.TestIfAvailableClient();
-			using (var pchConnectString2 = new InteropHelp.UTF8StringHandle(pchConnectString)) {
-				return NativeMethods.ISteamFriends_InviteUserToGame(CSteamAPIContext.GetSteamFriends(), steamIDFriend, pchConnectString2);
-			}
+        
+        /// <summary>
+        /// <para> Rich invite support.</para>
+        /// <para> If the target accepts the invite, a GameRichPresenceJoinRequested_t callback is posted containing the connect string.</para>
+        /// <para> (Or you can configure yout game so that it is passed on the command line instead.  This is a deprecated path; ask us if you really need this.)</para>
+        /// <para> Invites can only be sent to friends.</para>
+        /// </summary>
+        public static bool InviteUserToGame(CSteamID steamIDFriend, string pchConnectString) {
+            
+                InteropHelp.TestIfAvailableClient();
+                using (var pchConnectString2 = new InteropHelp.UTF8StringHandle(pchConnectString))
+                { 
+                    return NativeMethods.ISteamFriends_InviteUserToGame(CSteamAPIContext.GetSteamFriends(), steamIDFriend, pchConnectString2);
+                }
+           
 		}
 
 		/// <summary>

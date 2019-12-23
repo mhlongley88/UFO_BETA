@@ -39,7 +39,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-        Init();
+        //Init();
     }
 
     public void LoadSceneMaster(string sceneName)
@@ -155,11 +155,12 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public Player myPlayerMul;
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined Room");
+        Debug.Log("Joined Room" + PhotonNetwork.CurrentRoom.Name);
         //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         //{
         //    SceneManager.LoadScene("LoadingRoom");
         //}
+       // SteamGameInvite.instance.SyncRoomIdAccrossSteam(PhotonNetwork.CurrentRoom.Name);
         MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
         RefreshCharacterSelectMul();
 
@@ -176,7 +177,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //GameManager.Instance.AddPlayerToGame(myplayerNumber[0]);
 
     }
-    GameObject myPlayerInGame;
+    public GameObject myPlayerInGame;
     void RefreshCharacterSelectMul()
     {
         //MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
@@ -258,9 +259,39 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     void IInRoomCallbacks.OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-        RefreshCharacterSelectMul();
-        myPlayerInGame.GetComponent<CharacterSelectUI>().isSynced = false;
-        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+
+        if( SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+                
+                if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.LevelSelect)
+                {
+                    //back to characterselect
+
+                    MainMenuUIManager.Instance.SwitchBackToCharacterSelectMul();
+                    
+                }
+                
+
+            }
+            else
+            {
+                
+            }
+            RefreshCharacterSelectMul();
+            myPlayerInGame.GetComponent<CharacterSelectUI>().isSynced = false;
+            myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+
+        }
+        else
+        {
+            //direct to splash screen
+            SceneManager.LoadScene("MainMenu");
+
+        }
+
+        
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -276,6 +307,10 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         roomOptions.PublishUserId = true;
         roomOptions.CustomRoomPropertiesForLobby = temp;
         roomOptions.CustomRoomProperties = hash;
+        //if (LobbyUI.instance.isPrivateMatch)
+        //{
+        //    roomOptions.IsOpen = false;
+        //}
         PhotonNetwork.CreateRoom(null, roomOptions);
 
 
@@ -287,6 +322,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         if(LobbyUI.instance != null)
         {
             Debug.Log(PhotonNetwork.LocalPlayer.UserId);
+            LobbyUI.instance.isPrivateMatch = LobbyUI.instance.isPublicMatch = false;
             MainMenuUIManager.Instance.OnlineButton.SetActive(false);
             if (!this.GetComponent<PhotonView>())
             {

@@ -48,7 +48,7 @@ public class LevelSelectCharacters : MonoBehaviour
         RemoveChildren(p3);
         RemoveChildren(p4);
     }
-
+    public GameObject myLevelPlayerMul;
     public void AddPlayer(Player player)
     {
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -79,7 +79,7 @@ public class LevelSelectCharacters : MonoBehaviour
         {
             Debug.Log("??");
             List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
-            GameObject myLevelPlayerMul;
+            
             Debug.Log(myplayerNumber[0] + myplayerNumber.Count + "########");
             //switch (myplayerNumber[0])
             //{
