@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Steamworks;
 public class LobbyUI : MonoBehaviour
 {
     public static LobbyUI instance;
@@ -22,6 +23,10 @@ public class LobbyUI : MonoBehaviour
     public Text userPasswordTextSU;
     public Text usernameTextSU;
 
+
+    public Text InvitedFriendName;
+    public GameObject InvitationPanel, FriendsListButton;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +42,25 @@ public class LobbyUI : MonoBehaviour
     {
 
     }
+    
+    public void InviteRecieved(string id, string roomId)
+    {
+        CSteamID Id = new CSteamID();
+
+        InvitedFriendName.text = id;    //SteamFriends.GetFriendPersonaName(id);
+        InvitationPanel.SetActive(true);
+    }
+
+
+    public void SendInviteHunzlah()
+    {
+        PhotonChatClient.instance.SendInvitation("76561199002318893", "By Pringo");
+    }
+
+    public void SendInvitePringo()
+    {
+        PhotonChatClient.instance.SendInvitation("76561198139240499", "By Hunzlah");
+    }
 
     public void MatchMaking(bool _isPrivateMatch)
     {
@@ -48,6 +72,7 @@ public class LobbyUI : MonoBehaviour
         }
         else
         {
+            LobbyConnectionHandler.instance.isPrivateMatch = true;
             PrivateMatch();
         }
     }
@@ -66,7 +91,7 @@ public class LobbyUI : MonoBehaviour
         roomOptions.CustomRoomPropertiesForLobby = temp;
         roomOptions.CustomRoomProperties = hash;
         
-        roomOptions.IsOpen = false;
+        roomOptions.IsVisible = false;
         
         PhotonNetwork.CreateRoom(PhotonNetwork.LocalPlayer.UserId, roomOptions);
     }

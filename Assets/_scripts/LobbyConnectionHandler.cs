@@ -12,7 +12,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     public static LobbyConnectionHandler instance;
     public string myUserId, myDisplayName;
-    public bool IsMultiplayerMode;
+    public bool IsMultiplayerMode, isPrivateMatch;
     public PhotonView pv;
     public Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
     // Start is called before the first frame update
@@ -39,6 +39,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        IsMultiplayerMode = false;
+        isPrivateMatch = false;
         //Init();
     }
 
@@ -162,6 +164,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //}
        // SteamGameInvite.instance.SyncRoomIdAccrossSteam(PhotonNetwork.CurrentRoom.Name);
         MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
+        if(isPrivateMatch)
+            LobbyUI.instance.FriendsListButton.SetActive(true);
         RefreshCharacterSelectMul();
 
         //MainMenuUIManager.Instance.PlayerEnterMul(myPlayerMul);
@@ -177,6 +181,16 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //GameManager.Instance.AddPlayerToGame(myplayerNumber[0]);
 
     }
+
+
+    public void JoinInvitedRoom(string roomId)
+    {
+        if(PhotonNetwork.CurrentRoom == null)
+        {
+            PhotonNetwork.JoinRoom(roomId);
+        }
+    }
+
     public GameObject myPlayerInGame;
     void RefreshCharacterSelectMul()
     {
@@ -319,7 +333,9 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public override void OnConnectedToMaster()
     {
         IsMultiplayerMode = false;
-        if(LobbyUI.instance != null)
+        isPrivateMatch = false;
+        LobbyUI.instance.FriendsListButton.SetActive(false);
+        if (LobbyUI.instance != null)
         {
             Debug.Log(PhotonNetwork.LocalPlayer.UserId);
             LobbyUI.instance.isPrivateMatch = LobbyUI.instance.isPublicMatch = false;

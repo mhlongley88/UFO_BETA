@@ -18,7 +18,7 @@ public class AddToTargetGroup : MonoBehaviour
         {
             MyTargetGroup.AddMember(myTransform, 1.0f, 0f);
         }
-        else if(this.GetComponent<Photon.Pun.PhotonView>().IsMine)
+        else if(this.GetComponent<Photon.Pun.PhotonView>() && this.GetComponent<Photon.Pun.PhotonView>().IsMine)
         {
             MyTargetGroup.AddMember(myTransform, 1.0f, 0f);
         }

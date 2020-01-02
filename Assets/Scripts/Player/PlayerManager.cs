@@ -153,15 +153,7 @@ public class PlayerManager : MonoBehaviour
            // temp.tag = "Player";
             //temp.GetComponent<PlayerController>().enabled = true;
             temp.transform.SetParent(players[i].spawnPoint);
-
-            players[i].instance = temp;
-            if (spawnedPlayerDictionary.ContainsKey(i))
-                spawnedPlayerDictionary[i] = players[i].instance;
-            else
-                spawnedPlayerDictionary.Add(i, players[i].instance);
-
-            //spawnedPlayerDictionary.Add(i, players[i].instance);
-
+            spawnedPlayerDictionary.Add(i, players[i].instance);
             Cursor.visible = true;
             
         }
@@ -216,8 +208,10 @@ public class PlayerManager : MonoBehaviour
 
         int playersLeft = GetPlayersLeft();
         Debug.Log("Players Left = " + playersLeft);
-
-        players[player].rank = playersLeft;
+        if(players[player].lives < 1)
+            players[player].rank = playersLeft;
+        //if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        //    players[player].rank--;
         spawnedPlayerDictionary.Remove(player);
 
         Debug.Log(playerModel.gameObject.name);
@@ -265,12 +259,10 @@ public class PlayerManager : MonoBehaviour
         else
         {
             players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
-            if (spawnedPlayerDictionary.ContainsKey(player))
-                spawnedPlayerDictionary[player] = players[player].instance;
-            else
-                spawnedPlayerDictionary.Add(player, players[player].instance);
         }
 
+        if(!spawnedPlayerDictionary.ContainsKey(player))
+            spawnedPlayerDictionary.Add(player, players[player].instance);
     }
 
 }

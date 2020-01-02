@@ -263,6 +263,8 @@ public class MainMenuUIManager : MonoBehaviour
     public void SwitchBackToCharacterSelectMul()
     {
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+        if(LobbyConnectionHandler.instance.isPrivateMatch)
+            LobbyUI.instance.FriendsListButton.SetActive(true);
         Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = true;
         vCam2.SetActive(false);
         vCam1.SetActive(true);
@@ -303,6 +305,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
         LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+       // LobbyUI.instance.FriendsListButton.SetActive(true);
         GameManager.Instance.RemoveAllPlayersFromGame();
       //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
 
@@ -452,6 +455,7 @@ public class MainMenuUIManager : MonoBehaviour
                             characterSelect.SetActive(false);
                             currentMenu = Menu.LevelSelect;
                             Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
+                            LobbyUI.instance.FriendsListButton.SetActive(false);
                             Debug.Log("shouldnt be here");
                             // }
                         }
