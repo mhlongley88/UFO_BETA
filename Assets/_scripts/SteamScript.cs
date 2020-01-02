@@ -95,7 +95,7 @@ public class SteamScript : MonoBehaviour
                 Debug.Log(friendName + " is " + friendState);
                 //Invite friend to game
                 //SteamFriends.
-                SteamFriends.InviteUserToGame(friendSteamId, "path");
+            //    SteamFriends.InviteUserToGame(friendSteamId, "path");
             }
            
         }
