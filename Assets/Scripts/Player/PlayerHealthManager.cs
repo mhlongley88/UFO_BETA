@@ -36,6 +36,9 @@ public class PlayerHealthManager : MonoBehaviour
 
     private bool invincible = false;
 
+    public Sprite healthCountSprite;
+    public Image[] healthCounterImages;
+
     public float CurrHealth
     {
         get
@@ -96,6 +99,11 @@ public class PlayerHealthManager : MonoBehaviour
         startingHealth = healthSettings.startingHealth;
         refillDelay = healthSettings.refillDelay;
         refillDuration = healthSettings.refillDuration;
+
+        for (int i = 0; i < healthCounterImages.Length; i++)
+        {
+            healthCounterImages[i].sprite = healthCountSprite;
+        }
     }
 
     // Start is called before the first frame update
