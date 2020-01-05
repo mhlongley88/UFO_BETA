@@ -39,6 +39,8 @@ public class PlayerHealthManager : MonoBehaviour
     public Sprite healthCountSprite;
     public Image[] healthCounterImages;
 
+    LifeManager lifeManager;
+
     public float CurrHealth
     {
         get
@@ -102,7 +104,9 @@ public class PlayerHealthManager : MonoBehaviour
 
         for (int i = 0; i < healthCounterImages.Length; i++)
         {
-            healthCounterImages[i].sprite = healthCountSprite;
+            var img = healthCounterImages[i];
+            img.color = Color.white;
+            img.sprite = healthCountSprite;
         }
     }
 
@@ -110,16 +114,23 @@ public class PlayerHealthManager : MonoBehaviour
     void Start()
     {
         currHealth = startingHealth;
+        lifeManager = LevelUIManager.Instance.GetLifeManager(playerController.player);
     }
 
     // Update is called once per frame
     void Update()
     {
-
         //refill health
         if (CurrHealth < maxHealth && Time.time >= lastDamageTime + refillDelay)
         {
             CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, CurrHealth / maxHealth + Time.deltaTime / refillDuration);
+        }
+
+        var lives = PlayerManager.Instance.players[playerController.player].lives;
+        for (int i = 0; i < healthCounterImages.Length; i++)
+        {
+            if(i >= lives)
+                healthCounterImages[i].color = Color.clear;      
         }
     }
 

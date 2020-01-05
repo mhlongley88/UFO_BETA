@@ -35,7 +35,7 @@ public class LevelUIManager : MonoBehaviour
         }
     }
 
-    private LifeManager GetLifeManager(Player p)
+    public LifeManager GetLifeManager(Player p)
     {
         switch(p)
         {
