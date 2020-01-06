@@ -130,15 +130,40 @@ public class PlayerManager : MonoBehaviour
 
     void SpawnLocalPlayers()
     {
-        
-            foreach (Player i in GameManager.Instance.GetActivePlayers())
-            {
-                LevelUIManager.Instance.EnableUI(i);
-                players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
+        Player lastPlayerSpawned = Player.Three;
 
-                spawnedPlayerDictionary.Add(i, players[i].instance);
+        foreach (Player i in GameManager.Instance.GetActivePlayers())
+        {
+            LevelUIManager.Instance.EnableUI(i);
+            players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
+
+            lastPlayerSpawned = i;
+
+            spawnedPlayerDictionary.Add(i, players[i].instance);
+        }
+
+        if(GameManager.Instance.GetActivePlayers().Count <= 1)
+        {
+            Player botPlayer = Player.One;
+            int playerIndex = (int)botPlayer;
+            while(playerIndex == (int)lastPlayerSpawned)
+            {
+                playerIndex *= 2;
+                if (playerIndex >= (int)Player.Four)
+                    playerIndex = 1;
             }
-        
+
+            botPlayer = (Player)playerIndex;
+
+            GameManager.Instance.SetPlayerCharacterChoice(botPlayer, UnityEngine.Random.Range(0, 3));
+
+            LevelUIManager.Instance.EnableUI(botPlayer);
+            players[botPlayer].instance = Instantiate(players[botPlayer].prefab, players[botPlayer].spawnPoint);
+
+            players[botPlayer].instance.AddComponent<PlayerBot>();
+
+            spawnedPlayerDictionary.Add(botPlayer, players[botPlayer].instance);
+        }
     }
 
     void SpawnMulPlayer()
@@ -220,7 +245,7 @@ public class PlayerManager : MonoBehaviour
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
 
-        Debug.Log(playerModel.gameObject.name);
+        //Debug.Log(playerModel.gameObject.name);
 
         // Online handling
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine && canRespawn)
@@ -265,6 +290,9 @@ public class PlayerManager : MonoBehaviour
         else
         {
             players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
+            if(player == PlayerBot.chosenPlayer)
+                players[player].instance.AddComponent<PlayerBot>();
+
             if (spawnedPlayerDictionary.ContainsKey(player))
                 spawnedPlayerDictionary[player] = players[player].instance;
             else

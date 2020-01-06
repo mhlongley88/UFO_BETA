@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     }
     public bool gameOver;
     public bool canAdvance = false;
-
+    public LayerMask boundaryMask;
     public GameObject pauseScreen;
     public bool paused = false;
 
