@@ -7,6 +7,7 @@ public class PlayerBot : MonoBehaviour
     PlayerController playerController;
     public static Player chosenPlayer;
     public static Transform adversaryTransform;
+    public static bool active;
 
     Vector3 destination;
 
@@ -26,6 +27,11 @@ public class PlayerBot : MonoBehaviour
         playerController.allowLocalProcessInput = false;
     }
 
+    private void OnDestroy()
+    {
+        //GameManager.Instance.RemovePlayerFromGame(chosenPlayer);
+    }
+
     void Update()
     {
         if(movingRate < Time.time)
@@ -38,8 +44,8 @@ public class PlayerBot : MonoBehaviour
                 followingPlayer = Random.value > 0.45f;
         }
 
-        var players = GameManager.Instance.GetActivePlayers();
-        var adversaryObject = PlayerManager.Instance.players[players[0]].instance;
+        var adversaryPlayer = GameManager.Instance.GetActivePlayers().Find(it => it != chosenPlayer);
+        var adversaryObject = PlayerManager.Instance.players[adversaryPlayer].instance;
 
         if (moving)
         {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using RotaryHeart.Lib.SerializableDictionary;
 using UnityEngine;
+using System.Linq;
 
 [Serializable]
 public class PlayerStats
@@ -131,19 +132,31 @@ public class PlayerManager : MonoBehaviour
     void SpawnLocalPlayers()
     {
         Player lastPlayerSpawned = Player.Three;
+        var activePlayers = GameManager.Instance.GetActivePlayers();
 
-        foreach (Player i in GameManager.Instance.GetActivePlayers())
+        if(PlayerBot.active)
+            GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer, UnityEngine.Random.Range(1, 6));
+
+        foreach (Player i in activePlayers)
         {
             LevelUIManager.Instance.EnableUI(i);
+         
             players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
 
             lastPlayerSpawned = i;
 
             spawnedPlayerDictionary.Add(i, players[i].instance);
+
+            if(PlayerBot.active && PlayerBot.chosenPlayer == i)
+            {
+                players[i].instance.AddComponent<PlayerBot>();
+            }
         }
 
-        if(GameManager.Instance.GetActivePlayers().Count <= 1)
+        if (activePlayers.Count == 1) //If it started with one player, activates the bot, if there is a rematch it will just respawn the player that the bot is controlling
         {
+            PlayerBot.active = true;
+
             Player botPlayer = Player.One;
             int playerIndex = (int)botPlayer;
             while(playerIndex == (int)lastPlayerSpawned)
@@ -155,7 +168,8 @@ public class PlayerManager : MonoBehaviour
 
             botPlayer = (Player)playerIndex;
 
-            GameManager.Instance.SetPlayerCharacterChoice(botPlayer, UnityEngine.Random.Range(0, 3));
+            GameManager.Instance.AddPlayerToGame(botPlayer);
+            GameManager.Instance.SetPlayerCharacterChoice(botPlayer, UnityEngine.Random.Range(1, 6));
 
             LevelUIManager.Instance.EnableUI(botPlayer);
             players[botPlayer].instance = Instantiate(players[botPlayer].prefab, players[botPlayer].spawnPoint);
@@ -245,6 +259,11 @@ public class PlayerManager : MonoBehaviour
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
 
+        if(playersLeft < 2)
+        {
+            var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+            players[lastPlayerAlive].rank = 0;
+        }
         //Debug.Log(playerModel.gameObject.name);
 
         // Online handling
@@ -272,9 +291,13 @@ public class PlayerManager : MonoBehaviour
             StartCoroutine(SpawnCoroutine(player));
         }
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
-        {   
-            foreach (Player i in GameManager.Instance.GetActivePlayers())
+        {
+            var activePlayers = GameManager.Instance.GetActivePlayers();
+            foreach (Player i in activePlayers)
+            {
+                Debug.Log("Rank of " + i + " :  " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+            }
 
             GameManager.Instance.GameEnds();      
         }
