@@ -513,11 +513,14 @@ public class CharacterSelectUI : MonoBehaviour
         {
             readyObject.SetActive(true);
             charSelect.SetActive(true);
-            pressStart.SetActive(false);
+            if(pressStart)
+                pressStart.SetActive(false);
             selectState = CharacterSelectState.SelectingCharacter;
-            if(LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv && pv.IsMine)
                 UpdateSelectionMul();
-            else
+            //else if (LobbyConnectionHandler.instance.IsMultiplayerMode && !pv)
+            //    Destroy(this.gameObject);
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
                 UpdateSelection();
         }
     }

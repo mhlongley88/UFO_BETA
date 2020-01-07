@@ -260,10 +260,52 @@ public class MainMenuUIManager : MonoBehaviour
         OfflineCharacterSelectionPanel.SetActive(true);
     }
 
+    public void SwitchBackToCharacterSelectMul()
+    {
+        //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+        if(LobbyConnectionHandler.instance.isPrivateMatch)
+            LobbyUI.instance.FriendsListButton.SetActive(true);
+        Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = true;
+        vCam2.SetActive(false);
+        vCam1.SetActive(true);
+        currentMenu = Menu.CharacterSelect;
+        levelSelectCharacters.RemoveAllPlayers();
+        levelSelect.SetActive(false);
+        characterSelect.SetActive(true);
+        //foreach (var c in characterSelectMenus)
+        //{
+        //    c.ReturnFromLevelSelect();
+        //}
+
+        LobbyConnectionHandler.instance.myPlayerInGame.GetComponent<CharacterSelectUI>().ReturnFromLevelSelect();
+
+        if (levelSelectCharacters.myLevelPlayerMul)
+        {
+            Photon.Pun.PhotonNetwork.Destroy(levelSelectCharacters.myLevelPlayerMul);
+        }
+        //LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+        //GameManager.Instance.RemoveAllPlayersFromGame();
+        ////  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
+
+        //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+        //                          cameraMoveObject.transform.position.z + 24f); Debug.Log("Left call");
+        //characterSelect.SetActive(true);
+        myAudioSource.PlayOneShot(StartGameSFX);
+        //currentMenu = Menu.CharacterSelect;
+        //foreach (var c in characterSelectMenusMul)
+        //{
+        //    c.gameObject.SetActive(true);
+        //    c.gameObject.transform.localScale = Vector3.one;
+        //}
+        OfflineCharacterSelectionPanel.SetActive(false);
+        OnlineCharacterSelectionPanel.SetActive(true);
+    }
+
     public void SwitchToCharacterSelectMul()
     {
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
         LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+       // LobbyUI.instance.FriendsListButton.SetActive(true);
         GameManager.Instance.RemoveAllPlayersFromGame();
       //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
 
@@ -413,6 +455,7 @@ public class MainMenuUIManager : MonoBehaviour
                             characterSelect.SetActive(false);
                             currentMenu = Menu.LevelSelect;
                             Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
+                            LobbyUI.instance.FriendsListButton.SetActive(false);
                             Debug.Log("shouldnt be here");
                             // }
                         }

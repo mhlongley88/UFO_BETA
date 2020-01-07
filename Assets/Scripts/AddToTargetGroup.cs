@@ -14,7 +14,14 @@ public class AddToTargetGroup : MonoBehaviour
     {
         myTransform = this.transform;
         MyTargetGroup = GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>();
-        MyTargetGroup.AddMember(myTransform, 1.0f, 0f);
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            MyTargetGroup.AddMember(myTransform, 1.0f, 0f);
+        }
+        else if(this.GetComponent<Photon.Pun.PhotonView>() && this.GetComponent<Photon.Pun.PhotonView>().IsMine)
+        {
+            MyTargetGroup.AddMember(myTransform, 1.0f, 0f);
+        }
     }
 
     // Update is called once per frame

@@ -447,6 +447,7 @@ GameObject:
   m_Component:
   - component: {fileID: 161378701}
   - component: {fileID: 161378700}
+  - component: {fileID: 161378702}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -489,6 +490,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &161378702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161378699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52ba3c8acfd970d4da26df5abe061eaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seconds: 2
+  enableObject: {fileID: 1943761695}
 --- !u!1 &189460712
 GameObject:
   m_ObjectHideFlags: 0
@@ -6786,7 +6801,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 50e63403e7efb7c4fa04001afb0fc72a, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -8534,7 +8549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1943761696
 RectTransform:
   m_ObjectHideFlags: 0

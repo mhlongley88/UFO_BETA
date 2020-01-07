@@ -187,7 +187,8 @@ public class SuperWeapon : Weapon
             currentAmmo--;
             //StartCoroutine(AmmoCooldownCoroutine());
             ufoRigidbody.AddForce(-shootDirection.normalized * GetCurrentWeaponSetting().RecoilForce, ForceMode.Impulse);
-            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
+            if(pv != null)
+                pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
             yield return new WaitForSeconds(GetCurrentWeaponSetting().FireRate);
 
         }

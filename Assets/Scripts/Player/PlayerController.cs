@@ -400,12 +400,12 @@ public class PlayerController : MonoBehaviour
     }
 
     [PunRPC]
-    void Death_RPC()
+    void Death_RPC(int livesLeft)
     {
         dead = true;
 
         avgScaleOutput.RemovePlayer(this.gameObject.transform);
-        
+        PlayerManager.Instance.players[player].lives = livesLeft;
         PlayerManager.Instance.PlayerDied(player, playerModel.transform);
 
         if (pv.IsMine)
@@ -817,7 +817,7 @@ public class PlayerController : MonoBehaviour
         Debug.LogWarning("Die");
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            pv.RPC("Death_RPC", RpcTarget.AllBuffered);
+            pv.RPC("Death_RPC", RpcTarget.AllBuffered, PlayerManager.Instance.players[player].lives);
         }
 
         else
