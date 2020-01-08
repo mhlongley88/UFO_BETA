@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     }
     public bool gameOver;
     public bool canAdvance = false;
-
+    public LayerMask boundaryMask;
     public GameObject pauseScreen;
     public bool paused = false;
 
@@ -231,6 +231,7 @@ public class GameManager : MonoBehaviour
 
             if (canAdvance == true && Input.GetButtonDown("GoToMainMenu") || Input.GetKeyDown(KeyCode.M))
             {
+                PlayerBot.active = false;
 
                 gameOver = false;
                 canAdvance = false;

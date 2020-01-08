@@ -36,6 +36,11 @@ public class PlayerHealthManager : MonoBehaviour
 
     private bool invincible = false;
 
+    public Sprite healthCountSprite;
+    public Image[] healthCounterImages;
+
+    LifeManager lifeManager;
+
     public float CurrHealth
     {
         get
@@ -96,22 +101,36 @@ public class PlayerHealthManager : MonoBehaviour
         startingHealth = healthSettings.startingHealth;
         refillDelay = healthSettings.refillDelay;
         refillDuration = healthSettings.refillDuration;
+
+        for (int i = 0; i < healthCounterImages.Length; i++)
+        {
+            var img = healthCounterImages[i];
+            img.color = Color.white;
+            img.sprite = healthCountSprite;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
         currHealth = startingHealth;
+        lifeManager = LevelUIManager.Instance.GetLifeManager(playerController.player);
     }
 
     // Update is called once per frame
     void Update()
     {
-
         //refill health
         if (CurrHealth < maxHealth && Time.time >= lastDamageTime + refillDelay)
         {
             CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, CurrHealth / maxHealth + Time.deltaTime / refillDuration);
+        }
+
+        var lives = PlayerManager.Instance.players[playerController.player].lives;
+        for (int i = 0; i < healthCounterImages.Length; i++)
+        {
+            if(i >= lives)
+                healthCounterImages[i].color = Color.clear;      
         }
     }
 

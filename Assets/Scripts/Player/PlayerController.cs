@@ -128,14 +128,13 @@ public class PlayerController : MonoBehaviour
     private SuperWeapon superWeapon;
 
     private Weapon currentWeapon;
+    public Weapon CurrentWeapon { get { return currentWeapon; } }
 
     private bool isAbducting = false;
 
     private bool superWeaponActive = false;
 
     bool dead = false;
-
-    
 
     private Vector2 rightStickDirection;
 
@@ -146,6 +145,10 @@ public class PlayerController : MonoBehaviour
 
     GameObject playerModel;
     PhotonView pv;
+
+    [HideInInspector]
+    public bool allowLocalProcessInput = true;
+
     private void Awake()
     {
         
@@ -307,7 +310,7 @@ public class PlayerController : MonoBehaviour
 
 
                 }
-                Debug.Log("console");
+                //Debug.Log("console");
             }
             else if(isPC)
             {
@@ -709,7 +712,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                ProcessInput();
+                if(allowLocalProcessInput) ProcessInput();
                 avgScaleOutput.CalculateAndOutput();
 
                 if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
@@ -769,7 +772,7 @@ public class PlayerController : MonoBehaviour
             //if (Vector3.Project(myRigidbody.velocity, moveInputVector).magnitude < maxSpeed)
             {
                 //myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
-
+               
                 if ((isPC && (horizontalInputKB != 0 || verticalInputKB != 0)) || (isConsole && (horizontalInput != 0 || verticalInput != 0)))
                     myRigidbody.velocity = (transform.position + new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed()) - transform.position;
                 else
@@ -778,8 +781,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ApplyExternalInput(Vector3 axis, Quaternion lookAt)
+    {
+        isConsole = true;
+        isPC = false;
+        twinStick = false;
 
+        horizontalInput = axis.x;
+        verticalInput = axis.z;
 
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookAt, Time.smoothDeltaTime * 6.0f);
+    }
     public void ChangeScale(float scaleChange)
     {
         if (!healthManager.IsInvincible() || scaleChange > 0f)
