@@ -270,6 +270,7 @@ public class GameManager : MonoBehaviour
                 if(Input.GetButtonDown("FromPauseToMenu"))
                 {
                     TogglePause();
+
                     SceneManager.LoadScene("MainMenu");
                     gameOver = false;
                     canAdvance = false;
@@ -587,15 +588,16 @@ public class GameManager : MonoBehaviour
     public void TogglePause()
     {
         paused = !paused;
+        GameMenuController.Instance.SetState(paused);
 
-        if (paused)
-        {
-            pauseScreen.SetActive(true);
-        }
-        else
-        {
-            pauseScreen.SetActive(false);
-        }
+        //if (paused)
+        //{
+        //    pauseScreen.SetActive(true);
+        //}
+        //else
+        //{
+        //    pauseScreen.SetActive(false);
+        //}
     }
 
     public void postGame()

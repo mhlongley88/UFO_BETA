@@ -879,9 +879,23 @@ public class PlayerController : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
+        //Debug.Log(gameObject.name + ": The gameobject I Hit was " + other.gameObject.name + " - " + other.collider.tag);
         if (other.collider.CompareTag("Bullet"))
         {
-            DoDamage(other.gameObject.GetComponent<Bullet>().HealthDamage);
+            float healthDamage = 0.0f;
+            Bullet b;
+            if (other.gameObject.TryGetComponent(out b))
+                healthDamage = b.HealthDamage;
+
+            if(b == null)
+            {
+                MeleeBullet mb;
+                if (other.gameObject.TryGetComponent(out mb))
+                    healthDamage = mb.HealthDamage;
+            }
+			
+			if(healthDamage != 0.0f)
+				DoDamage(healthDamage);
 
             //ChangeHealth (other.gameObject.GetComponent<Bullet>().healthDamage);
             //ChangeScale(other.gameObject.GetComponent<Bullet>().scaleDamage);

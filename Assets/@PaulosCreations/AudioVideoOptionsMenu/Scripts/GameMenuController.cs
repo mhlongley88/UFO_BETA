@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class GameMenuController : MonoBehaviour {
 
+    private static GameMenuController instance;
+    public static GameMenuController Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+
     public GameObject menuCanvasObj;
 
     private float previousTimescale;
@@ -12,37 +21,54 @@ public class GameMenuController : MonoBehaviour {
   //  private GameObject gM;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
-      //  DontDestroyOnLoad(gameObject);
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+
+        //  DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
-        {
-            ButtonToggleMenu();
-        }
+        //if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
+        //{
+        //    ButtonToggleMenu();
+        //}
 
+    }
+
+    public void SetState(bool state)
+    {
+        menuCanvasObj.SetActive(state);
+        menuOpen = state;
     }
 
     public void ButtonToggleMenu()
     {
-        if (!menuOpen)
-        {
-          //  previousTimescale = Time.timeScale;//getting the current timescale
-         //   Time.timeScale = 0;//Pausing time
-            menuCanvasObj.SetActive(true);
+        GameManager.Instance.TogglePause();
+        //if (!menuOpen)
+        //{
+        //  //  previousTimescale = Time.timeScale;//getting the current timescale
+        // //   Time.timeScale = 0;//Pausing time
+        //    menuCanvasObj.SetActive(true);
 
-            menuOpen = true;
-        }
-        else
-        {
-          //  Time.timeScale = previousTimescale;//unpausing time
+        //    menuOpen = true;
+        //}
+        //else
+        //{
+        //  //  Time.timeScale = previousTimescale;//unpausing time
 
-            menuOpen = false;
-        }
+        //    menuOpen = false;
+        //}
     }
 
     //for testing/Debugging.

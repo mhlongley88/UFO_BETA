@@ -34,6 +34,14 @@ public class PlayerBot : MonoBehaviour
 
     void Update()
     {
+        Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
+
+        if (GameManager.Instance.paused)
+        {
+            playerController.ApplyExternalInput(Vector3.zero, lookDir);
+            return;
+        }
+
         if(movingRate < Time.time)
         {
             moving = !moving;
@@ -53,7 +61,6 @@ public class PlayerBot : MonoBehaviour
                 FindNewPoint();
         }
 
-        Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
         if (adversaryObject)
         {
             lookDir = Quaternion.LookRotation(adversaryObject.transform.position - transform.position, Vector3.up);
