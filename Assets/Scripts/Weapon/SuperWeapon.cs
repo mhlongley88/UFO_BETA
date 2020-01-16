@@ -18,7 +18,8 @@ public class SuperWeapon : Weapon
         FlameThrower,
         MiniGun,
         DualShotgun,
-        Mallet
+        Mallet,
+        BlobLauncher
     }
 
 
