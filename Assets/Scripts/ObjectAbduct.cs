@@ -21,6 +21,7 @@ public class ObjectAbduct : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         if(!notTrigger) rb.isKinematic = true;
         canAbduct = false;
         //abductionPoint = null;

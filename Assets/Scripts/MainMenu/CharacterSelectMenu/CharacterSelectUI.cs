@@ -276,7 +276,7 @@ public class CharacterSelectUI : MonoBehaviour
         if (LobbyConnectionHandler.instance.IsMultiplayerMode || player == Player.Four)
         {
             float horizontalInputKB = InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player);
-            Debug.Log(horizontalInputKB);
+            //Debug.Log(horizontalInputKB);
             if (canCycle)
             {
                 if (Input.GetKeyDown(KeyCode.A))

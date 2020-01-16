@@ -15,7 +15,7 @@ public class UnlockSystem : MonoBehaviour
         if(instance)
         {
             if (instance != this)
-                Destroy(instance);
+                Destroy(gameObject);
         }
 
         instance = this;

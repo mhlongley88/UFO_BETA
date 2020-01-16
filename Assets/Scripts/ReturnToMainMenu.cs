@@ -19,6 +19,9 @@ public class ReturnToMainMenu : MonoBehaviour
 
     public void GoToMainMenu()
     {
+        if (GameManager.Instance.paused)
+            GameManager.Instance.TogglePause();
+
         Application.LoadLevel(0);
     }
 }

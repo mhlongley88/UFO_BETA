@@ -2,36 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameMenuController : MonoBehaviour {
 
     private static GameMenuController instance;
-    public static GameMenuController Instance
-    {
-        get
-        {
-            return instance;
-        }
-    }
-
     public GameObject menuCanvasObj;
 
     private float previousTimescale;
     private bool menuOpen;
-  //  private GameObject gM;
+    //  private GameObject gM;
 
     // Use this for initialization
     void Awake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-            DontDestroyOnLoad(this);
-        }
 
         //  DontDestroyOnLoad(gameObject);
     }
@@ -39,36 +23,28 @@ public class GameMenuController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
-        //{
-        //    ButtonToggleMenu();
-        //}
-
-    }
-
-    public void SetState(bool state)
-    {
-        menuCanvasObj.SetActive(state);
-        menuOpen = state;
+        if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
+        {
+            ButtonToggleMenu();
+        }
     }
 
     public void ButtonToggleMenu()
     {
-        GameManager.Instance.TogglePause();
-        //if (!menuOpen)
-        //{
-        //  //  previousTimescale = Time.timeScale;//getting the current timescale
-        // //   Time.timeScale = 0;//Pausing time
-        //    menuCanvasObj.SetActive(true);
+        if (!menuOpen)
+        {
+            //  previousTimescale = Time.timeScale;//getting the current timescale
+            //   Time.timeScale = 0;//Pausing time
+            menuCanvasObj.SetActive(true);
 
-        //    menuOpen = true;
-        //}
-        //else
-        //{
-        //  //  Time.timeScale = previousTimescale;//unpausing time
+            menuOpen = true;
+        }
+        else
+        {
+            //  Time.timeScale = previousTimescale;//unpausing time
 
-        //    menuOpen = false;
-        //}
+            menuOpen = false;
+        }
     }
 
     //for testing/Debugging.

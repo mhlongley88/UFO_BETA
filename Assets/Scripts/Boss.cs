@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
     public Animator animator;
@@ -9,6 +10,7 @@ public class Boss : MonoBehaviour
     public LookAtPlayer lookAtPlayer;
     public GameObject cmVCam6;
     public Transform annunakiObj;
+    public Image lifeBar;
 
     public int maxHealth = 40;
     public int health = 40;
@@ -20,7 +22,7 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
-        
+        lifeBar.fillAmount = (float)health / (float)maxHealth;
     }
 
     public void OnTakeDamage()
@@ -30,6 +32,8 @@ public class Boss : MonoBehaviour
         health -= 2;
         if(health <= 0)
         {
+            health = 0;
+
             animator.SetTrigger("Die");
             cmVCam6.SetActive(true);
 

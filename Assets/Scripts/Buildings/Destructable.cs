@@ -43,10 +43,15 @@ public class Destructable : MonoBehaviour
     public void Shatter()
     {
         if(destroyedPFX) destroyedPFX.SetActive(true);
+
+        for (int i = 0; i < childsAbducts.Length; i++)
+        {
+            childsAbducts[i].enabled = true;
+
+        }
+
         for (int i = 0; i < childRigidBodies.Length; i++)
         {
-
-            childsAbducts[i].enabled = true;
 
             childRigidBodies[i].isKinematic = false;
             childRigidBodies[i].transform.parent = null;

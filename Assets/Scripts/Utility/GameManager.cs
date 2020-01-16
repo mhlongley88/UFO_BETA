@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         if (instance != null && instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
@@ -588,7 +588,7 @@ public class GameManager : MonoBehaviour
     public void TogglePause()
     {
         paused = !paused;
-        GameMenuController.Instance.SetState(paused);
+        PauseMenu.instance.menuCanvasObj.SetActive(paused);
 
         //if (paused)
         //{
