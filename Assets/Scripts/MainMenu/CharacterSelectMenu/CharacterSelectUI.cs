@@ -5,6 +5,7 @@ using DG.Tweening;
 using TMPro;
 using Photon.Pun;
 using static InputManager;
+using UnityEngine.UI;
 
 public class CharacterSelectUI : MonoBehaviour
 {
@@ -38,6 +39,11 @@ public class CharacterSelectUI : MonoBehaviour
     private GameObject currentCharacterModel;
 
     public TextMeshPro characterLabel;
+    public Image weaponTypeImage;
+    public Image specialWeaponImage;
+    public Slider damageSlider;
+    public Slider rateOfFireSlider;
+    public Slider accuracySlider;
 
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
@@ -114,7 +120,15 @@ public class CharacterSelectUI : MonoBehaviour
         {
             playerNameText.text = playerName;
             currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
-            characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
+
+            var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+            characterLabel.text = info.Name;
+            weaponTypeImage.sprite = info.WeaponType;
+            specialWeaponImage.sprite = info.SpecialWeapon;
+            damageSlider.value = info.Damage;
+            rateOfFireSlider.value = info.RateOfFire;
+            accuracySlider.value = info.Accuracy;
         }
         else
         {
@@ -144,7 +158,14 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel.transform.SetParent(characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
 
-        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        characterLabel.text = info.Name;
+        weaponTypeImage.sprite = info.WeaponType;
+        specialWeaponImage.sprite = info.SpecialWeapon;
+        damageSlider.value = info.Damage;
+        rateOfFireSlider.value = info.RateOfFire;
+        accuracySlider.value = info.Accuracy;
     }
 
     void SpawnMultiplayer()
@@ -176,7 +197,15 @@ public class CharacterSelectUI : MonoBehaviour
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
-        characterLabel.text = currentCharacterModel.GetComponent<CharacterLevelSelectLabel>().Name;
+
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        characterLabel.text = info.Name;
+        weaponTypeImage.sprite = info.WeaponType;
+        specialWeaponImage.sprite = info.SpecialWeapon;
+        damageSlider.value = info.Damage;
+        rateOfFireSlider.value = info.RateOfFire;
+        accuracySlider.value = info.Accuracy;
     }
 
    // [PunRPC]
@@ -406,6 +435,8 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void Update()
     {
+        //pStatsInfo.SetActive(charSelect.activeInHierarchy);
+
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
         {
             switch (selectState)
