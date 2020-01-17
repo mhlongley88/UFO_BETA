@@ -72,7 +72,15 @@ public class AirEnemy : Enemy
     // Update is called once per frame
     public void Update()
     {
-        if(targetTransform != null && lookAtTarget && pv != null && pv.IsMine)
+        if (GameManager.Instance.paused)
+        {
+            formationAnimator.SetFloat("Speed", 0.0f);
+            return;
+        }
+
+        formationAnimator.SetFloat("Speed", speedMultiplier);
+
+        if (targetTransform != null && lookAtTarget && pv != null && pv.IsMine)
         {
             Quaternion la = Quaternion.LookRotation(targetTransform.position - transform.position, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, la, Time.smoothDeltaTime * 1.7f);
@@ -86,15 +94,15 @@ public class AirEnemy : Enemy
     [PunRPC]
     private void Fire()
     {
+        if (GameManager.Instance.paused) return;
         
-        
-            MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-            Vector3 direction = transform.position + transform.forward * 5;
-            if (!lookAtTarget && targetTransform != null)
-                direction = (targetTransform.position);
+        Vector3 direction = transform.position + transform.forward * 5;
+        if (!lookAtTarget && targetTransform != null)
+            direction = (targetTransform.position);
 
-            bullet.FireBullet(direction - transform.position, coll, bulletDamage, 1.0f, bulletVelocity);
+        bullet.FireBullet(direction - transform.position, coll, bulletDamage, 1.0f, bulletVelocity);
         
 
         //Debug.DrawLine(transform.position, direction, Color.red, 20.0f);

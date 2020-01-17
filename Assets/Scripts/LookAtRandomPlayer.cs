@@ -9,6 +9,7 @@ public class LookAtRandomPlayer : MonoBehaviour
     public float switchTargetRate = 3.5f;
     float elapsedRate = 0.0f;
 
+    public float rotationSpeed = 4.0f;
     void Start()
     {
         
@@ -26,7 +27,12 @@ public class LookAtRandomPlayer : MonoBehaviour
             elapsedRate = Time.time + switchTargetRate;
         }
 
-        if(target)
-            transform.LookAt(target);
+        if (target)
+        {
+            Quaternion la = Quaternion.LookRotation(target.position - transform.position, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, la, Time.smoothDeltaTime * rotationSpeed);
+
+            //transform.LookAt(target);
+        }
     }
 }
