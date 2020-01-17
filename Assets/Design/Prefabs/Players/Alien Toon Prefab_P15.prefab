@@ -5197,9 +5197,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Ooka Chooka
   _weaponType: {fileID: 21300000, guid: c2ddc32c57ab61b4095686d1682270aa, type: 3}
-  _specialWeapon: {fileID: 21300000, guid: 13547cfb3a141764c8a85db19612fca4, type: 3}
-  _damage: 0.2
-  _rateOfFire: 0.5
+  _specialWeapon: {fileID: 21300000, guid: 49b8ac6c772de5741b6da75d5b76b628, type: 3}
+  _damage: 0.7
+  _rateOfFire: 0.55
   _accuracy: 0.8
 --- !u!1 &1476142271641758
 GameObject:
@@ -7264,6 +7264,103 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!82 &2447479827985989768
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6316236111195594757}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 243672017259290008, guid: ca5e00ddd1f76a042ae3ae5afb2a0527,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: 632bfb6534b0cf242b67c682f2827f71, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6601019597381143427
 GameObject:
   m_ObjectHideFlags: 0
@@ -8405,6 +8502,12 @@ PrefabInstance:
 --- !u!4 &6316236111195241509 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 5e2514f13f81b09499af9009914f889a,
+    type: 3}
+  m_PrefabInstance: {fileID: 6316236111195629221}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6316236111195594757 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 5e2514f13f81b09499af9009914f889a,
     type: 3}
   m_PrefabInstance: {fileID: 6316236111195629221}
   m_PrefabAsset: {fileID: 0}
