@@ -149,9 +149,10 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public bool allowLocalProcessInput = true;
 
+    IgnoreThisColliderWithParentPlayer[] collidersToIgnore;
+
     private void Awake()
     {
-        
         if (this.GetComponent<PhotonView>())
         {
             pv = this.GetComponent<PhotonView>();
@@ -193,6 +194,8 @@ public class PlayerController : MonoBehaviour
         //    isPC = false;
         //    isConsole = true;
         //}
+
+        collidersToIgnore = GetComponentsInChildren<IgnoreThisColliderWithParentPlayer>();
     }
 
     private void OnDestroy()
@@ -879,6 +882,14 @@ public class PlayerController : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
+        if (collidersToIgnore != null)
+        {
+            if (Array.FindIndex(collidersToIgnore, it => it.theCollider == other.collider) >= 0)
+            {
+                return;
+            }
+        }
+
         //Debug.Log(gameObject.name + ": The gameobject I Hit was " + other.gameObject.name + " - " + other.collider.tag);
         if (other.collider.CompareTag("Bullet"))
         {
