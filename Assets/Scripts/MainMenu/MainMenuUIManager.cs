@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using static InputManager;
+using Rewired;
 
 public class MainMenuUIManager : MonoBehaviour
 {
@@ -178,10 +179,24 @@ public class MainMenuUIManager : MonoBehaviour
         {
             if (p != Player.None)
             {
+                int rewirePlayerId = 0;
+                Rewired.Player rewirePlayer;
+
+                switch (p)
+                {
+                    case Player.One: rewirePlayerId = 0; break;
+                    case Player.Two: rewirePlayerId = 1; break;
+                    case Player.Three: rewirePlayerId = 2; break;
+                    case Player.Four: rewirePlayerId = 3; break;
+                }
+
+                rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+
                 switch (currentMenu)
                 {
                     case Menu.Splash:
-                        if (InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p))
+                        //if (InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p))
+                        if (rewirePlayer.GetButtonDown("Submit"))
                         {
 
                             cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
@@ -191,7 +206,8 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         break;
                     case Menu.CharacterSelect:
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
                             cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
                             currentMenu = Menu.Splash;
@@ -211,7 +227,8 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         break;
                     case Menu.LevelSelect:
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
                             vCam2.SetActive(false);
                             vCam1.SetActive(true);
@@ -224,7 +241,8 @@ public class MainMenuUIManager : MonoBehaviour
                                 c.ReturnFromLevelSelect();
                             }
                         }
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             SceneManager.LoadScene("LoadingRoom");
                         }
@@ -349,12 +367,22 @@ public class MainMenuUIManager : MonoBehaviour
         {
             if (p != Player.None)
             {
+                int rewirePlayerId = 0;
+                Rewired.Player rewirePlayer;
+
+                switch (p)
+                {
+                    case Player.One: rewirePlayerId = 0; break;
+                    case Player.Two: rewirePlayerId = 1; break;
+                    case Player.Three: rewirePlayerId = 2; break;
+                    case Player.Four: rewirePlayerId = 3; break;
+                }
+
+                rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+
                 switch (currentMenu)
                 {
                     //case Menu.Splash:
-
-                        
-
 
                     //    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, p))
                     //    {
@@ -367,7 +395,8 @@ public class MainMenuUIManager : MonoBehaviour
                     //    }
                     //    break;
                     case Menu.CharacterSelect:
-                        if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        //if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && rewirePlayer.GetButtonDown("Back"))
                         {
                           //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
                             currentMenu = Menu.Splash;
@@ -394,7 +423,9 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         break;
                     case Menu.LevelSelect:
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
                             vCam2.SetActive(false);
                             vCam1.SetActive(true);
@@ -407,7 +438,9 @@ public class MainMenuUIManager : MonoBehaviour
                                 c.ReturnFromLevelSelect();
                             }
                         }
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             SceneManager.LoadScene("LoadingRoom");
                         }
@@ -424,6 +457,19 @@ public class MainMenuUIManager : MonoBehaviour
         {
             if (p != Player.None)
             {
+                int rewirePlayerId = 0;
+                Rewired.Player rewirePlayer;
+
+                switch (p)
+                {
+                    case Player.One: rewirePlayerId = 0; break;
+                    case Player.Two: rewirePlayerId = 1; break;
+                    case Player.Three: rewirePlayerId = 2; break;
+                    case Player.Four: rewirePlayerId = 3; break;
+                }
+
+                rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+
                 switch (currentMenu)
                 {
                     //case Menu.Splash:
@@ -461,7 +507,8 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         break;
                     case Menu.LevelSelect:
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
                             //vCam2.SetActive(false);
                             //vCam1.SetActive(true);
@@ -474,7 +521,8 @@ public class MainMenuUIManager : MonoBehaviour
                             //    c.ReturnFromLevelSelect();
                             //}
                         }
-                        if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             //SceneManager.LoadScene("LoadingRoom");
                             LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");

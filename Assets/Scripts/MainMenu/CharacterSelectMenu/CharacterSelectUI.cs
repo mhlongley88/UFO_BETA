@@ -6,6 +6,7 @@ using TMPro;
 using Photon.Pun;
 using static InputManager;
 using UnityEngine.UI;
+using Rewired;
 
 public class CharacterSelectUI : MonoBehaviour
 {
@@ -111,6 +112,10 @@ public class CharacterSelectUI : MonoBehaviour
     {
         return selectState;
     }
+
+    int rewirePlayerId = 0;
+    Rewired.Player rewirePlayer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -139,6 +144,15 @@ public class CharacterSelectUI : MonoBehaviour
         }
 
 
+        switch (player)
+        {
+            case Player.One: rewirePlayerId = 0; break;
+            case Player.Two: rewirePlayerId = 1; break;
+            case Player.Three: rewirePlayerId = 2; break;
+            case Player.Four: rewirePlayerId = 3; break;
+        }
+
+        rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
     }
 
     [PunRPC]
@@ -228,7 +242,9 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void ChangeSelectionMul()
     {
-        float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
+        //float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
+        float horizontalInput = rewirePlayer.GetAxis("Horizontal");
+
         if (canCycle)
         {
             if (horizontalInput < -0.8f)
@@ -278,7 +294,9 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void ChangeSelection()
     {
-        float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
+        //float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
+        float horizontalInput = rewirePlayer.GetAxis("Horizontal");
+
         if (canCycle)
         {
             if (horizontalInput < -0.8f)
@@ -452,7 +470,9 @@ public class CharacterSelectUI : MonoBehaviour
 
                     //ChangeSelection();
                     ChangeSelectionMul();
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+     
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    if (rewirePlayer.GetButtonDown("Back"))
                     {
                         //pressStart.SetActive(true);
                         //charSelect.SetActive(false);
@@ -461,13 +481,15 @@ public class CharacterSelectUI : MonoBehaviour
                         Photon.Pun.PhotonNetwork.LeaveRoom();
                     }
 
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+                    if (rewirePlayer.GetButtonDown("Submit"))
                     {
                         pv.RPC("SyncPlayerReady", RpcTarget.AllBuffered);
                     }
                     break;
                 case CharacterSelectState.ReadyToStart:
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    if (rewirePlayer.GetButtonDown("Back"))
                     {
                         pv.RPC("SyncBackCharacterSelection", RpcTarget.AllBuffered);
                     }
@@ -501,7 +523,9 @@ public class CharacterSelectUI : MonoBehaviour
                     //{
                     //    MainMenuUIManager.Instance.selectingCharacters = false;
                     //}
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+                    if (rewirePlayer.GetButtonDown("Submit"))
                     {
                         PlayerEnterGame();
                         MainMenuUIManager.Instance.selectingCharacters = true;
@@ -510,7 +534,8 @@ public class CharacterSelectUI : MonoBehaviour
                 case CharacterSelectState.SelectingCharacter:
                     ChangeSelection();
 
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    if (rewirePlayer.GetButtonDown("Back"))
                     {
                         pressStart.SetActive(true);
                         charSelect.SetActive(false);
@@ -519,7 +544,8 @@ public class CharacterSelectUI : MonoBehaviour
                         MainMenuUIManager.Instance.selectingCharacters = false;
                     }
 
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
+                    if (rewirePlayer.GetButtonDown("Submit"))
                     {
                         readyObject.SetActive(false);
                         myAudioSource.PlayOneShot(playerReadySFX);
@@ -528,7 +554,9 @@ public class CharacterSelectUI : MonoBehaviour
                     }
                     break;
                 case CharacterSelectState.ReadyToStart:
-                    if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+
+                    //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Back, player))
+                    if (rewirePlayer.GetButtonDown("Back"))
                     {
                         readyObject.SetActive(true);
                         selectState = CharacterSelectState.SelectingCharacter;

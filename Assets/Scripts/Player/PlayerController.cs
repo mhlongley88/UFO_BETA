@@ -7,6 +7,8 @@ using static Weapon;
 using System;
 using static InputManager;
 using Photon.Pun;
+using Rewired;
+
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
@@ -151,6 +153,9 @@ public class PlayerController : MonoBehaviour
 
     IgnoreThisColliderWithParentPlayer[] collidersToIgnore;
 
+    int rewirePlayerId;
+    Rewired.Player rewirePlayer;
+
     private void Awake()
     {
         if (this.GetComponent<PhotonView>())
@@ -158,7 +163,17 @@ public class PlayerController : MonoBehaviour
             pv = this.GetComponent<PhotonView>();
         }
         playerControllerByGameObject.Add(gameObject, this);
-        
+
+
+        switch(player)
+        {
+            case Player.One: rewirePlayerId = 0; break;
+            case Player.Two: rewirePlayerId = 1; break;
+            case Player.Three: rewirePlayerId = 2; break;
+            case Player.Four: rewirePlayerId = 3; break;
+        }
+
+        rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
     }
 
     IEnumerator Start()
@@ -215,87 +230,92 @@ public class PlayerController : MonoBehaviour
         isAbducting = false;
     }
 
+    //Vector2 GetInputAxis()
+    //{
+    //    return GameManager.Instance.paused ? Vector2.zero :
+    //        new Vector2(
+    //            InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player),
+    //            InputManager.Instance.GetAxis(AxisEnum.LeftStickVertical, player)
+    //        );
+    //}
+
+    //Vector2 GetInputAxisKB()
+    //{
+    //    return GameManager.Instance.paused ? Vector2.zero :
+    //        new Vector2(
+    //            InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player),
+    //            InputManager.Instance.GetAxisKB(AxisEnum.LeftStickVertical, player)
+    //        );
+    //}
+
     Vector2 GetInputAxis()
     {
-        return GameManager.Instance.paused ? Vector2.zero :
-            new Vector2(
-                InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player),
-                InputManager.Instance.GetAxis(AxisEnum.LeftStickVertical, player)
-            );
+        return GameManager.Instance.paused ? Vector2.zero : rewirePlayer.GetAxis2D("Horizontal", "Vertical");
     }
 
-    Vector2 GetInputAxisKB()
-    {
-        return GameManager.Instance.paused ? Vector2.zero :
-            new Vector2(
-                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player),
-                InputManager.Instance.GetAxisKB(AxisEnum.LeftStickVertical, player)
-            );
-    }
     bool isControllerDecided = false;
     private void ProcessInput_PC()
     {
         //horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
         //verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
         //moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-
         //Vector2 axis = GetInputAxis();
 
-        if (!isControllerDecided)
-        {
-            if (GetInputAxis() != Vector2.zero)
-            {
-                isConsole = true;
-                isPC = false;
-                isControllerDecided = true;
+        //if (!isControllerDecided)
+        //{
+        //    if (GetInputAxis() != Vector2.zero)
+        //    {
+        //        isConsole = true;
+        //        isPC = false;
+        //        isControllerDecided = true;
                 
-            }
-            if (GetInputAxisKB() != Vector2.zero)
-            {
-                isPC = true;
-                isConsole = false;
-                isControllerDecided = true;
+        //    }
+        //    if (GetInputAxisKB() != Vector2.zero)
+        //    {
+        //        isPC = true;
+        //        isConsole = false;
+        //        isControllerDecided = true;
 
-            }
+        //    }
             
-        }
-        else
+        //}
+        //else
         {
-            if (isPC)
-            {
-                Vector2 axisKB = GetInputAxisKB();
-                horizontalInputKB = axisKB.x;
-                verticalInputKB = axisKB.y;
-                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
-            }
-            else if (isConsole)
-            {
-                Vector2 axis = GetInputAxis();
-                horizontalInput = axis.x;
-                verticalInput = axis.y;
-                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-            }
-            else
-            {
-                isControllerDecided = false;
-            }
+            //if (isPC)
+            //{
+            //    Vector2 axisKB = GetInputAxisKB();
+            //    horizontalInputKB = axisKB.x;
+            //    verticalInputKB = axisKB.y;
+            //    moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+            //}
+            //else if (isConsole)
+            //{
+            //    Vector2 axis = GetInputAxis();
+            //    horizontalInput = axis.x;
+            //    verticalInput = axis.y;
+            //    moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+            //}
+            //else
+            //{
+            //    isControllerDecided = false;
+            //}
         }
 
+        Vector2 axis = GetInputAxis();
+        horizontalInput = axis.x;
+        verticalInput = axis.y;
+        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
 
-        if (isConsole && horizontalInput != 0f || verticalInput != 0f)
-        {
-            this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, this.transform.localEulerAngles.z);
-        }
+        if (GameManager.Instance.paused) return;
 
-        
-
-        if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
+        //if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
+        if (rewirePlayer.GetButtonDown("Abduct") && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             
             pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
         }
-        else if (Input.GetButtonUp("P1_Beam_Keyboard"))
+        else if (rewirePlayer.GetButtonUp("Abduct"))
         {
             pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
 
@@ -303,19 +323,19 @@ public class PlayerController : MonoBehaviour
         if (twinStick)
         {
             
-            rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
-            if (isConsole)
+            //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
+            rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
+
+            if (player != Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
 
                     this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
-
-
                 }
                 //Debug.Log("console");
             }
-            else if(isPC)
+            else
             {
                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
@@ -335,30 +355,34 @@ public class PlayerController : MonoBehaviour
             }
         }
         currentWeapon.UpdateShootDirection(transform.forward);
-        if (/*currentWeapon.GetCurrentWeaponSettings().AutoFire && */InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player) /*&& gunReady && !Input.GetButtonDown("P1_Beam_Keyboard")*/)
+        //if (InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
+        if (rewirePlayer.GetButtonDown("Shoot") && gunReady && !rewirePlayer.GetButton("Abduct"))
         {
 
             //pv.RPC("RPC_Fire_Others", RpcTarget.All, transform.forward);
             RPC_Fire(transform.forward);
         }
-        if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
+
+        //if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
+        if (rewirePlayer.GetButtonDown("Dash") && boostReady)
         {
             tryToBoost();
         }
 
-        if (isConsole)
-        {
-            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
-            {
-                // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
-                pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
-            }
-        }
-        else
+        //if (isConsole)
+        //{
+        //    //if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+        //    if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
+        //    {
+        //        // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
+        //        pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
+        //    }
+        //}
+        //else
         {
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) + "1");
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) + "2");
-            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)//Input.GetMouseButtonDown(0) /*&&*/ && Input.GetMouseButtonDown(1))
+            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
                 pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
@@ -449,50 +473,56 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    float horizontalInputKB, verticalInputKB;
-    Vector3 moveInputVectorKB;
+    //float horizontalInputKB, verticalInputKB;
+    //Vector3 moveInputVectorKB;
+
     private void ProcessInput()
     {
-        if (!isControllerDecided)
-        {
-            if (GetInputAxis() != Vector2.zero)
-            {
-                isConsole = true;
-                isPC = false;
-                isControllerDecided = true;
+        //if (!isControllerDecided)
+        //{
+        //    if (GetInputAxis() != Vector2.zero)
+        //    {
+        //        isConsole = true;
+        //        isPC = false;
+        //        isControllerDecided = true;
 
-            }
-            if (GetInputAxisKB() != Vector2.zero)
-            {
-               // Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
-                isPC = true;
-                isConsole = false;
-                isControllerDecided = true;
+        //    }
+        //    if (GetInputAxisKB() != Vector2.zero)
+        //    {
+        //       // Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
+        //        isPC = true;
+        //        isConsole = false;
+        //        isControllerDecided = true;
 
-            }
+        //    }
 
-        }
-        else
-        {
-            if (isPC)
-            {
-                Vector2 axisKB = GetInputAxisKB();
-                horizontalInputKB = axisKB.x;
-                verticalInputKB = axisKB.y;
-                moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
-            }
-            else if (isConsole)
-            {
-                Vector2 axis = GetInputAxis();
-                horizontalInput = axis.x;
-                verticalInput = axis.y;
-                moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-            }
-            else
-            {
-                isControllerDecided = false;
-            }
-        }
+        //}
+        //else
+        //{
+        //    if (isPC)
+        //    {
+        //        Vector2 axisKB = GetInputAxisKB();
+        //        horizontalInputKB = axisKB.x;
+        //        verticalInputKB = axisKB.y;
+        //        moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+        //    }
+        //    else if (isConsole)
+        //    {
+        //        Vector2 axis = GetInputAxis();
+        //        horizontalInput = axis.x;
+        //        verticalInput = axis.y;
+        //        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+        //    }
+        //    else
+        //    {
+        //        isControllerDecided = false;
+        //    }
+        //}
+
+        Vector2 axis = GetInputAxis();
+        horizontalInput = axis.x;
+        verticalInput = axis.y;
+        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
 
 
         if (GameManager.Instance.paused) return;
@@ -500,16 +530,16 @@ public class PlayerController : MonoBehaviour
         //if (horizontalInput != 0f || verticalInput != 0f)
         //{
         //    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(horizontalInput, verticalInput) * 180 / Mathf.PI, 0f);
-        //}
+        //}   
 
-        
-
-        if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
+        //if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
+        if (rewirePlayer.GetButtonDown("Abduct") && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             ActivateBeam();
         }
-        else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
+        //else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
+        else if (rewirePlayer.GetButtonUp("Abduct"))
         {
             DeactivateBeam();
 
@@ -520,58 +550,54 @@ public class PlayerController : MonoBehaviour
         }
         if (twinStick)
         {
-            rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
-            if (isConsole)
+            //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
+            rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
+
+            if (player != Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
-
                     this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
-
-
                 }
                 Debug.Log("console");
             }
-            else if (isPC)
+            else
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
-
                     Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
-
 
                     Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
 
                     float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
 
                     transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
-
-
                 }
-
             }
         }
         currentWeapon.UpdateShootDirection(transform.forward);
-        if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && InputManager.Instance.GetButton(ButtonEnum.Fire, player)) || InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player)) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
+        //if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && InputManager.Instance.GetButton(ButtonEnum.Fire, player)) || InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player)) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
+        if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && rewirePlayer.GetButtonDown("Shoot")) || rewirePlayer.GetButtonDown("Shoot")) && gunReady && !rewirePlayer.GetButton("Abduct"))
         {
-
             currentWeapon.Fire();
         }
-        if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
+        //if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
+        if (rewirePlayer.GetButtonDown("Dash") && boostReady)
         {
             tryToBoost();
         }
 
-        if (isConsole)
+        //if (isConsole)
+        //{
+        //    //if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+        //    if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
+        //    {
+        //        ToggleSuperWeapon(true);
+        //    }
+        //}
+        //else
         {
-            if (IsSuperWeaponReady() && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
-            {
-                ToggleSuperWeapon(true);
-            }
-        }
-        else
-        {
-            if (IsSuperWeaponReady() && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) > 0.8f && InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) > 0.8f)
+            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
             {
                 ToggleSuperWeapon(true);
             }
@@ -621,20 +647,20 @@ public class PlayerController : MonoBehaviour
 
     private void tryToBoost()
     {
-        if (isConsole)
+        //if (isConsole)
         {
             if (horizontalInput != 0f || verticalInput != 0f)
             {
                 StartCoroutine(BoostCoroutine());
             }
         }
-        else if(isPC)
-        {
-            if (horizontalInputKB != 0f || verticalInputKB != 0f)
-            {
-                StartCoroutine(BoostCoroutine());
-            }
-        }
+        //else if(isPC)
+        //{
+        //    if (horizontalInputKB != 0f || verticalInputKB != 0f)
+        //    {
+        //        StartCoroutine(BoostCoroutine());
+        //    }
+        //}
     }
 
     private IEnumerator BoostCoroutine()
@@ -642,14 +668,15 @@ public class PlayerController : MonoBehaviour
         boostReady = false;
         isBoosting = true;
         Vector3 boostDirection;// = new Vector3(horizontalInput, 0.0f, verticalInput);
-        if (isConsole)
+        //if (isConsole)
         {
             boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
         }
-        else
-        {
-            boostDirection = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
-        }
+        //else
+        //{
+        //    boostDirection = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
+        //}
+
         float timer = 0f;
         myRigidbody.velocity = Vector3.zero;
         while (timer <= boostDuration)
@@ -764,19 +791,21 @@ public class PlayerController : MonoBehaviour
     {
         if (!isBoosting)
         {
-            if (isConsole)
-            {
-                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
-            }
-            else if(isPC)
-            {
-                moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInputKB, verticalInputKB), acceleration * Time.fixedDeltaTime);
-            }
+            //if (isConsole)
+            //{
+            //    moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+            //}
+            //else if(isPC)
+            //{
+            //    moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInputKB, verticalInputKB), acceleration * Time.fixedDeltaTime);
+            //}
+
+            moveDirection = Vector2.Lerp(moveDirection, new Vector2(horizontalInput, verticalInput), acceleration * Time.fixedDeltaTime);
+
             //if (Vector3.Project(myRigidbody.velocity, moveInputVector).magnitude < maxSpeed)
             {
-                //myRigidbody.MovePosition(new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed() * Time.fixedDeltaTime + transform.position);
-               
-                if ((isPC && (horizontalInputKB != 0 || verticalInputKB != 0)) || (isConsole && (horizontalInput != 0 || verticalInput != 0)))
+                //if ((isPC && (horizontalInputKB != 0 || verticalInputKB != 0)) || (isConsole && (horizontalInput != 0 || verticalInput != 0)))
+                if (horizontalInput != 0 || verticalInput != 0)
                     myRigidbody.velocity = (transform.position + new Vector3(moveDirection.x, 0.0f, moveDirection.y) / 2.0f * GetMaxSpeed()) - transform.position;
                 else
                     myRigidbody.velocity *= 0.989f;
