@@ -267,16 +267,16 @@ public class CharacterSelectUI : MonoBehaviour
             }
         }
 
-        float horizontalInputKB = InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player);
+        float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
         //Debug.Log(horizontalInputKB);
         if (canCycle)
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (rewirePlayer.GetButtonDown("Submit"))
             {
                 //pv.RPC("SyncSelection", RpcTarget.All, false);
                 SyncSelection(false);
             }
-            else if (Input.GetKeyDown(KeyCode.D))
+            else if (rewirePlayer.GetButtonDown("DKey"))
             {
                 //pv.RPC("SyncSelection", RpcTarget.All, true);
                 SyncSelection(true);
@@ -322,17 +322,17 @@ public class CharacterSelectUI : MonoBehaviour
 
         if (LobbyConnectionHandler.instance.IsMultiplayerMode || player == Player.Four)
         {
-            float horizontalInputKB = InputManager.Instance.GetAxisKB(AxisEnum.LeftStickHorizontal, player);
+            float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
             //Debug.Log(horizontalInputKB);
             if (canCycle)
             {
-                if (Input.GetKeyDown(KeyCode.A))
+                if (rewirePlayer.GetButtonDown("Submit"))
                 {
                     selectedCharacterIndex--;
                     canCycle = false;
                     UpdateSelection();
                 }
-                else if (Input.GetKeyDown(KeyCode.D))
+                else if (rewirePlayer.GetButtonDown("DKey"))
                 {
                     selectedCharacterIndex++;
                     canCycle = false;
