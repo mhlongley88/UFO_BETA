@@ -129,29 +129,38 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void SpawnPlayer(Player p)
+    {
+        LevelUIManager.Instance.EnableUI(p);
+
+        players[p].instance = Instantiate(players[p].prefab, players[p].spawnPoint);
+        spawnedPlayerDictionary.Add(p, players[p].instance);
+    }
+
     void SpawnLocalPlayers()
     {
         Player lastPlayerSpawned = Player.Three;
         var activePlayers = GameManager.Instance.GetActivePlayers();
+
+        if (TutorialManager.instance != null)
+            PlayerBot.active = false;
 
         if(PlayerBot.active)
             GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer, UnityEngine.Random.Range(1, 6));
 
         foreach (Player i in activePlayers)
         {
-            LevelUIManager.Instance.EnableUI(i);
-         
-            players[i].instance = Instantiate(players[i].prefab, players[i].spawnPoint);
+            SpawnPlayer(i);
 
             lastPlayerSpawned = i;
-
-            spawnedPlayerDictionary.Add(i, players[i].instance);
 
             if(PlayerBot.active && PlayerBot.chosenPlayer == i)
             {
                 players[i].instance.AddComponent<PlayerBot>();
             }
         }
+
+        if (TutorialManager.instance != null) return;
 
         if (activePlayers.Count == 1) //If it started with one player, activates the bot, if there is a rematch it will just respawn the player that the bot is controlling
         {
