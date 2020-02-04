@@ -15,7 +15,7 @@ public class TutorialManager : MonoBehaviour
     public static TutorialManager instance;
     public PlayersReadyToJoint[] players;
     public Animator instructionsAnimator;
-
+    public bool canGoToMenu = false;
     bool allPlayersInGame = false;
 
     private void Awake()
@@ -68,6 +68,22 @@ public class TutorialManager : MonoBehaviour
             if (allPlayersInGame)
             {
                 instructionsAnimator.SetTrigger("Play");
+            }
+        }
+        else
+        {
+            if (canGoToMenu)
+            {
+                int playerCount = 0;
+                var activePlayers = GameManager.Instance.GetActivePlayers();
+                foreach (Player i in activePlayers)
+                {
+                    var playerInput = ReInput.players.GetPlayer(playerCount);
+                    if (playerInput.GetButtonDown("GoToMainMenu"))
+                        GameManager.Instance.EndGameAndGoToMenu();
+
+                    playerCount++;
+                }
             }
         }
     }

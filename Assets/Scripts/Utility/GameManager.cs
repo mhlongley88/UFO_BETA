@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using static NormalWeapon;
 using static SuperWeapon;
+using Rewired;
 
 public class GameManager : MonoBehaviour
 {
@@ -184,12 +185,27 @@ public class GameManager : MonoBehaviour
     {
         // Debug.Log(Input.GetJoystickNames().Length);
 
-      //  Debug.Log(playerSelectionDict.Count);
+        //  Debug.Log(playerSelectionDict.Count);
+        bool isRestartBtnDown = false;
+        bool isGoToMenuBtnDown = false;
+        bool isPauseBtnDown = false;
+        bool isFromPauseToMenuDown = false;
+
+        int playerCount = 0;
+        var activePlayers = GameManager.Instance.GetActivePlayers();
+        foreach (Player i in activePlayers)
+        {
+            var playerInput = ReInput.players.GetPlayer(playerCount);
+            isRestartBtnDown = playerInput.GetButtonDown("Restart");
+            isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
+            isPauseBtnDown = playerInput.GetButtonDown("Pause");
+            isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
+            playerCount++;
+        }
 
         if (gameOver)
         {
-
-            if (canAdvance == true && (Input.GetButtonDown("Restart") || Input.GetKeyDown(KeyCode.R)))
+            if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
             {
                 gameOver = false;
                 canAdvance = false;
@@ -229,45 +245,21 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (canAdvance == true && Input.GetButtonDown("GoToMainMenu") || Input.GetKeyDown(KeyCode.M))
+            if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
             {
-                PlayerBot.active = false;
-
-                gameOver = false;
-                canAdvance = false;
-                if (SceneManager.GetActiveScene().name != "MainMenu")
-                {
-                    if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
-                    {
-                        //Photon.Pun.PhotonNetwork.LeaveRoom();
-                        
-                      //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
-                        {
-                            //SceneManager.LoadScene("MainMenu");
-                            LobbyConnectionHandler.instance.LoadSceneMaster("MainMenu");
-
-                        }
-                    }
-                    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
-                    {
-                        
-                        SceneManager.LoadScene("MainMenu");
-                    }
-
-                }
-
+                EndGameAndGoToMenu();
             }
         }
         else
         {
-            if (Input.GetButtonDown("Pause") && !LobbyConnectionHandler.instance.IsMultiplayerMode)
+            if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
                 TogglePause();
             }
 
             if(paused)
             {
-                if(Input.GetButtonDown("FromPauseToMenu"))
+                if(isFromPauseToMenuDown)
                 {
                     TogglePause();
 
@@ -284,6 +276,34 @@ public class GameManager : MonoBehaviour
         }*/
 
 
+    }
+
+    public void EndGameAndGoToMenu()
+    {
+        PlayerBot.active = false;
+
+        gameOver = false;
+        canAdvance = false;
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
+            {
+                //Photon.Pun.PhotonNetwork.LeaveRoom();
+
+                //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                {
+                    //SceneManager.LoadScene("MainMenu");
+                    LobbyConnectionHandler.instance.LoadSceneMaster("MainMenu");
+
+                }
+            }
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+
+                SceneManager.LoadScene("MainMenu");
+            }
+
+        }
     }
 
     void GameOverControls()
