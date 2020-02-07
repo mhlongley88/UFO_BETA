@@ -77,19 +77,19 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            if (canGoToMenu)
-            {
-                int playerCount = 0;
-                var activePlayers = GameManager.Instance.GetActivePlayers();
-                foreach (Player i in activePlayers)
-                {
-                    var playerInput = ReInput.players.GetPlayer(playerCount);
-                    if (playerInput.GetButtonDown("GoToMainMenu"))
-                        GameManager.Instance.EndGameAndGoToMenu();
+            //if (canGoToMenu && GameManager.Instance.paused)
+            //{
+            //    int playerCount = 0;
+            //    var activePlayers = GameManager.Instance.GetActivePlayers();
+            //    foreach (Player i in activePlayers)
+            //    {
+            //        var playerInput = ReInput.players.GetPlayer(playerCount);
+            //        if (playerInput.GetButtonDown("GoToMainMenu"))
+            //            GameManager.Instance.EndGameAndGoToMenu();
 
-                    playerCount++;
-                }
-            }
+            //        playerCount++;
+            //    }
+            //}
         }
     }
 }

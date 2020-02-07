@@ -185,10 +185,10 @@ public class TutorialAnimations : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         Shoot.SetActive(false);
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(1);
 
         TutorialController.SetActive(false);
 
-        
+        TutorialManager.instance.canGoToMenu = true;
     }
 }
