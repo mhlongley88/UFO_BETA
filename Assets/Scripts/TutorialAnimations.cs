@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Rewired;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -17,51 +18,177 @@ public class TutorialAnimations : MonoBehaviour
     public GameObject specialPt2;
     public GameObject rotNull;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(RunTutorial());
+       StartCoroutine(RunTutorial());
     }
     // Update is called once per frame
     void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.I))
         {
             StartCoroutine(RunTutorial());
         }
+#endif
     }
 
-    private IEnumerator RunTutorial()
+    int GetPlayerIndex(Player p)
     {
-        yield return new WaitForSeconds(6);
+        int rewirePlayerId = 0;
+        switch (p)
+        {
+            case Player.One: rewirePlayerId = 0; break;
+            case Player.Two: rewirePlayerId = 1; break;
+            case Player.Three: rewirePlayerId = 2; break;
+            case Player.Four: rewirePlayerId = 3; break;
+        }
+
+        return rewirePlayerId;
+    }
+
+    public IEnumerator RunTutorial()
+    {
+        var activePlayers = GameManager.Instance.GetActivePlayers();
+        bool canProgress = false;
+
+        yield return new WaitForSeconds(3);
+
+        // LThumbSticks
         LThumbstick.SetActive(true);
-        yield return new WaitForSeconds(6);
+        while(!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetAxis("Horizontal") != 0.0f || playerInput.GetAxis("Vertical") != 0.0f)
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        //RThumbsticks
         LThumbstick.SetActive(false);
         RThumbstick.SetActive(true);
-        yield return new WaitForSeconds(6);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetAxis("AimHorizontal") != 0.0f || playerInput.GetAxis("AimVertical") != 0.0f)
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        // Shoot Button
         RThumbstick.SetActive(false);
         Shoot.SetActive(true);
-        yield return new WaitForSeconds(6);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButtonDown("Shoot"))
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        //Dash Button
         Shoot.SetActive(false);
         Dash.SetActive(true);
-        yield return new WaitForSeconds(6);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButtonDown("Dash"))
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        //Abduct button
         Dash.SetActive(false);
         Abduct.SetActive(true);
         city.SetActive(true);
-        yield return new WaitForSeconds(6);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButtonDown("Abduct"))
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        // Special Weapons
         Abduct.SetActive(false);
         specialPt1.SetActive(true);
         specialPt2.SetActive(true);
         rotNull.transform.Rotate(0, 180, 0);
-        yield return new WaitForSeconds(8);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+        canProgress = false;
+
+        // Shoot button
         specialPt1.SetActive(false);
         specialPt2.SetActive(false);
         rotNull.transform.Rotate(0, -180, 0);
         Shoot.SetActive(true);
-        yield return new WaitForSeconds(4);
+        while (!canProgress)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButtonDown("Shoot"))
+                    canProgress = true;
+            }
+
+            activePlayers = GameManager.Instance.GetActivePlayers();
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.2f);
+
         Shoot.SetActive(false);
         yield return new WaitForSeconds(4);
+
         TutorialController.SetActive(false);
+
+        
     }
 }

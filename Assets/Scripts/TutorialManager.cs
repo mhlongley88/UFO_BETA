@@ -10,11 +10,16 @@ public class PlayersReadyToJoint
     public Rewired.Player input;
 }
 
+public class PlayersInputStep
+{
+
+}
+
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager instance;
     public PlayersReadyToJoint[] players;
-    public Animator instructionsAnimator;
+    public GameObject instructionsAnims;
     public bool canGoToMenu = false;
     bool allPlayersInGame = false;
 
@@ -67,7 +72,7 @@ public class TutorialManager : MonoBehaviour
 
             if (allPlayersInGame)
             {
-                instructionsAnimator.SetTrigger("Play");
+                //instructionsAnims.SetActive(true);
             }
         }
         else
