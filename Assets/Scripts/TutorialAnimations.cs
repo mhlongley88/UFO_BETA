@@ -146,6 +146,21 @@ public class TutorialAnimations : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
 
+        while(!canProgress)
+        {
+            foreach (var player in PlayerController.playerControllerByGameObject)
+            {
+                if (player.Value.IsSuperWeaponReady()) // Wait for one of the players to have special weapon ready
+                {
+                    canProgress = true;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+        canProgress = false;
+
         // Special Weapons
         Abduct.SetActive(false);
         specialPt1.SetActive(true);
@@ -153,20 +168,12 @@ public class TutorialAnimations : MonoBehaviour
         rotNull.transform.Rotate(0, 180, 0);
         while (!canProgress)
         {
-            foreach(var player in PlayerController.playerControllerByGameObject)
+            for (int i = 0; i < activePlayers.Count; i++)
             {
-                if(player.Value.superWeaponActive) // This is true only when the super weapon is ready and is being used
-                {
+                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+                if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
                     canProgress = true;
-                }
             }
-
-            //for (int i = 0; i < activePlayers.Count; i++)
-            //{
-            //    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-            //    if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
-            //        canProgress = true;
-            //}
 
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
