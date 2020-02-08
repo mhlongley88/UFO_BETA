@@ -45,9 +45,10 @@ public class TutorialManager : MonoBehaviour
             int rewirePlayerId = 1;
             switch (p.player)
             {
+                case Player.One: rewirePlayerId = 0; break;
                 case Player.Two: rewirePlayerId = 1; break;
                 case Player.Three: rewirePlayerId = 2; break;
-                case Player.One: rewirePlayerId = 0; break;
+                case Player.Four: rewirePlayerId = 3; break;
             }
 
             p.input = ReInput.players.GetPlayer(rewirePlayerId);
