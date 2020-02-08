@@ -257,7 +257,8 @@ public class GameManager : MonoBehaviour
         {
             if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                TogglePause();
+                if(TutorialManager.instance == null)
+                    TogglePause();
             }
 
             if(paused)

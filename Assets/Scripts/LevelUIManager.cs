@@ -8,6 +8,9 @@ public class LevelUIManager : MonoBehaviour
 {
     private static LevelUIManager instance;
 
+    public GameObject livesUIObject;
+    public GameObject initialReadyFightAnim;
+
     public LifeManager p1LifeManager;
     public LifeManager p2LifeManager;
     public LifeManager p3LifeManager;

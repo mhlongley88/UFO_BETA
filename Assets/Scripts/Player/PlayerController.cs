@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isAbducting = false;
 
-    private bool superWeaponActive = false;
+    public bool superWeaponActive = false;
 
     bool dead = false;
 

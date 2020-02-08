@@ -7,7 +7,7 @@ public class TutorialEnter : MonoBehaviour
 {
     public void LoadTutorial()
     {
-        GameManager.Instance.AddPlayerToGame(Player.One);
+        GameManager.Instance.AddPlayerToGame(Player.Four);
 
         ShowLevelTitle.levelStaticInt = 17;
         SceneManager.LoadScene("LoadingRoom");

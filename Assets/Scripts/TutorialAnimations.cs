@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
+using DG.Tweening;
 
 public class TutorialAnimations : MonoBehaviour
 {
@@ -152,12 +153,20 @@ public class TutorialAnimations : MonoBehaviour
         rotNull.transform.Rotate(0, 180, 0);
         while (!canProgress)
         {
-            for (int i = 0; i < activePlayers.Count; i++)
+            foreach(var player in PlayerController.playerControllerByGameObject)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+                if(player.Value.superWeaponActive) // This is true only when the super weapon is ready and is being used
+                {
                     canProgress = true;
+                }
             }
+
+            //for (int i = 0; i < activePlayers.Count; i++)
+            //{
+            //    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+            //    if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+            //        canProgress = true;
+            //}
 
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
@@ -187,8 +196,10 @@ public class TutorialAnimations : MonoBehaviour
         Shoot.SetActive(false);
         yield return new WaitForSeconds(1);
 
-        TutorialController.SetActive(false);
-
+        Sequence seq = DOTween.Sequence();
+        seq.Append(TutorialController.transform.DOScale(0.0f, 1.0f));
+        seq.AppendCallback(() => Destroy(TutorialController));
+        
         TutorialManager.instance.canGoToMenu = true;
     }
 }

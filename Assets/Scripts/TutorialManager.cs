@@ -10,27 +10,34 @@ public class PlayersReadyToJoint
     public Rewired.Player input;
 }
 
-public class PlayersInputStep
-{
-
-}
-
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager instance;
     public PlayersReadyToJoint[] players;
-    public GameObject instructionsAnims;
+    public TutorialAnimations currentTutorialAnimations;
+    public TutorialAnimations tutorialAnimationsPrefab;
+    public Transform tutorialAnimationsParent;
+    public GameObject cityDesign;
     public bool canGoToMenu = false;
     bool allPlayersInGame = false;
+
+    Vector3 firstTutorialAnimationsPos;
+    Quaternion firstTutorialAnimationsRot;
 
     private void Awake()
     {
         instance = this;
+
+        firstTutorialAnimationsPos = currentTutorialAnimations.transform.localPosition;
+        firstTutorialAnimationsRot = currentTutorialAnimations.transform.localRotation;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        LevelUIManager.Instance.livesUIObject.SetActive(false);
+        LevelUIManager.Instance.initialReadyFightAnim.SetActive(false);
+
         for (int i = 0; i < 3; i++)
         {
             PlayersReadyToJoint p = players[i];
@@ -40,7 +47,7 @@ public class TutorialManager : MonoBehaviour
             {
                 case Player.Two: rewirePlayerId = 1; break;
                 case Player.Three: rewirePlayerId = 2; break;
-                case Player.Four: rewirePlayerId = 3; break;
+                case Player.One: rewirePlayerId = 0; break;
             }
 
             p.input = ReInput.players.GetPlayer(rewirePlayerId);
@@ -50,6 +57,19 @@ public class TutorialManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+#if UNITY_EDITOR
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            var newTutoAnim = Instantiate(tutorialAnimationsPrefab, tutorialAnimationsParent);
+            newTutoAnim.city = cityDesign;
+
+            newTutoAnim.transform.localPosition = firstTutorialAnimationsPos;
+            newTutoAnim.transform.localRotation = firstTutorialAnimationsRot;
+
+            currentTutorialAnimations = newTutoAnim;
+        }
+#endif
+
         if (!allPlayersInGame)
         {
             allPlayersInGame = true;
@@ -60,7 +80,7 @@ public class TutorialManager : MonoBehaviour
                 {
                     allPlayersInGame = false;
 
-                    if (p.input.GetButtonDown("Submit"))
+                    if (p.input.GetButtonDown("EnterTutorial"))
                     {
                         GameManager.Instance.AddPlayerToGame(p.player);
                         GameManager.Instance.SetPlayerCharacterChoice(p.player, UnityEngine.Random.Range(1, 4));
@@ -69,27 +89,28 @@ public class TutorialManager : MonoBehaviour
                     }
                 }
             }
-
-            if (allPlayersInGame)
+        }
+        
+        
+        if (canGoToMenu)
+        {
+            int rewirePlayerId = 1;
+            var activePlayers = GameManager.Instance.GetActivePlayers();
+            foreach (Player i in activePlayers)
             {
-                //instructionsAnims.SetActive(true);
+                switch (i)
+                {
+                    case Player.One: rewirePlayerId = 0; break;
+                    case Player.Two: rewirePlayerId = 1; break;
+                    case Player.Three: rewirePlayerId = 2; break;
+                    case Player.Four: rewirePlayerId = 3; break;
+                }
+
+                var playerInput = ReInput.players.GetPlayer(rewirePlayerId);
+                if (playerInput.GetButtonDown("ExitTutorial"))
+                    GameManager.Instance.EndGameAndGoToMenu();
             }
         }
-        else
-        {
-            //if (canGoToMenu && GameManager.Instance.paused)
-            //{
-            //    int playerCount = 0;
-            //    var activePlayers = GameManager.Instance.GetActivePlayers();
-            //    foreach (Player i in activePlayers)
-            //    {
-            //        var playerInput = ReInput.players.GetPlayer(playerCount);
-            //        if (playerInput.GetButtonDown("GoToMainMenu"))
-            //            GameManager.Instance.EndGameAndGoToMenu();
-
-            //        playerCount++;
-            //    }
-            //}
-        }
+        
     }
 }
