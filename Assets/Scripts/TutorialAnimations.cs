@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 using DG.Tweening;
+using System.Linq;
 
 public class TutorialAnimations : MonoBehaviour
 {
@@ -19,10 +20,17 @@ public class TutorialAnimations : MonoBehaviour
     public GameObject specialPt2;
     public GameObject rotNull;
 
+    Dictionary<Player, bool> performedAction = new Dictionary<Player, bool>();
+
     // Start is called before the first frame update
     void Start()
     {
-       StartCoroutine(RunTutorial());
+        StartCoroutine(RunTutorial());
+
+        performedAction.Add(Player.One, false);
+        performedAction.Add(Player.Two, false);
+        performedAction.Add(Player.Three, false);
+        performedAction.Add(Player.Four, false);
     }
     // Update is called once per frame
     void Update()
@@ -53,36 +61,56 @@ public class TutorialAnimations : MonoBehaviour
     {
         var activePlayers = GameManager.Instance.GetActivePlayers();
         bool canProgress = false;
+        foreach (var actionP in performedAction) performedAction[actionP.Key] = false;
 
         yield return new WaitForSeconds(3);
-
         // LThumbSticks
         LThumbstick.SetActive(true);
         while(!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetAxis("Horizontal") != 0.0f || playerInput.GetAxis("Vertical") != 0.0f)
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetAxis("Horizontal") != 0.0f || playerInput.GetAxis("Vertical") != 0.0f)
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
+
             yield return null;
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         //RThumbsticks
         LThumbstick.SetActive(false);
         RThumbstick.SetActive(true);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetAxis("AimHorizontal") != 0.0f || playerInput.GetAxis("AimVertical") != 0.0f)
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetAxis("AimHorizontal") != 0.0f || playerInput.GetAxis("AimVertical") != 0.0f)
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
@@ -90,17 +118,29 @@ public class TutorialAnimations : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         // Shoot Button
         RThumbstick.SetActive(false);
         Shoot.SetActive(true);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButtonDown("Shoot"))
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetButtonDown("Shoot"))
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
@@ -108,17 +148,29 @@ public class TutorialAnimations : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         //Dash Button
         Shoot.SetActive(false);
         Dash.SetActive(true);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButtonDown("Dash"))
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetButtonDown("Dash"))
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
@@ -126,6 +178,11 @@ public class TutorialAnimations : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         //Abduct button
         Dash.SetActive(false);
@@ -133,11 +190,18 @@ public class TutorialAnimations : MonoBehaviour
         city.SetActive(true);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButtonDown("Abduct"))
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetButtonDown("Abduct"))
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
@@ -145,21 +209,37 @@ public class TutorialAnimations : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
-
-        while(!canProgress)
+        for (int i = 0; i < performedAction.Count; i++)
         {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
+
+        while (!canProgress)
+        {
+            canProgress = true;
+
             foreach (var player in PlayerController.playerControllerByGameObject)
             {
-                if (player.Value.IsSuperWeaponReady()) // Wait for one of the players to have special weapon ready
+                if (!performedAction[player.Value.player])
                 {
-                    canProgress = true;
-                    break;
+                    canProgress = false;
+
+                    if (player.Value.IsSuperWeaponReady()) // Wait for one of the players to have special weapon ready
+                    {
+                        performedAction[player.Value.player] = true;
+                    }
                 }
             }
 
             yield return null;
         }
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         // Special Weapons
         Abduct.SetActive(false);
@@ -168,11 +248,18 @@ public class TutorialAnimations : MonoBehaviour
         rotNull.transform.Rotate(0, 180, 0);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
@@ -180,6 +267,11 @@ public class TutorialAnimations : MonoBehaviour
         }
         yield return new WaitForSeconds(0.2f);
         canProgress = false;
+        for (int i = 0; i < performedAction.Count; i++)
+        {
+            var k = performedAction.ElementAt(i);
+            performedAction[k.Key] = false;
+        }
 
         // Shoot button
         specialPt1.SetActive(false);
@@ -188,11 +280,18 @@ public class TutorialAnimations : MonoBehaviour
         Shoot.SetActive(true);
         while (!canProgress)
         {
+            canProgress = true;
+
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-                if (playerInput.GetButtonDown("Shoot"))
-                    canProgress = true;
+                if (!performedAction[activePlayers[i]])
+                {
+                    canProgress = false;
+                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    if (playerInput.GetButtonDown("Shoot"))
+                        performedAction[activePlayers[i]] = true;
+                }
             }
 
             activePlayers = GameManager.Instance.GetActivePlayers();
