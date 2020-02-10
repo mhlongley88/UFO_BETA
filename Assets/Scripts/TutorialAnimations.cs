@@ -63,7 +63,7 @@ public class TutorialAnimations : MonoBehaviour
         bool canProgress = false;
         foreach (var actionP in performedAction) performedAction[actionP.Key] = false;
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(4.0f);
         // LThumbSticks
         LThumbstick.SetActive(true);
         while(!canProgress)
@@ -86,7 +86,7 @@ public class TutorialAnimations : MonoBehaviour
 
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(4.0f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -116,7 +116,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(4.0f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -146,7 +146,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(4.0f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -176,7 +176,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(4.0f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -207,7 +207,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2.0f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -300,7 +300,7 @@ public class TutorialAnimations : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         Shoot.SetActive(false);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(4.0f);
 
         Sequence seq = DOTween.Sequence();
         seq.Append(TutorialController.transform.DOScale(0.0f, 1.0f));
