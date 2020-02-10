@@ -256,8 +256,12 @@ public class PlayerManager : MonoBehaviour
         int currentLife = players[player].lives;
 
         bool canRespawn = currentLife > 1;
-        Debug.Log(player + "???????");
+        //Debug.Log(player + "???????");
         players[player].lives--;
+
+        if (TutorialManager.instance != null)
+            players[player].lives++;
+
        // Debug.Log(players[player].lives + "???????");
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
         Debug.Log("Lifes Left = " + players[player].lives);

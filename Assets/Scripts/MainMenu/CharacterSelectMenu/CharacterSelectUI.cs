@@ -244,16 +244,20 @@ public class CharacterSelectUI : MonoBehaviour
     {
         //float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
         float horizontalInput = rewirePlayer.GetAxis("Horizontal");
+        float keyThreshold = 0.8f;
+
+        if (player == Player.Four)
+            keyThreshold = 0.1f;
 
         if (canCycle)
         {
-            if (horizontalInput < -0.8f)
+            if (horizontalInput < -keyThreshold)
             {
                 SyncSelection(false);
                 //pv.RPC("SyncSelection", RpcTarget.All, false);
 
             }
-            else if (horizontalInput > 0.8f)
+            else if (horizontalInput > keyThreshold)
             {
                 SyncSelection(true);
                 //pv.RPC("SyncSelection", RpcTarget.All, true);
@@ -261,34 +265,34 @@ public class CharacterSelectUI : MonoBehaviour
         }
         else
         {
-            if (horizontalInput > -0.8f && horizontalInput < 0.8f)
+            if (horizontalInput > -keyThreshold && horizontalInput < keyThreshold)
             {
                 canCycle = true;
             }
         }
 
-        float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
-        //Debug.Log(horizontalInputKB);
-        if (canCycle)
-        {
-            if (rewirePlayer.GetButtonDown("Submit"))
-            {
-                //pv.RPC("SyncSelection", RpcTarget.All, false);
-                SyncSelection(false);
-            }
-            else if (rewirePlayer.GetButtonDown("DKey"))
-            {
-                //pv.RPC("SyncSelection", RpcTarget.All, true);
-                SyncSelection(true);
-            }
-        }
-        else
-        {
-            if (horizontalInputKB > -0.8f && horizontalInputKB < 0.8f)
-            {
-                canCycle = true;
-            }
-        }
+        //float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
+        ////Debug.Log(horizontalInputKB);
+        //if (canCycle)
+        //{
+        //    if (rewirePlayer.GetButtonDown("Submit"))
+        //    {
+        //        //pv.RPC("SyncSelection", RpcTarget.All, false);
+        //        SyncSelection(false);
+        //    }
+        //    else if (rewirePlayer.GetButtonDown("DKey"))
+        //    {
+        //        //pv.RPC("SyncSelection", RpcTarget.All, true);
+        //        SyncSelection(true);
+        //    }
+        //}
+        //else
+        //{
+        //    if (horizontalInputKB > -0.8f && horizontalInputKB < 0.8f)
+        //    {
+        //        canCycle = true;
+        //    }
+        //}
 
     }
 
@@ -296,16 +300,20 @@ public class CharacterSelectUI : MonoBehaviour
     {
         //float horizontalInput = InputManager.Instance.GetAxis(AxisEnum.LeftStickHorizontal, player);
         float horizontalInput = rewirePlayer.GetAxis("Horizontal");
+        float keyThreshold = 0.8f;
+
+        if (player == Player.Four)
+            keyThreshold = 0.1f;
 
         if (canCycle)
         {
-            if (horizontalInput < -0.8f)
+            if (horizontalInput < -keyThreshold)
             {
                 selectedCharacterIndex--;
                 canCycle = false;
                 UpdateSelection();
             }
-            else if (horizontalInput > 0.8f)
+            else if (horizontalInput > keyThreshold)
             {
                 selectedCharacterIndex++;
                 canCycle = false;
@@ -314,39 +322,39 @@ public class CharacterSelectUI : MonoBehaviour
         }
         else
         {
-            if (horizontalInput > -0.8f && horizontalInput < 0.8f)
+            if (horizontalInput > -keyThreshold && horizontalInput < keyThreshold)
             {
                 canCycle = true;
             }
         }
 
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode || player == Player.Four)
-        {
-            float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
-            //Debug.Log(horizontalInputKB);
-            if (canCycle)
-            {
-                if (rewirePlayer.GetButtonDown("Submit"))
-                {
-                    selectedCharacterIndex--;
-                    canCycle = false;
-                    UpdateSelection();
-                }
-                else if (rewirePlayer.GetButtonDown("DKey"))
-                {
-                    selectedCharacterIndex++;
-                    canCycle = false;
-                    UpdateSelection();
-                }
-            }
-            else
-            {
-                if (horizontalInputKB > -0.8f && horizontalInputKB < 0.8f)
-                {
-                    canCycle = true;
-                }
-            }
-        }
+        //if (LobbyConnectionHandler.instance.IsMultiplayerMode || player == Player.Four)
+        //{
+        //    float horizontalInputKB = rewirePlayer.GetAxis("Horizontal");
+        //    //Debug.Log(horizontalInputKB);
+        //    if (canCycle)
+        //    {
+        //        if (rewirePlayer.GetButtonDown("Submit"))
+        //        {
+        //            selectedCharacterIndex--;
+        //            canCycle = false;
+        //            UpdateSelection();
+        //        }
+        //        else if (rewirePlayer.GetButtonDown("DKey"))
+        //        {
+        //            selectedCharacterIndex++;
+        //            canCycle = false;
+        //            UpdateSelection();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (horizontalInputKB > -0.8f && horizontalInputKB < 0.8f)
+        //        {
+        //            canCycle = true;
+        //        }
+        //    }
+        //}
 
     }
 

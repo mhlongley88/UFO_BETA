@@ -115,6 +115,15 @@ public class PlayerHealthManager : MonoBehaviour
     {
         currHealth = startingHealth;
         lifeManager = LevelUIManager.Instance.GetLifeManager(playerController.player);
+
+        if(TutorialManager.instance != null)
+        {
+            for (int i = 0; i < healthCounterImages.Length; i++)
+            {
+                var img = healthCounterImages[i];
+                img.gameObject.SetActive(false);
+            }
+        }
     }
 
     // Update is called once per frame

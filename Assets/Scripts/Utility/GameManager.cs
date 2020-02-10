@@ -196,10 +196,13 @@ public class GameManager : MonoBehaviour
         foreach (Player i in activePlayers)
         {
             var playerInput = ReInput.players.GetPlayer(playerCount);
-            isRestartBtnDown = playerInput.GetButtonDown("Restart");
-            isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
-            isPauseBtnDown = playerInput.GetButtonDown("Pause");
-            isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
+
+            if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
+            if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
+            if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
+            if (!isFromPauseToMenuDown)
+                isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
+
             playerCount++;
         }
 
@@ -254,7 +257,8 @@ public class GameManager : MonoBehaviour
         {
             if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                TogglePause();
+                if(TutorialManager.instance == null)
+                    TogglePause();
             }
 
             if(paused)
@@ -607,6 +611,12 @@ public class GameManager : MonoBehaviour
 
     public void TogglePause()
     {
+        if(TutorialManager.instance != null)
+        {
+            if (!TutorialManager.instance.canGoToMenu)
+                return;
+        }
+
         paused = !paused;
         PauseMenu.instance.menuCanvasObj.SetActive(paused);
 
