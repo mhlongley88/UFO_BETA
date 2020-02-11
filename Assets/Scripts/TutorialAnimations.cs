@@ -200,7 +200,11 @@ public class TutorialAnimations : MonoBehaviour
                     var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
 
                     if (playerInput.GetButtonDown("Abduct"))
-                        performedAction[activePlayers[i]] = true;
+                    {
+                        canProgress = true;
+                        break;
+                        //performedAction[activePlayers[i]] = true;
+                    }
                 }
             }
 
@@ -217,17 +221,18 @@ public class TutorialAnimations : MonoBehaviour
 
         while (!canProgress)
         {
-            canProgress = true;
+           // canProgress = true;
 
             foreach (var player in PlayerController.playerControllerByGameObject)
             {
                 if (!performedAction[player.Value.player])
                 {
-                    canProgress = false;
+                   // canProgress = false;
 
                     if (player.Value.IsSuperWeaponReady()) // Wait for one of the players to have special weapon ready
                     {
-                        performedAction[player.Value.player] = true;
+                        //performedAction[player.Value.player] = true;
+                        canProgress = true;
                     }
                 }
             }
@@ -248,17 +253,21 @@ public class TutorialAnimations : MonoBehaviour
         rotNull.transform.Rotate(0, 180, 0);
         while (!canProgress)
         {
-            canProgress = true;
+           // canProgress = true;
 
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 if (!performedAction[activePlayers[i]])
                 {
-                    canProgress = false;
+                    //canProgress = false;
                     var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
 
+                    
                     if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
-                        performedAction[activePlayers[i]] = true;
+                    {
+                        //performedAction[activePlayers[i]] = true;
+                        canProgress = true;
+                    }
                 }
             }
 
@@ -280,17 +289,21 @@ public class TutorialAnimations : MonoBehaviour
         Shoot.SetActive(true);
         while (!canProgress)
         {
-            canProgress = true;
+           // canProgress = true;
 
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 if (!performedAction[activePlayers[i]])
                 {
-                    canProgress = false;
+                    //canProgress = false;
                     var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
 
                     if (playerInput.GetButtonDown("Shoot"))
-                        performedAction[activePlayers[i]] = true;
+                    {
+                        //performedAction[activePlayers[i]] = true;
+                        canProgress = true;
+                        break;
+                    }
                 }
             }
 
