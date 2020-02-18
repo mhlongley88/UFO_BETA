@@ -217,7 +217,7 @@ public class AirEnemy : Enemy
             if (health <= 0)
             {
                 Instantiate(deathFx, transform.position, deathFx.transform.rotation);
-                if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+                if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
                     Destroy(gameObject);
                 else
                 {
