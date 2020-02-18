@@ -54,6 +54,8 @@ MonoBehaviour:
   _damage: 0.35
   _rateOfFire: 0.6
   _accuracy: 0.75
+  characterHead: {fileID: 21300000, guid: cb6be58583c9b0f42b652de3700e8d2d, type: 3}
+  characterLivesCircleTint: {r: 0.38470092, g: 0.8962264, b: 0.48026055, a: 1}
 --- !u!1 &1274454448025570
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,6 +353,7 @@ Transform:
   - {fileID: 5130684285234553424}
   - {fileID: 2561992563403342788}
   - {fileID: 4049565184884851932}
+  - {fileID: 6257669189278104591}
   m_Father: {fileID: 4526101999609960}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5855,6 +5858,36 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1 &1844469483834970138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6257669189278104591}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6257669189278104591
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844469483834970138}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.92, z: 5.77}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4885743328481074}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5871715682232585059
 GameObject:
   m_ObjectHideFlags: 0
@@ -6513,6 +6546,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885743328481074}
     m_Modifications:
+    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
+      propertyPath: m_Name
+      value: ModularSci-FiWeapons_Barrel2 (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 4020484374280554, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.015620232
@@ -6569,10 +6606,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.50923073
       objectReference: {fileID: 0}
-    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
-      propertyPath: m_Name
-      value: ModularSci-FiWeapons_Barrel2 (1)
-      objectReference: {fileID: 0}
     - target: {fileID: 1477544962664924, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6597,6 +6630,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4885743328481074}
     m_Modifications:
+    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
+      propertyPath: m_Name
+      value: ModularSci-FiWeapons_Barrel2
+      objectReference: {fileID: 0}
     - target: {fileID: 4020484374280554, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.015620232
@@ -6653,10 +6690,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.7033768
       objectReference: {fileID: 0}
-    - target: {fileID: 1752171395063698, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
-      propertyPath: m_Name
-      value: ModularSci-FiWeapons_Barrel2
-      objectReference: {fileID: 0}
     - target: {fileID: 1477544962664924, guid: 07da988c349bcaa4fa60e2cc141cc139, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6681,6 +6714,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4617683885282164}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: a4f8faf6718e8ae47bbcafff79afcba8,
+        type: 3}
+      propertyPath: m_Name
+      value: CharacterAnim1
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a4f8faf6718e8ae47bbcafff79afcba8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6751,11 +6789,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 100
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: a4f8faf6718e8ae47bbcafff79afcba8,
-        type: 3}
-      propertyPath: m_Name
-      value: CharacterAnim1
-      objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: a4f8faf6718e8ae47bbcafff79afcba8,
         type: 3}
       propertyPath: m_Controller
@@ -6792,6 +6825,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4617683885282164}
     m_Modifications:
+    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
+        type: 3}
+      propertyPath: m_Name
+      value: shipInterior
+      objectReference: {fileID: 0}
     - target: {fileID: 6804695206538225138, guid: af9898af0896df34db4aef526c741236,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6846,11 +6884,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
-        type: 3}
-      propertyPath: m_Name
-      value: shipInterior
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af9898af0896df34db4aef526c741236, type: 3}

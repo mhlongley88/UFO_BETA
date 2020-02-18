@@ -5199,6 +5199,8 @@ MonoBehaviour:
   _damage: 0.2
   _rateOfFire: 0.5
   _accuracy: 0.68
+  characterHead: {fileID: 0}
+  characterLivesCircleTint: {r: 0.6440014, g: 0.67439646, b: 0.6792453, a: 1}
 --- !u!1 &1476142271641758
 GameObject:
   m_ObjectHideFlags: 0
@@ -5587,6 +5589,7 @@ Transform:
   - {fileID: 4568805960822264321}
   - {fileID: 7046428501985455266}
   - {fileID: 2385479330154538396}
+  - {fileID: 1167421938422432747}
   m_Father: {fileID: 4779783966581460}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6501,6 +6504,36 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &229047333435313303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1167421938422432747}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1167421938422432747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229047333435313303}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.04, z: 5.61}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4319435298153004}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &331210255261601067
 GameObject:
   m_ObjectHideFlags: 0
@@ -7487,6 +7520,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4319435298153004}
     m_Modifications:
+    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
+        type: 3}
+      propertyPath: m_Name
+      value: shipInterior
+      objectReference: {fileID: 0}
     - target: {fileID: 6804695206538225138, guid: af9898af0896df34db4aef526c741236,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7556,11 +7594,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.94999987
-      objectReference: {fileID: 0}
-    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
-        type: 3}
-      propertyPath: m_Name
-      value: shipInterior
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af9898af0896df34db4aef526c741236, type: 3}

@@ -192,6 +192,13 @@ public class PlayerController : MonoBehaviour
         playerModel.transform.localRotation = Quaternion.identity;
         playerModel.transform.localPosition = Vector3.zero;
 
+        var characterInfo = playerModel.GetComponent<CharacterLevelSelectInfo>();
+
+        // Wait a few frames to LifeManager be assigned in the Health Manager, this should be quick (Elvis)
+        while (healthManager.LifeManager == null) yield return null;
+        healthManager.LifeManager.characterHead.sprite = characterInfo.CharacterHead;
+        healthManager.ApplyTintOnCircles(characterInfo.characterLivesCircleTint);
+
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);

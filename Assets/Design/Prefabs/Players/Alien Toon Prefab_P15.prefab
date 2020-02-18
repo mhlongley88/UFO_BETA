@@ -5201,6 +5201,8 @@ MonoBehaviour:
   _damage: 0.7
   _rateOfFire: 0.55
   _accuracy: 0.8
+  characterHead: {fileID: 0}
+  characterLivesCircleTint: {r: 0.6886792, g: 0.2678088, b: 0.0032484946, a: 1}
 --- !u!1 &1476142271641758
 GameObject:
   m_ObjectHideFlags: 0
@@ -5593,6 +5595,7 @@ Transform:
   - {fileID: 3931499136847844375}
   - {fileID: 1235449803017251226}
   - {fileID: 2713308405261793259}
+  - {fileID: 8612796169544578661}
   m_Father: {fileID: 4779783966581460}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7185,6 +7188,36 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &5445331077354765522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8612796169544578661}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8612796169544578661
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5445331077354765522}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.43, z: 5.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4319435298153004}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5734392690772193437
 GameObject:
   m_ObjectHideFlags: 0
@@ -7716,6 +7749,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4319435298153004}
     m_Modifications:
+    - target: {fileID: 1797858052549872, guid: ede29d891058c4465ab445398c2bb828, type: 3}
+      propertyPath: m_Name
+      value: greek_wood_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 4170389439998272, guid: ede29d891058c4465ab445398c2bb828, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.4556202
@@ -7771,10 +7808,6 @@ PrefabInstance:
     - target: {fileID: 4170389439998272, guid: ede29d891058c4465ab445398c2bb828, type: 3}
       propertyPath: m_LocalScale.z
       value: 9.311521
-      objectReference: {fileID: 0}
-    - target: {fileID: 1797858052549872, guid: ede29d891058c4465ab445398c2bb828, type: 3}
-      propertyPath: m_Name
-      value: greek_wood_pile
       objectReference: {fileID: 0}
     - target: {fileID: 23566141776632038, guid: ede29d891058c4465ab445398c2bb828,
         type: 3}
@@ -7935,6 +7968,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4150960495693706}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+        type: 3}
+      propertyPath: m_Name
+      value: Old Man Idle
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8005,10 +8043,15 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.4476786
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
-      propertyPath: m_Name
-      value: Old Man Idle
+      propertyPath: m_LocalRotation.x
+      value: 0.13214119
+      objectReference: {fileID: 0}
+    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0005709289
       objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
@@ -8025,16 +8068,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 766ecb766ffaa6641afefaf13be9ce35, type: 2}
-    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.13214119
-      objectReference: {fileID: 0}
-    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.0005709289
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f678bd143ab63e4bb87ab6e780ae308, type: 3}
 --- !u!4 &8740609517700821587 stripped
@@ -8125,6 +8158,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4150960495693706}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 279dbc26de8b85144a84087460065a7d,
+        type: 3}
+      propertyPath: m_Name
+      value: Treading Water
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 279dbc26de8b85144a84087460065a7d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8195,11 +8233,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.3882518
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 279dbc26de8b85144a84087460065a7d,
-        type: 3}
-      propertyPath: m_Name
-      value: Treading Water
-      objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: 279dbc26de8b85144a84087460065a7d,
         type: 3}
       propertyPath: m_Controller
@@ -8236,6 +8269,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4150960495693706}
     m_Modifications:
+    - target: {fileID: -927199367670048503, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+        type: 3}
+      propertyPath: m_Name
+      value: Old Man Idle (1)
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8306,10 +8344,15 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.4476786
       objectReference: {fileID: 0}
-    - target: {fileID: -927199367670048503, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
-      propertyPath: m_Name
-      value: Old Man Idle (1)
+      propertyPath: m_LocalRotation.x
+      value: 0.13214119
+      objectReference: {fileID: 0}
+    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0005709289
       objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: 3f678bd143ab63e4bb87ab6e780ae308,
         type: 3}
@@ -8326,16 +8369,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 766ecb766ffaa6641afefaf13be9ce35, type: 2}
-    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.13214119
-      objectReference: {fileID: 0}
-    - target: {fileID: -4431429744085825124, guid: 3f678bd143ab63e4bb87ab6e780ae308,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.0005709289
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f678bd143ab63e4bb87ab6e780ae308, type: 3}
 --- !u!4 &842613886763906439 stripped
@@ -8357,6 +8390,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4150960495693706}
     m_Modifications:
+    - target: {fileID: 100000, guid: 5e2514f13f81b09499af9009914f889a, type: 3}
+      propertyPath: m_Name
+      value: Hypno 04 PS
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e2514f13f81b09499af9009914f889a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8412,10 +8449,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 5e2514f13f81b09499af9009914f889a, type: 3}
       propertyPath: m_LocalScale.z
       value: 2.4671135
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 5e2514f13f81b09499af9009914f889a, type: 3}
-      propertyPath: m_Name
-      value: Hypno 04 PS
       objectReference: {fileID: 0}
     - target: {fileID: 19900000, guid: 5e2514f13f81b09499af9009914f889a, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -8617,6 +8650,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4319435298153004}
     m_Modifications:
+    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
+        type: 3}
+      propertyPath: m_Name
+      value: shipInterior
+      objectReference: {fileID: 0}
     - target: {fileID: 6804695206538225138, guid: af9898af0896df34db4aef526c741236,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8686,11 +8724,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.94999987
-      objectReference: {fileID: 0}
-    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
-        type: 3}
-      propertyPath: m_Name
-      value: shipInterior
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af9898af0896df34db4aef526c741236, type: 3}

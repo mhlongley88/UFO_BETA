@@ -39,7 +39,8 @@ public class PlayerHealthManager : MonoBehaviour
     public Sprite healthCountSprite;
     public Image[] healthCounterImages;
 
-    LifeManager lifeManager;
+    private LifeManager lifeManager;
+    public LifeManager LifeManager => lifeManager;
 
     public float CurrHealth
     {
@@ -125,6 +126,15 @@ public class PlayerHealthManager : MonoBehaviour
             }
         }
     }
+
+    public void ApplyTintOnCircles(Color tint)
+    {
+        for (int i = 0; i < lifeManager.lifeIndicators.Length; i++)
+        {
+            lifeManager.lifeIndicators[i].color = tint;
+        }
+    }
+
 
     // Update is called once per frame
     void Update()

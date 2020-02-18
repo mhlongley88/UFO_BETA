@@ -5200,6 +5200,8 @@ MonoBehaviour:
   _damage: 0.8
   _rateOfFire: 0.2
   _accuracy: 0.8
+  characterHead: {fileID: 21300000, guid: 560233f4f65dac944a0d4d929daa237c, type: 3}
+  characterLivesCircleTint: {r: 0.9150943, g: 0.14244394, b: 0.14244394, a: 1}
 --- !u!1 &1476142271641758
 GameObject:
   m_ObjectHideFlags: 0
@@ -5583,6 +5585,7 @@ Transform:
   - {fileID: 4713196751869114}
   - {fileID: 4296719210569290}
   - {fileID: 5763335340807199784}
+  - {fileID: 4548667419279193533}
   m_Father: {fileID: 4779783966581460}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6772,6 +6775,36 @@ Transform:
   m_Father: {fileID: 4643240373484590}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!1 &5343415395323297954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4548667419279193533}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4548667419279193533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5343415395323297954}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.67, z: 7.46}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4319435298153004}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5758093547809381488
 GameObject:
   m_ObjectHideFlags: 0
@@ -7520,6 +7553,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4150960495693706}
     m_Modifications:
+    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
+        type: 3}
+      propertyPath: m_Name
+      value: shipInterior
+      objectReference: {fileID: 0}
     - target: {fileID: 6804695206538225138, guid: af9898af0896df34db4aef526c741236,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7589,11 +7627,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 7245299420238369006, guid: af9898af0896df34db4aef526c741236,
-        type: 3}
-      propertyPath: m_Name
-      value: shipInterior
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af9898af0896df34db4aef526c741236, type: 3}
@@ -7721,6 +7754,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4013802876640493734}
     m_Modifications:
+    - target: {fileID: 4778994595283783436, guid: b191bb512c50e024f95fadb6b6370076,
+        type: 3}
+      propertyPath: m_Name
+      value: Eyes
+      objectReference: {fileID: 0}
     - target: {fileID: 8959307052610210387, guid: b191bb512c50e024f95fadb6b6370076,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7790,11 +7828,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.010000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 4778994595283783436, guid: b191bb512c50e024f95fadb6b6370076,
-        type: 3}
-      propertyPath: m_Name
-      value: Eyes
       objectReference: {fileID: 0}
     - target: {fileID: 6238728734277569385, guid: b191bb512c50e024f95fadb6b6370076,
         type: 3}

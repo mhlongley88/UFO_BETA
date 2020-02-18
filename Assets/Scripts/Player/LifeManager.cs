@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LifeManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject[] lifeIndicators;
+    public Image[] lifeIndicators;
 
-
+    public Image characterHead;
 
     public void ChangeLifeCount(int lifeCount)
     {
@@ -16,11 +16,11 @@ public class LifeManager : MonoBehaviour
         {
             if (i < lifeCount)
             {
-                lifeIndicators[i].SetActive(true);
+                lifeIndicators[i].gameObject.SetActive(true);
             }
             else
             {
-                lifeIndicators[i].SetActive(false);
+                lifeIndicators[i].gameObject.SetActive(false);
             }
         }
     }
