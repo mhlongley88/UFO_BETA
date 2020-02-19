@@ -103,12 +103,12 @@ public class PlayerHealthManager : MonoBehaviour
         refillDelay = healthSettings.refillDelay;
         refillDuration = healthSettings.refillDuration;
 
-        for (int i = 0; i < healthCounterImages.Length; i++)
-        {
-            var img = healthCounterImages[i];
-            img.color = Color.white;
-            img.sprite = healthCountSprite;
-        }
+        //for (int i = 0; i < healthCounterImages.Length; i++)
+        //{
+        //    var img = healthCounterImages[i];
+        //    img.color = Color.white;
+        //    img.sprite = healthCountSprite;
+        //}
     }
 
     // Start is called before the first frame update
@@ -132,6 +132,11 @@ public class PlayerHealthManager : MonoBehaviour
         for (int i = 0; i < lifeManager.lifeIndicators.Length; i++)
         {
             lifeManager.lifeIndicators[i].color = tint;
+        }
+
+        for (int i = 0; i < healthCounterImages.Length; i++)
+        {
+            healthCounterImages[i].color = tint;
         }
     }
 
