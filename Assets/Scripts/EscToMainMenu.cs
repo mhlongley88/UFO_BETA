@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Rewired;
 
 public class EscToMainMenu : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class EscToMainMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.LoadLevel(0);
-        }
-        
+        } 
     }
 }

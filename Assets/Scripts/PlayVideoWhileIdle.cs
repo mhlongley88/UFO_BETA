@@ -26,7 +26,7 @@ public class PlayVideoWhileIdle : MonoBehaviour
 
     void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown || Input.GetButtonDown("Restart"))
         {
             timeElapsed = Time.time + maxSecondsIdle;
             if (videoPlayer.isPlaying)

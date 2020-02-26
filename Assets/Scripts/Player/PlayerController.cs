@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour
             //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
             rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
 
-            if (player != Player.Four)
+            if (player != Player.Four || player == Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
@@ -342,10 +342,12 @@ public class PlayerController : MonoBehaviour
                 }
                 //Debug.Log("console");
             }
-            else
+            /*else
             {
                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
+
+                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
 
                     Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
@@ -357,9 +359,9 @@ public class PlayerController : MonoBehaviour
                     transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
 
 
-                }
+                }*/
                
-            }
+            //}
         }
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
@@ -560,7 +562,7 @@ public class PlayerController : MonoBehaviour
             //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
             rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
 
-            if (player != Player.Four)
+            if (player != Player.Four || player == Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
@@ -568,7 +570,7 @@ public class PlayerController : MonoBehaviour
                 }
                 Debug.Log("console");
             }
-            else
+          /*  else
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
@@ -580,7 +582,7 @@ public class PlayerController : MonoBehaviour
 
                     transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
                 }
-            }
+            }*/
         }
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && InputManager.Instance.GetButton(ButtonEnum.Fire, player)) || InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player)) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
