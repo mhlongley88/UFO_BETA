@@ -86,7 +86,7 @@ public class TutorialAnimations : MonoBehaviour
 
             yield return null;
         }
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(0.20f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -116,7 +116,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(0.2f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -146,7 +146,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(0.20f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -176,7 +176,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(0.20f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -211,7 +211,7 @@ public class TutorialAnimations : MonoBehaviour
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;
         }
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(0.2f);
         canProgress = false;
         for (int i = 0; i < performedAction.Count; i++)
         {
@@ -313,7 +313,7 @@ public class TutorialAnimations : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         Shoot.SetActive(false);
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(0.2f);
 
         Sequence seq = DOTween.Sequence();
         seq.Append(TutorialController.transform.DOScale(0.0f, 1.0f));
