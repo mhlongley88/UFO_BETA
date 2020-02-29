@@ -34,7 +34,20 @@ public class PlayVideoWhileIdle : MonoBehaviour
 
     void Update()
     {
-        if (Input.anyKeyDown || Input.GetButtonDown("Restart"))
+        bool anyJoystickButton = false;
+        int joystickButtonsToCheck = (int)KeyCode.Joystick4Button19 - (int)KeyCode.JoystickButton0;
+        int joyustickKeyStart = (int)KeyCode.JoystickButton0;
+        for (int i = 0; i < joystickButtonsToCheck; i++)
+        {
+            var keyCode = (KeyCode)(joyustickKeyStart + i);
+            if(Input.GetKey(keyCode))
+            {
+                anyJoystickButton = true;
+                break;
+            }
+        }
+
+        if (Input.anyKeyDown || Input.GetButtonDown("Restart") || anyJoystickButton)
         {
             timeElapsed = Time.time + maxSecondsIdle;
             if (videoPlayer.isPlaying)
