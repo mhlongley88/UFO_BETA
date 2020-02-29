@@ -284,10 +284,6 @@ public class GameManager : MonoBehaviour
 
     public void EndGameAndGoToMenu()
     {
-        if (PlayerBot.active)
-            PlayerBot.SetFirstPlaythrough();
-        
-
         PlayerBot.active = false;
 
         gameOver = false;
