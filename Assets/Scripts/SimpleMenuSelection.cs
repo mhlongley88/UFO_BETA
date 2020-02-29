@@ -6,6 +6,11 @@ using Rewired;
 
 public class SimpleMenuSelection : MonoBehaviour
 {
+    public static SimpleMenuSelection currentFocused;
+    static SimpleMenuSelection previousFocused;
+
+    static List<SimpleMenuSelection> allMenus = new List<SimpleMenuSelection>();
+
     public Button[] items;
 
     Vector3[] originalScales;
@@ -22,33 +27,65 @@ public class SimpleMenuSelection : MonoBehaviour
         {
             originalScales[i] = items[i].transform.localScale;
         }
+
+        allMenus.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        allMenus.Remove(this);
+    }
+
+    private void OnEnable()
+    {
+        if (currentFocused != this)
+        {
+            previousFocused = currentFocused;
+            currentFocused = this;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (currentFocused == this)
+        {
+            currentFocused = previousFocused;
+
+            if(currentFocused == null)
+            {
+               
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < 4; i++)
+        if (currentFocused == this && !PlayVideoWhileIdle.playingIdleVideo)
         {
-            var rewirePlayer = ReInput.players.GetPlayer(i);
-
-            if (changeRate < Time.time)
+            for (int i = 0; i < 4; i++)
             {
-                if (rewirePlayer.GetAxis("Vertical") > 0.1f)
+                var rewirePlayer = ReInput.players.GetPlayer(i);
+
+                if (changeRate < Time.time)
                 {
-                    Debug.Log("HJEY!");
-                    index--;
-                    changeRate = Time.time + 0.35f;
-                }
-                else if (rewirePlayer.GetAxis("Vertical") < -0.1f)
-                {
-                    index++;
-                    changeRate = Time.time + 0.35f;
+                    if (rewirePlayer.GetAxis("Vertical") > 0.1f)
+                    {
+                        Debug.Log("HJEY!");
+                        index--;
+                        changeRate = Time.time + 0.35f;
+                    }
+                    else if (rewirePlayer.GetAxis("Vertical") < -0.1f)
+                    {
+                        index++;
+                        changeRate = Time.time + 0.35f;
+                    }
+
                 }
 
+                if (rewirePlayer.GetButtonDown("Submit"))
+                    items[index].onClick.Invoke();
             }
-
-            if (rewirePlayer.GetButtonDown("Submit"))
-                items[index].onClick.Invoke();
         }
 
         if (index < 0) index = items.Length - 1;
@@ -61,5 +98,14 @@ public class SimpleMenuSelection : MonoBehaviour
         }
 
         items[index].transform.localScale = Vector3.Lerp(items[index].transform.localScale, originalScales[index] + Vector3.one * 0.2f, Time.deltaTime * 4.0f);
+    }
+
+    public void FocusMenu(SimpleMenuSelection menu)
+    {
+        if (menu.gameObject.activeInHierarchy)
+        {
+            previousFocused = this;
+            currentFocused = menu;
+        }
     }
 }

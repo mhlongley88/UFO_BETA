@@ -91,4 +91,20 @@ public class PlayerBot : MonoBehaviour
             destination = (hit.point + hit.normal) * Random.Range(0.6f, 1.0f);
         }
     }
+
+
+    static string FirstPlaythroughKey = "FirstAIPlaythrough";
+    public static void SetFirstPlaythrough()
+    {
+        int value = PlayerPrefs.GetInt(FirstPlaythroughKey);
+
+        if(value != 1)
+            PlayerPrefs.SetInt(FirstPlaythroughKey, 1);
+    }
+
+    public static bool DoneFirstPlaythrough()
+    {
+        int value = PlayerPrefs.GetInt(FirstPlaythroughKey);
+        return value == 1;
+    }
 }

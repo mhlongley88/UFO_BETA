@@ -331,8 +331,21 @@ public class PlayerManager : MonoBehaviour
         else
         {
             players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
-            if(player == PlayerBot.chosenPlayer)
+            if(player == PlayerBot.chosenPlayer && PlayerBot.active)
                 players[player].instance.AddComponent<PlayerBot>();
+            else
+            {
+                // If its a 1 on 1 match, respawn dead player as AI 
+                var activePlayers = GameManager.Instance.GetActivePlayers();
+                if(activePlayers.Count == 2)
+                {
+                    if(PlayerBot.DoneFirstPlaythrough()) // Only if the player has done a playthrough with the AI once
+                    {
+                        players[player].instance.AddComponent<PlayerBot>();
+                    }
+                }
+            }
+
 
             if (spawnedPlayerDictionary.ContainsKey(player))
                 spawnedPlayerDictionary[player] = players[player].instance;

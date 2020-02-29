@@ -5,6 +5,8 @@ using UnityEngine.Video;
 
 public class PlayVideoWhileIdle : MonoBehaviour
 {
+    public static bool playingIdleVideo = false;
+
     public VideoPlayer videoPlayer;
     public GameObject rawImagePlaying;
 
@@ -24,6 +26,12 @@ public class PlayVideoWhileIdle : MonoBehaviour
         timeElapsed = Time.time + maxSecondsIdle;
     }
 
+    IEnumerator SetFalseToPlayingVideoAfterAFrame()
+    {
+        yield return null;
+        playingIdleVideo = false;
+    }
+
     void Update()
     {
         if (Input.anyKeyDown || Input.GetButtonDown("Restart"))
@@ -32,8 +40,18 @@ public class PlayVideoWhileIdle : MonoBehaviour
             if (videoPlayer.isPlaying)
             {
                 videoPlayer.Stop();
+
+
+                StartCoroutine(SetFalseToPlayingVideoAfterAFrame());
+
                 rawImagePlaying.SetActive(false);
             }
+        }
+
+        if(MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.Splash)
+        {
+            timeElapsed = Time.time + maxSecondsIdle;
+            return;
         }
 
         if (videoPlayer.isPlaying) return;
@@ -42,6 +60,8 @@ public class PlayVideoWhileIdle : MonoBehaviour
         {
             videoPlayer.Play();
             rawImagePlaying.SetActive(true);
+
+            playingIdleVideo = true;
         }
     }
 }
