@@ -175,6 +175,7 @@ public class PlayerManager : MonoBehaviour
                     playerIndex = 1;
             }
 
+
             botPlayer = (Player)playerIndex;
 
             GameManager.Instance.AddPlayerToGame(botPlayer);

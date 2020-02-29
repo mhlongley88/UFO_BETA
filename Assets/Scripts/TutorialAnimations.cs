@@ -108,8 +108,16 @@ public class TutorialAnimations : MonoBehaviour
                     canProgress = false;
                     var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
 
+                   
                     if (playerInput.GetAxis("AimHorizontal") != 0.0f || playerInput.GetAxis("AimVertical") != 0.0f)
                         performedAction[activePlayers[i]] = true;
+                    
+                    // Also verifiy mouse movement for player4
+                    if (activePlayers[i] == Player.Four)
+                    {
+                        if(Input.GetAxis("Mouse X") != 0.0f || Input.GetAxis("Mouse Y") != 0.0f)
+                            performedAction[activePlayers[i]] = true;
+                    }
                 }
             }
 

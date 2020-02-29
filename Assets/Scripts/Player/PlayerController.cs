@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour
             //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
             rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
 
-            if (player != Player.Four || player == Player.Four)
+            //if (player != Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
@@ -342,27 +342,25 @@ public class PlayerController : MonoBehaviour
                 }
                 //Debug.Log("console");
             }
-            /*else
+            
+            if(player == Player.Four && rightStickDirection == Vector2.zero)
             {
                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
-                {
+                
 
-                    this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
 
-                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
-
-
-                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
-                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
-
-                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+                Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
 
-                }*/
-               
-            //}
+                Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+            }
         }
+
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
         if (rewirePlayer.GetButtonDown("Shoot") && gunReady && !rewirePlayer.GetButton("Abduct"))
@@ -562,15 +560,16 @@ public class PlayerController : MonoBehaviour
             //rightStickDirection = new Vector2(InputManager.Instance.GetAxis(AxisEnum.RightStickHorizontal, player), InputManager.Instance.GetAxis(AxisEnum.RightStickVertical, player));
             rightStickDirection = rewirePlayer.GetAxis2D("AimHorizontal", "AimVertical");
 
-            if (player != Player.Four || player == Player.Four)
+            //if (player != Player.Four)
             {
                 if (rightStickDirection != Vector2.zero)
                 {
                     this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
                 }
-                Debug.Log("console");
+                //Debug.Log("console");
             }
-          /*  else
+
+            if (player == Player.Four && rightStickDirection == Vector2.zero)
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
@@ -582,7 +581,7 @@ public class PlayerController : MonoBehaviour
 
                     transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
                 }
-            }*/
+            }
         }
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && InputManager.Instance.GetButton(ButtonEnum.Fire, player)) || InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player)) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
