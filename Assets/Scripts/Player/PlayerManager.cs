@@ -188,11 +188,6 @@ public class PlayerManager : MonoBehaviour
 
             spawnedPlayerDictionary.Add(botPlayer, players[botPlayer].instance);
         }
-
-        if (activePlayers.Count > 1)
-        {
-            PlayerBot.active = false;
-        }
     }
 
     void SpawnMulPlayer()
