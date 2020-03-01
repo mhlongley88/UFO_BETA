@@ -8,15 +8,14 @@ public class SimpleMenuSelection : MonoBehaviour
 {
     public static SimpleMenuSelection currentFocused;
     static SimpleMenuSelection previousFocused;
-
     static List<SimpleMenuSelection> allMenus = new List<SimpleMenuSelection>();
 
+
     public Button[] items;
+    public SimpleMenuSelection goToMenuWhenBack;
 
     Vector3[] originalScales;
-
     int index = 0;
-
     float changeRate = 0.0f;
 
     // Start is called before the first frame update
@@ -71,7 +70,7 @@ public class SimpleMenuSelection : MonoBehaviour
                 {
                     if (rewirePlayer.GetAxis("Vertical") > 0.1f)
                     {
-                        Debug.Log("HJEY!");
+                        //Debug.Log("HJEY!");
                         index--;
                         changeRate = Time.time + 0.35f;
                     }
@@ -85,6 +84,14 @@ public class SimpleMenuSelection : MonoBehaviour
 
                 if (rewirePlayer.GetButtonDown("Submit"))
                     items[index].onClick.Invoke();
+
+
+                if (goToMenuWhenBack != null && rewirePlayer.GetButtonDown("Back"))
+                {
+                    gameObject.SetActive(false);
+                    goToMenuWhenBack.gameObject.SetActive(true);
+                    FocusMenu(goToMenuWhenBack);
+                }
             }
         }
 
