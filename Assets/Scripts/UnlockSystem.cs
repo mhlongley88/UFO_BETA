@@ -10,6 +10,11 @@ public class UnlockSystem : MonoBehaviour
     [HideInInspector]
     public UnityEvent onBattlesCompletedChange = new UnityEvent();
 
+    [HideInInspector]
+    public List<int> allMatchesThresholdForCharacters = new List<int>();
+    [HideInInspector]
+    public List<int> allMatchesThresholdForLevels = new List<int>();
+
     private void Awake()
     {
         if(instance)
@@ -29,6 +34,16 @@ public class UnlockSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        for(int i = 0; i < GameManager.Instance.Characters.Length; i++)
+        {
+            allMatchesThresholdForCharacters.Add(GameManager.Instance.Characters[i].matchThreshold);
+        }
+
+        for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
+        {
+            allMatchesThresholdForLevels.Add(LevelUnlockCheck.All[i].matchThreshold);
+        }
+
         //matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
 
         //Debug.Log("Getting matches completed at initialization: " + matchesCompleted);
@@ -66,9 +81,28 @@ public class UnlockSystem : MonoBehaviour
         PlayerPrefs.Save();
 
         onBattlesCompletedChange.Invoke();
-
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);
+    }
+
+    public bool HasThresholdForCharacter()
+    {
+        if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool HasThresholdForLevels()
+    {
+        if (allMatchesThresholdForLevels.FindIndex(it => it == matchesCompleted) >= 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public int GetMatchesCompleted()
