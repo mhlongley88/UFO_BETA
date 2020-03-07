@@ -165,15 +165,22 @@ public class PlayerController : MonoBehaviour
         playerControllerByGameObject.Add(gameObject, this);
 
 
-        switch(player)
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            case Player.One: rewirePlayerId = 0; break;
-            case Player.Two: rewirePlayerId = 1; break;
-            case Player.Three: rewirePlayerId = 2; break;
-            case Player.Four: rewirePlayerId = 3; break;
-        }
+            switch (player)
+            {
+                case Player.One: rewirePlayerId = 0; break;
+                case Player.Two: rewirePlayerId = 1; break;
+                case Player.Three: rewirePlayerId = 2; break;
+                case Player.Four: rewirePlayerId = 3; break;
+            }
 
-        rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+            rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+        }
+        else
+        {
+            rewirePlayer = ReInput.players.GetPlayer(0);
+        }
     }
 
     IEnumerator Start()

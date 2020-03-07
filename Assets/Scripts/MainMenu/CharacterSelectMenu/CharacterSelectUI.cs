@@ -134,25 +134,29 @@ public class CharacterSelectUI : MonoBehaviour
             damageSlider.value = info.Damage;
             rateOfFireSlider.value = info.RateOfFire;
             accuracySlider.value = info.Accuracy;
+
+            switch (player)
+            {
+                case Player.One: rewirePlayerId = 0; break;
+                case Player.Two: rewirePlayerId = 1; break;
+                case Player.Three: rewirePlayerId = 2; break;
+                case Player.Four: rewirePlayerId = 3; break;
+            }
+
+            rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
         }
         else
         {
             pv = this.GetComponent<PhotonView>();
             if(pv.IsMine)
                 pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
+
+            rewirePlayer = ReInput.players.GetPlayer(0);
             //SpawnMultiplayer();
         }
 
 
-        switch (player)
-        {
-            case Player.One: rewirePlayerId = 0; break;
-            case Player.Two: rewirePlayerId = 1; break;
-            case Player.Three: rewirePlayerId = 2; break;
-            case Player.Four: rewirePlayerId = 3; break;
-        }
-
-        rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+        
     }
 
     [PunRPC]
