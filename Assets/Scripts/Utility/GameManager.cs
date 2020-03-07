@@ -191,19 +191,25 @@ public class GameManager : MonoBehaviour
         bool isPauseBtnDown = false;
         bool isFromPauseToMenuDown = false;
 
-        int playerCount = 0;
         var activePlayers = GameManager.Instance.GetActivePlayers();
         foreach (Player i in activePlayers)
         {
-            var playerInput = ReInput.players.GetPlayer(playerCount);
+            int playerIndex = 0;
+            switch (i)
+            {
+                case Player.One: playerIndex = 0; break;
+                case Player.Two: playerIndex = 1; break;
+                case Player.Three: playerIndex = 2; break;
+                case Player.Four: playerIndex = 3; break;
+            }
+
+            var playerInput = ReInput.players.GetPlayer(playerIndex);
 
             if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
             if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
             if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
             if (!isFromPauseToMenuDown)
                 isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
-
-            playerCount++;
         }
 
         if (gameOver)

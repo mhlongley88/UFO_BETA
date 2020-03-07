@@ -295,6 +295,8 @@ public class GraphicsSettingsMenu : MonoBehaviour {
         wantedResY = resolutions[index].height;
         Screen.SetResolution(wantedResX, wantedResY, fullScreenMode);
         currentResolutionText.text = wantedResX + "x" + wantedResY;
+
+        resolutionsPanelParent.SetActive(!resolutionsPanelParent.activeSelf);
     }
 
     public void ShowResolutionOptions()//opens the dropdown menu with available resolution options.
