@@ -180,6 +180,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             rewirePlayer = ReInput.players.GetPlayer(0);
+            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
         }
     }
 
@@ -350,7 +351,7 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("console");
             }
             
-            if(player == Player.Four && rightStickDirection == Vector2.zero)
+            if((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
             {
                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 
@@ -576,7 +577,7 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("console");
             }
 
-            if (player == Player.Four && rightStickDirection == Vector2.zero)
+            if ((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
