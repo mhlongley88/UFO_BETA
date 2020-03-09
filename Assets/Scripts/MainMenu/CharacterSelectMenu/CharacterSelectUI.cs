@@ -152,6 +152,7 @@ public class CharacterSelectUI : MonoBehaviour
                 pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
 
             rewirePlayer = ReInput.players.GetPlayer(0);
+            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
             //SpawnMultiplayer();
         }
 
@@ -250,7 +251,7 @@ public class CharacterSelectUI : MonoBehaviour
         float horizontalInput = rewirePlayer.GetAxis("Horizontal");
         float keyThreshold = 0.8f;
 
-        if (player == Player.Four)
+        if (player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode)
             keyThreshold = 0.1f;
 
         if (canCycle)
