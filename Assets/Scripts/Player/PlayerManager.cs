@@ -273,10 +273,14 @@ public class PlayerManager : MonoBehaviour
         players[player].rank = playersLeft;
         spawnedPlayerDictionary.Remove(player);
 
-        if(playersLeft < 2)
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+
         {
-            var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
-            players[lastPlayerAlive].rank = 0;
+            if (playersLeft < 2)
+            {
+                var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+                players[lastPlayerAlive].rank = 0;
+            }
         }
         //Debug.Log(playerModel.gameObject.name);
 
