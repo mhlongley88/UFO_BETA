@@ -282,6 +282,13 @@ public class PlayerManager : MonoBehaviour
                 players[lastPlayerAlive].rank = 0;
             }
         }
+
+        else if (playersLeft < 2 && spawnedPlayerDictionary.Count == 1)
+        {
+            var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+            players[lastPlayerAlive].rank = 0;
+        }
+
         //Debug.Log(playerModel.gameObject.name);
 
         // Online handling
