@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckUnlocks : MonoBehaviour
+public class UnlockNotify : MonoBehaviour
 {
-    public void Check()
+    void Start()
     {
+        // UnlockSystem.instance.unlockedLevelNotification.Add(0);
         UnlockSystem.instance.TickleNotifications();
     }
+
 }

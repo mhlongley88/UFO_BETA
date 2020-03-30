@@ -5021,6 +5021,7 @@ MonoBehaviour:
       m_Calls: []
   allMatchesThresholdForCharacters: 
   allMatchesThresholdForLevels: 
+  unlockedLevelNotification: 
 --- !u!4 &617052704
 Transform:
   m_ObjectHideFlags: 0
@@ -15399,10 +15400,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 386645893}
     m_Modifications:
-    - target: {fileID: 1042937792756934, guid: 5cf2b93824e090d429fb1b173a3524e4, type: 3}
-      propertyPath: m_Name
-      value: Alien Toon Prefab_P1
-      objectReference: {fileID: 0}
     - target: {fileID: 4617683885282164, guid: 5cf2b93824e090d429fb1b173a3524e4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.1222496
@@ -15455,17 +15452,21 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.30000004
       objectReference: {fileID: 0}
+    - target: {fileID: 1042937792756934, guid: 5cf2b93824e090d429fb1b173a3524e4, type: 3}
+      propertyPath: m_Name
+      value: Alien Toon Prefab_P1
+      objectReference: {fileID: 0}
     - target: {fileID: 8123814560217346407, guid: 5cf2b93824e090d429fb1b173a3524e4,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 137890368513139690, guid: 5cf2b93824e090d429fb1b173a3524e4,
+    - target: {fileID: 23056844285136576, guid: 5cf2b93824e090d429fb1b173a3524e4,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 52aa0b890ef418c4db8814c7aa181431, type: 2}
-    - target: {fileID: 23056844285136576, guid: 5cf2b93824e090d429fb1b173a3524e4,
+    - target: {fileID: 137890368513139690, guid: 5cf2b93824e090d429fb1b173a3524e4,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -16537,6 +16538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2069189114}
   - component: {fileID: 2069189115}
+  - component: {fileID: 2069189116}
   m_Layer: 0
   m_Name: Unlock
   m_TagString: Untagged
@@ -16574,6 +16576,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterUnlockedVfx: {fileID: 1434169352}
   levelUnlockedVfx: {fileID: 1520700609}
+--- !u!114 &2069189116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069189113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fb549e452df4ee46a74a634a00a714d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2084122498 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3690859797953171380, guid: 297ee78cb7289bd478751d62f0c2e176,
@@ -17790,16 +17804,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2069189114}
     m_Modifications:
-    - target: {fileID: 1319844159732377704, guid: edeae1d19665e9c439d41d9dfb4e85f6,
-        type: 3}
-      propertyPath: m_Name
-      value: CharacterUnlocked
-      objectReference: {fileID: 0}
-    - target: {fileID: 1319844159732377704, guid: edeae1d19665e9c439d41d9dfb4e85f6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1322930607670592090, guid: edeae1d19665e9c439d41d9dfb4e85f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17868,6 +17872,16 @@ PrefabInstance:
     - target: {fileID: 1322930607670592090, guid: edeae1d19665e9c439d41d9dfb4e85f6,
         type: 3}
       propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319844159732377704, guid: edeae1d19665e9c439d41d9dfb4e85f6,
+        type: 3}
+      propertyPath: m_Name
+      value: CharacterUnlocked
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319844159732377704, guid: edeae1d19665e9c439d41d9dfb4e85f6,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1320837495544687289, guid: edeae1d19665e9c439d41d9dfb4e85f6,
@@ -18863,16 +18877,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2069189114}
     m_Modifications:
-    - target: {fileID: 4616429341648499016, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
-        type: 3}
-      propertyPath: m_Name
-      value: LevelUnlocked
-      objectReference: {fileID: 0}
-    - target: {fileID: 4616429341648499016, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4619043001600859002, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18941,6 +18945,16 @@ PrefabInstance:
     - target: {fileID: 4619043001600859002, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
         type: 3}
       propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4616429341648499016, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
+        type: 3}
+      propertyPath: m_Name
+      value: LevelUnlocked
+      objectReference: {fileID: 0}
+    - target: {fileID: 4616429341648499016, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4617689316217632870, guid: 3a9549dee6d83af4aa0ff822d6f50eac,
