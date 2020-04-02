@@ -24,6 +24,8 @@ public class UnlockSystem : MonoBehaviour
         {
             if (instance != this)
                 Destroy(gameObject);
+
+            return;
         }
 
         instance = this;
@@ -61,7 +63,8 @@ public class UnlockSystem : MonoBehaviour
         if (unlockedLevelNotification.Count > 0)
         {
             // For now like this, after that, put the integer
-            unlockedLevelNotification.Clear();
+            //unlockedLevelNotification.Clear();
+            unlockedLevelNotification.RemoveAt(0);
 
             UnlockNotification.instance.SignalUnlockLevel();
         }
@@ -70,7 +73,8 @@ public class UnlockSystem : MonoBehaviour
         if (unlockedCharacterNotification.Count > 0)
         {
             // For now like this, after that, put the integer
-            unlockedCharacterNotification.Clear();
+            //unlockedCharacterNotification.Clear();
+            unlockedCharacterNotification.RemoveAt(0);
 
             UnlockNotification.instance.SignalUnlockCharacter();
         }
@@ -109,8 +113,16 @@ public class UnlockSystem : MonoBehaviour
 
         onBattlesCompletedChange.Invoke();
 
-        if (HasThresholdForCharacter()) unlockedCharacterNotification.Add(matchesCompleted);
-        if (HasThresholdForLevels()) unlockedLevelNotification.Add(matchesCompleted);
+        if (HasThresholdForCharacter())
+        {
+            unlockedCharacterNotification.Add(matchesCompleted);
+            unlockedCharacterNotification.Add(matchesCompleted);
+        }
+        if (HasThresholdForLevels())
+        {
+            unlockedLevelNotification.Add(matchesCompleted);
+            unlockedLevelNotification.Add(matchesCompleted);
+        }
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);
     }
@@ -119,7 +131,7 @@ public class UnlockSystem : MonoBehaviour
     {
         if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)
         {
-            allMatchesThresholdForLevels.Remove(matchesCompleted);
+            allMatchesThresholdForCharacters.Remove(matchesCompleted);
             return true;
         }
 
