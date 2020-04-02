@@ -15,12 +15,17 @@ public class UnlockSystem : MonoBehaviour
     [HideInInspector]
     public List<int> allMatchesThresholdForLevels = new List<int>();
 
+    public List<int> unlockedCharacterNotification = new List<int>();
+    public List<int> unlockedLevelNotification = new List<int>();
+
     private void Awake()
     {
         if(instance)
         {
             if (instance != this)
                 Destroy(gameObject);
+
+            return;
         }
 
         instance = this;
@@ -36,17 +41,43 @@ public class UnlockSystem : MonoBehaviour
     {
         for(int i = 0; i < GameManager.Instance.Characters.Length; i++)
         {
-            allMatchesThresholdForCharacters.Add(GameManager.Instance.Characters[i].matchThreshold);
+            if(GameManager.Instance.Characters[i].matchThreshold > matchesCompleted)
+                allMatchesThresholdForCharacters.Add(GameManager.Instance.Characters[i].matchThreshold);
         }
 
         for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
         {
-            allMatchesThresholdForLevels.Add(LevelUnlockCheck.All[i].matchThreshold);
+            if(LevelUnlockCheck.All[i].matchThreshold > matchesCompleted)
+                allMatchesThresholdForLevels.Add(LevelUnlockCheck.All[i].matchThreshold);
         }
 
         //matchesCompleted = PlayerPrefs.GetInt("BattlesCompleted", 0);
 
         //Debug.Log("Getting matches completed at initialization: " + matchesCompleted);
+    }
+
+    public void TickleNotifications()
+    {
+       // unlockedCharacterNotification.Add(0);
+
+        if (unlockedLevelNotification.Count > 0)
+        {
+            // For now like this, after that, put the integer
+            //unlockedLevelNotification.Clear();
+            unlockedLevelNotification.RemoveAt(0);
+
+            UnlockNotification.instance.SignalUnlockLevel();
+        }
+
+
+        if (unlockedCharacterNotification.Count > 0)
+        {
+            // For now like this, after that, put the integer
+            //unlockedCharacterNotification.Clear();
+            unlockedCharacterNotification.RemoveAt(0);
+
+            UnlockNotification.instance.SignalUnlockCharacter();
+        }
     }
 	
 	void Update()
@@ -81,6 +112,17 @@ public class UnlockSystem : MonoBehaviour
         PlayerPrefs.Save();
 
         onBattlesCompletedChange.Invoke();
+
+        if (HasThresholdForCharacter())
+        {
+            unlockedCharacterNotification.Add(matchesCompleted);
+            unlockedCharacterNotification.Add(matchesCompleted);
+        }
+        if (HasThresholdForLevels())
+        {
+            unlockedLevelNotification.Add(matchesCompleted);
+            unlockedLevelNotification.Add(matchesCompleted);
+        }
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);
     }
@@ -89,6 +131,7 @@ public class UnlockSystem : MonoBehaviour
     {
         if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)
         {
+            allMatchesThresholdForCharacters.Remove(matchesCompleted);
             return true;
         }
 
@@ -99,6 +142,7 @@ public class UnlockSystem : MonoBehaviour
     {
         if (allMatchesThresholdForLevels.FindIndex(it => it == matchesCompleted) >= 0)
         {
+            allMatchesThresholdForLevels.Remove(matchesCompleted);
             return true;
         }
 

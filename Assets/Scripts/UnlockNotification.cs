@@ -52,18 +52,18 @@ public class UnlockNotification : MonoBehaviour
 
     public void SignalUnlockCharacter()
     {
-        characterUnlockedVfx.SetActive(true);
-
         Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(0.5f);
+        seq.AppendCallback(() => characterUnlockedVfx.SetActive(true));
         seq.AppendInterval(3.0f);
         seq.AppendCallback(() => characterUnlockedVfx.SetActive(false));
     }
 
     public void SignalUnlockLevel()
     {
-        levelUnlockedVfx.SetActive(true);
-
         Sequence seq = DOTween.Sequence();
+        seq.AppendInterval(0.5f);
+        seq.AppendCallback(() => levelUnlockedVfx.SetActive(true));
         seq.AppendInterval(3.0f);
         seq.AppendCallback(() => levelUnlockedVfx.SetActive(false));
     }
