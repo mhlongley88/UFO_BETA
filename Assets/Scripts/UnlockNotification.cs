@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using Rewired;
 
 public class UnlockNotification : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class UnlockNotification : MonoBehaviour
 
     public GameObject characterUnlockedVfx;
     public GameObject levelUnlockedVfx;
+
+    public bool keepOnScreenUntilProgress = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -40,6 +43,26 @@ public class UnlockNotification : MonoBehaviour
 
     private void Update()
     {
+        if (keepOnScreenUntilProgress)
+        {
+            if (characterUnlockedVfx.activeInHierarchy || levelUnlockedVfx.activeInHierarchy)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    var rewirePlayer = ReInput.players.GetPlayer(i);
+
+                    if (rewirePlayer.GetButtonDown("Submit"))
+                    {
+                        if (characterUnlockedVfx.activeInHierarchy)
+                            characterUnlockedVfx.SetActive(false);
+
+                        if (levelUnlockedVfx.activeInHierarchy)
+                            levelUnlockedVfx.SetActive(false);
+                    }
+                }
+            }
+        }
+
 #if UNITY_EDITOR
         //test
         if (Input.GetKeyDown(KeyCode.J))
@@ -55,8 +78,12 @@ public class UnlockNotification : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.5f);
         seq.AppendCallback(() => characterUnlockedVfx.SetActive(true));
-        seq.AppendInterval(3.0f);
-        seq.AppendCallback(() => characterUnlockedVfx.SetActive(false));
+
+        if (!keepOnScreenUntilProgress)
+        {
+            seq.AppendInterval(3.0f);
+            seq.AppendCallback(() => characterUnlockedVfx.SetActive(false));
+        }
     }
 
     public void SignalUnlockLevel()
@@ -64,8 +91,12 @@ public class UnlockNotification : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.5f);
         seq.AppendCallback(() => levelUnlockedVfx.SetActive(true));
-        seq.AppendInterval(3.0f);
-        seq.AppendCallback(() => levelUnlockedVfx.SetActive(false));
+
+        if (!keepOnScreenUntilProgress)
+        {
+            seq.AppendInterval(3.0f);
+            seq.AppendCallback(() => levelUnlockedVfx.SetActive(false));
+        }
     }
 
     //public void Show(string text)
