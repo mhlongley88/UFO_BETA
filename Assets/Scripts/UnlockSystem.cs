@@ -22,6 +22,10 @@ public class UnlockSystem : MonoBehaviour
     public List<int> unlockedCharacterNotificationMM = new List<int>();
     public List<int> unlockedLevelNotificationMM = new List<int>();
 
+    public List<int> recentlyUnlockedCharacters = new List<int>();
+
+    public int MatchesCompleted => matchesCompleted;
+
     private void Awake()
     {
         if(instance)
@@ -135,6 +139,9 @@ public class UnlockSystem : MonoBehaviour
         {
             unlockedCharacterNotification.Add(matchesCompleted);
             unlockedCharacterNotificationMM.Add(matchesCompleted);
+
+            recentlyUnlockedCharacters.Add(MatchesCompleted);
+
         }
         if (HasThresholdForLevels())
         {

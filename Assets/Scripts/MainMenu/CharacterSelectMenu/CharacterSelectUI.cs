@@ -46,6 +46,8 @@ public class CharacterSelectUI : MonoBehaviour
     public Slider rateOfFireSlider;
     public Slider accuracySlider;
 
+    public GameObject newVfx;
+
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
         set 
@@ -216,6 +218,15 @@ public class CharacterSelectUI : MonoBehaviour
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
+
+        if(GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0)
+        {
+            if(UnlockSystem.instance.recentlyUnlockedCharacters.Contains(GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold))
+                newVfx.SetActive(true);
+            else
+                newVfx.SetActive(false);
+            //UnlockSystem.instance.recentlyUnlockedCharacters.RemoveAt(0);
+        }
 
         var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
 
