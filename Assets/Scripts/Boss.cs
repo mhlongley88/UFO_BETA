@@ -11,6 +11,8 @@ public class Boss : MonoBehaviour
     public GameObject cmVCam6;
     public Transform annunakiObj;
     public Image lifeBar;
+    public AudioSource bossDeathSFX;
+    public AudioSource bossLOOP;
 
     public int maxHealth = 40;
     public int health = 40;
@@ -42,6 +44,9 @@ public class Boss : MonoBehaviour
             lookAtPlayer.enabled = false;
 
             Debug.Log("Boss is Dead");
+            bossDeathSFX.Play();
+            bossLOOP.Stop();
+            
         }
     }
 }
