@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class UnlockSystem : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class UnlockSystem : MonoBehaviour
 
     public List<int> unlockedCharacterNotification = new List<int>();
     public List<int> unlockedLevelNotification = new List<int>();
+
+    public List<int> unlockedCharacterNotificationMM = new List<int>();
+    public List<int> unlockedLevelNotificationMM = new List<int>();
 
     private void Awake()
     {
@@ -58,25 +62,39 @@ public class UnlockSystem : MonoBehaviour
 
     public void TickleNotifications()
     {
-       // unlockedCharacterNotification.Add(0);
+        // unlockedCharacterNotification.Add(0);
 
-        if (unlockedLevelNotification.Count > 0)
+        if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            // For now like this, after that, put the integer
-            //unlockedLevelNotification.Clear();
-            unlockedLevelNotification.RemoveAt(0);
+            if (unlockedLevelNotificationMM.Count > 0)
+            {
+                unlockedLevelNotificationMM.Clear();
 
-            UnlockNotification.instance.SignalUnlockLevel();
+                UnlockNotification.instance.SignalUnlockLevel();
+            }
+
+            if (unlockedCharacterNotificationMM.Count > 0)
+            {
+                unlockedCharacterNotificationMM.Clear();
+
+                UnlockNotification.instance.SignalUnlockCharacter();
+            }
         }
-
-
-        if (unlockedCharacterNotification.Count > 0)
+        else
         {
-            // For now like this, after that, put the integer
-            //unlockedCharacterNotification.Clear();
-            unlockedCharacterNotification.RemoveAt(0);
+            if (unlockedLevelNotification.Count > 0)
+            {
+                unlockedLevelNotification.Clear();
 
-            UnlockNotification.instance.SignalUnlockCharacter();
+                UnlockNotification.instance.SignalUnlockLevel();
+            }
+
+            if (unlockedCharacterNotification.Count > 0)
+            {
+                unlockedCharacterNotification.Clear();
+
+                UnlockNotification.instance.SignalUnlockCharacter();
+            }
         }
     }
 	
@@ -116,12 +134,12 @@ public class UnlockSystem : MonoBehaviour
         if (HasThresholdForCharacter())
         {
             unlockedCharacterNotification.Add(matchesCompleted);
-            unlockedCharacterNotification.Add(matchesCompleted);
+            unlockedCharacterNotificationMM.Add(matchesCompleted);
         }
         if (HasThresholdForLevels())
         {
             unlockedLevelNotification.Add(matchesCompleted);
-            unlockedLevelNotification.Add(matchesCompleted);
+            unlockedLevelNotificationMM.Add(matchesCompleted);
         }
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);
