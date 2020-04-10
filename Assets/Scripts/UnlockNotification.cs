@@ -22,6 +22,8 @@ public class UnlockNotification : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        keepOnScreenUntilProgress = true;
+
         instance = this;
 
         //if (instance != null && instance != this)
@@ -51,7 +53,7 @@ public class UnlockNotification : MonoBehaviour
                 {
                     var rewirePlayer = ReInput.players.GetPlayer(i);
 
-                    if (rewirePlayer.GetButtonDown("Submit"))
+                    if (rewirePlayer.GetButtonDown("Submit") || rewirePlayer.GetButtonDown("Restart"))
                     {
                         if (characterUnlockedVfx.activeInHierarchy)
                             characterUnlockedVfx.SetActive(false);

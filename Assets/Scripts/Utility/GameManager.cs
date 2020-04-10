@@ -64,7 +64,6 @@ public class GameManager : MonoBehaviour
     private Player activePlayers = Player.None;
     private static GameManager instance;
 
-
     public static GameManager Instance
     {
         get
