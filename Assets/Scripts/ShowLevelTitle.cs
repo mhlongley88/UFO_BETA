@@ -35,6 +35,14 @@ public class ShowLevelTitle : MonoBehaviour
         
     }
 
+    private void OnDestroy()
+    {
+        if(levelStaticInt == levelNum)
+        {
+            PlayerPrefs.SetInt("PlayedLevel" + levelNum, 1);
+        }
+    }
+
     void OnTriggerEnter(Collider coll)
     {
         if(coll.gameObject.tag == "Player")
