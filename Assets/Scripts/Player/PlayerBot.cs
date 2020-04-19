@@ -18,6 +18,15 @@ public class PlayerBot : MonoBehaviour
 
     bool followingPlayer;
 
+    AIPreset preset;
+
+    float abductRateElapsed = 0.0f;
+    bool abductOn;
+    bool usingSpecial;
+    float useDashElaspsed;
+    float increaseHealthRateElapsed;
+    float increaseDamageRateElapsed;
+
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
@@ -25,6 +34,10 @@ public class PlayerBot : MonoBehaviour
 
         destination = transform.position;
         playerController.allowLocalProcessInput = false;
+
+        preset = BotConfigurator.instance.currentPreset;
+
+        playerController.inputAbduction = false;
     }
 
     private void OnDestroy()
@@ -70,16 +83,108 @@ public class PlayerBot : MonoBehaviour
 
         playerController.ApplyExternalInput(moving ? (destination - transform.position).normalized : Vector3.zero, lookDir);
 
+        // Shooting
         if(adversaryObject && shootingRate < Time.time)
         {
             playerController.CurrentWeapon.UpdateShootDirection(transform.forward);
             playerController.CurrentWeapon.Fire();
 
-            shootingRate = Time.time + Random.Range(0.25f, 1.4f);
+            shootingRate = Time.time + Random.Range(preset.shootRateMinMax.x, preset.shootRateMinMax.y);
 
-            if (Random.value > 0.55f)
-                shootingRate = Time.time + Random.Range(0.08f, 0.2f);
+            // A little variation
+            if (Random.value > 0.75f)
+                shootingRate = Time.time + Random.Range(preset.shootRateMinMax.x - 0.1f, preset.shootRateMinMax.y - 0.1f);
         }
+
+        // Abduction
+        if (preset.abduct)
+        {
+            if (!abductOn)
+            {
+                if (abductRateElapsed < Time.time)
+                {
+                    if (ObjectAbduct.AbductableObjects.Count > 0)
+                    {
+                        for (int i = 0; i < ObjectAbduct.AbductableObjects.Count; i++)
+                        {
+                            var abductable = ObjectAbduct.AbductableObjects[i];
+
+                            var p = abductable.transform.position;
+                            p.y = transform.position.y;
+
+                            if ((p - transform.position).magnitude < 14.0f)
+                            {
+                                abductOn = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    abductRateElapsed = Time.time + Random.Range(2.0f, 5.0f);
+                }
+            }
+            else
+            {
+                if (abductRateElapsed < Time.time)
+                {
+                    abductOn = false;
+                    abductRateElapsed = Time.time + Random.Range(3.0f, 5.0f);
+                }
+            }
+
+            playerController.inputAbduction = abductOn;
+        }
+
+        //Specials
+        if(preset.useSpecials && !usingSpecial)
+        {
+            if (playerController.IsSuperWeaponReady())
+            {
+                usingSpecial = true;
+                StartCoroutine(UseSpecial());
+            }
+        }
+
+        if(preset.useDash)
+        {
+            if((adversaryObject.transform.position - transform.position).magnitude < 4)
+            {
+                if(useDashElaspsed < Time.time)
+                {
+                    playerController.tryToBoost();
+                    useDashElaspsed = Time.time + Random.Range(0.8f, 2.0f);
+                }
+            }
+        }
+
+        if(preset.increaseHealth)
+        {
+            if (increaseHealthRateElapsed < Time.time)
+            {
+                playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
+    
+                increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
+            }
+        }
+
+
+        if (preset.increaseDamage)
+        {
+            if (increaseDamageRateElapsed < Time.time)
+            {
+                playerController.CurrentWeapon.healthDamageOffset += preset.amountDamageToIncrease;
+
+                increaseDamageRateElapsed = Time.time + preset.increaseDamageRate;
+            }
+        }
+    }
+
+    IEnumerator UseSpecial()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        playerController.ToggleSuperWeapon(true);
+        usingSpecial = false;
     }
 
     Vector3[] dirs = new Vector3[4] { Vector3.right, Vector3.left, Vector3.forward, Vector3.back };

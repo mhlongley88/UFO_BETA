@@ -156,6 +156,10 @@ public class PlayerController : MonoBehaviour
     int rewirePlayerId;
     Rewired.Player rewirePlayer;
 
+    // For Bots
+    [HideInInspector]
+    public bool inputAbduction;
+
     private void Awake()
     {
         if (this.GetComponent<PhotonView>())
@@ -324,13 +328,13 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.paused) return;
 
         //if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
-        if (rewirePlayer.GetButtonDown("Abduct") && energyMeter.fillAmount != 1f)
+        if ((rewirePlayer.GetButtonDown("Abduct") || inputAbduction ) && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             
             pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
         }
-        else if (rewirePlayer.GetButtonUp("Abduct"))
+        else if ((rewirePlayer.GetButtonUp("Abduct") || !inputAbduction))
         {
             pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
 
@@ -548,13 +552,13 @@ public class PlayerController : MonoBehaviour
         //}   
 
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
-        if (rewirePlayer.GetButtonDown("Abduct") && energyMeter.fillAmount != 1f)
+        if ((rewirePlayer.GetButtonDown("Abduct") || inputAbduction) && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             ActivateBeam();
         }
         //else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
-        else if (rewirePlayer.GetButtonUp("Abduct"))
+        else if (rewirePlayer.GetButtonUp("Abduct") || !inputAbduction)
         {
             DeactivateBeam();
 
@@ -661,7 +665,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void tryToBoost()
+    public void tryToBoost()
     {
         //if (isConsole)
         {

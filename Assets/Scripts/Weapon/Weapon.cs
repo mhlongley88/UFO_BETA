@@ -15,7 +15,9 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField]
     protected Rigidbody ufoRigidbody;
 
-
+    // For bots
+    [HideInInspector]
+    public float healthDamageOffset;
 
     protected Vector3 shootDirection = Vector3.forward;
 
@@ -56,7 +58,7 @@ public abstract class Weapon : MonoBehaviour
                 {
                     b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position, Quaternion.identity).GetComponent<Bullet>();
                 }
-                b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+                b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
             }
             currentAmmo--;
             StartCoroutine(AmmoCooldownCoroutine());
