@@ -6,7 +6,11 @@ public class BotConfigurator : MonoBehaviour
 {
     public static BotConfigurator instance;
 
-    public AIPreset currentPreset;
+    public LevelSetBot bot1;
+    public LevelSetBot bot2;
+    public LevelSetBot bot3;
+
+    //public AIPreset currentPreset;
 
     [Header("Presets")]
     public AIPreset easyPreset;

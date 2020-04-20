@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerBot : MonoBehaviour
 {
     PlayerController playerController;
-    public static Player chosenPlayer;
+    public static List<Player> chosenPlayer = new List<Player>();
+    public static List<AIPreset> aiPresets = new List<AIPreset>();
+
     public static Transform adversaryTransform;
     public static bool active;
 
@@ -17,8 +19,9 @@ public class PlayerBot : MonoBehaviour
     float shootingRate = 0.0f;
 
     bool followingPlayer;
-
-    AIPreset preset;
+    
+    [HideInInspector]
+    public AIPreset preset;
 
     float abductRateElapsed = 0.0f;
     bool abductOn;
@@ -30,18 +33,18 @@ public class PlayerBot : MonoBehaviour
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
-        chosenPlayer = playerController.player;
 
         destination = transform.position;
         playerController.allowLocalProcessInput = false;
 
-        preset = BotConfigurator.instance.currentPreset;
+       // preset = BotConfigurator.instance.currentPreset;
 
         playerController.inputAbduction = false;
     }
 
     private void OnDestroy()
     {
+        //chosenPlayer.Remove(playerController.player);
         //GameManager.Instance.RemovePlayerFromGame(chosenPlayer);
     }
 
@@ -65,7 +68,7 @@ public class PlayerBot : MonoBehaviour
                 followingPlayer = Random.value > 0.45f;
         }
 
-        var adversaryPlayer = GameManager.Instance.GetActivePlayers().Find(it => it != chosenPlayer);
+        var adversaryPlayer = GameManager.Instance.GetActivePlayers().Find(it => !chosenPlayer.Contains(it));
         var adversaryObject = PlayerManager.Instance.players[adversaryPlayer].instance;
 
         if (moving)
