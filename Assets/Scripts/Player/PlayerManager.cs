@@ -134,6 +134,7 @@ public class PlayerManager : MonoBehaviour
         LevelUIManager.Instance.EnableUI(p);
 
         players[p].instance = Instantiate(players[p].prefab, players[p].spawnPoint);
+        players[p].rank = -1;
         spawnedPlayerDictionary.Add(p, players[p].instance);
     }
 
@@ -215,6 +216,7 @@ public class PlayerManager : MonoBehaviour
 
                 LevelUIManager.Instance.EnableUI(botPlayer);
                 players[botPlayer].instance = Instantiate(players[botPlayer].prefab, players[botPlayer].spawnPoint);
+                players[botPlayer].rank = -1;
 
                 var bot = players[botPlayer].instance.AddComponent<PlayerBot>();
                 bot.preset = preset;
@@ -376,20 +378,23 @@ public class PlayerManager : MonoBehaviour
 
             if(allTheActivePlayersAreBots)
             {
-                int rank = 0;
-                foreach (Player i in activePlayers)
-                {
-                    Debug.Log("Rank of " + i + " :  " + players[i].rank);
+                LevelUIManager.Instance.lostToBots.SetActive(true);
 
-                    if (players[i].lives > 0)
-                    {
-                        players[i].rank = rank++;
-                        RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-                    }
-                }
+                //int rank = 0;
+                //foreach (Player i in activePlayers)
+                //{
+                //    Debug.Log("Rank of " + i + " :  " + players[i].rank);
 
-                //TODO: is it correct?
-                GameManager.Instance.GameEnds();
+                //    if (players[i].rank < 0)
+                //    {
+                //        players[i].rank = rank++;
+                //    }
+
+                //    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+                //}
+
+                ////TODO: is it correct?
+                //GameManager.Instance.GameEnds();
             }
         }
     }

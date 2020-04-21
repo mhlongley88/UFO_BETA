@@ -159,6 +159,7 @@ public class PlayerController : MonoBehaviour
     // For Bots
     [HideInInspector]
     public bool inputAbduction;
+    bool oldInputAbduction;
 
     private void Awake()
     {
@@ -334,11 +335,13 @@ public class PlayerController : MonoBehaviour
             
             pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
         }
-        else if ((rewirePlayer.GetButtonUp("Abduct") || !inputAbduction))
+        else if ((rewirePlayer.GetButtonUp("Abduct") && !inputAbduction))
         {
             pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
 
         }
+
+        oldInputAbduction = inputAbduction;
         if (twinStick)
         {
             
@@ -558,7 +561,7 @@ public class PlayerController : MonoBehaviour
             ActivateBeam();
         }
         //else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
-        else if (rewirePlayer.GetButtonUp("Abduct") || !inputAbduction)
+        else if (rewirePlayer.GetButtonUp("Abduct") && !inputAbduction)
         {
             DeactivateBeam();
 

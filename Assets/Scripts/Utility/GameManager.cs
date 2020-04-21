@@ -215,42 +215,7 @@ public class GameManager : MonoBehaviour
         {
             if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
             {
-                gameOver = false;
-                canAdvance = false;
-                if (paused) TogglePause();
-
-                
-            //    if (SceneManager.GetActiveScene().name != "MainMenu")
-          //      {
-                      //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
-                        {
-                        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                        //SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
-
-                       // LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
-
-           //         }
-
-                    if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
-                    {
-
-
-
-
-                        //SceneManager.LoadScene("MainMenu");
-                        //LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
-                        //LobbyConnectionHandler.instance.LoadSceneMaster("LevelUI");
-                        LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
-
-                    }
-                    else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
-                    {
-
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                        SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
-                    }
-
-                }
+                RestartGame();
             }
 
             if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
@@ -285,6 +250,46 @@ public class GameManager : MonoBehaviour
         }*/
 
 
+    }
+
+    public void RestartGame()
+    {
+        gameOver = false;
+        canAdvance = false;
+        if (paused) TogglePause();
+
+
+        //    if (SceneManager.GetActiveScene().name != "MainMenu")
+        //      {
+        //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
+        {
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+
+            // LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
+
+            //         }
+
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
+            {
+
+
+
+
+                //SceneManager.LoadScene("MainMenu");
+                //LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
+                //LobbyConnectionHandler.instance.LoadSceneMaster("LevelUI");
+                LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
+
+            }
+            else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+            }
+
+        }
     }
 
     public void EndGameAndGoToMenu()

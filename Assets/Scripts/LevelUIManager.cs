@@ -8,6 +8,7 @@ public class LevelUIManager : MonoBehaviour
 {
     private static LevelUIManager instance;
 
+    public GameObject lostToBots;
     public GameObject livesUIObject;
     public GameObject initialReadyFightAnim;
 
@@ -88,4 +89,8 @@ public class LevelUIManager : MonoBehaviour
         GetDashUIManager(p).gameObject.SetActive(true);
     }
 
+    public void RestartGame()
+    {
+        GameManager.Instance.RestartGame();
+    }
 }
