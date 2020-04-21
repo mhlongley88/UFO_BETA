@@ -23,6 +23,7 @@ public class UnlockSystem : MonoBehaviour
     public List<int> unlockedLevelNotificationMM = new List<int>();
 
     public List<int> recentlyUnlockedCharacters = new List<int>();
+    public List<int> recentlyUnlockedLevels = new List<int>();
 
     public int MatchesCompleted => matchesCompleted;
 
@@ -147,6 +148,8 @@ public class UnlockSystem : MonoBehaviour
         {
             unlockedLevelNotification.Add(matchesCompleted);
             unlockedLevelNotificationMM.Add(matchesCompleted);
+
+            recentlyUnlockedLevels.Add(matchesCompleted);
         }
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);

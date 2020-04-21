@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ObjectAbduct : MonoBehaviour
 {
+    public static List<ObjectAbduct> AbductableObjects = new List<ObjectAbduct>();
 
     public float speed;
     private Rigidbody rb;
@@ -26,9 +27,14 @@ public class ObjectAbduct : MonoBehaviour
         canAbduct = false;
         //abductionPoint = null;
         StartCoroutine(ItemHasBeenDropped(this.gameObject, 2.0f));
+
+        AbductableObjects.Add(this);
     }
 
-
+    private void OnDestroy()
+    {
+        AbductableObjects.Remove(this);
+    }
 
     void OnTriggerEnter(Collider other)
     {

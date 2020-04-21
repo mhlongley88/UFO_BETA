@@ -5,12 +5,17 @@ using UnityEngine;
 public class LevelUnlockCheck : MonoBehaviour
 {
     public static List<LevelUnlockCheck> All = new List<LevelUnlockCheck>();
-
+    public GameObject newVfx;
     public int matchThreshold = 0;
+
+    ShowLevelTitle levelTitle;
 
     private void Awake()
     {
         All.Add(this);
+
+
+        levelTitle = GetComponent<ShowLevelTitle>();
     }
 
     // Start is called before the first frame update
@@ -23,6 +28,13 @@ public class LevelUnlockCheck : MonoBehaviour
         gameObject.SetActive(matchesComplete >= matchThreshold);
 
         UnlockSystem.instance.onBattlesCompletedChange.AddListener(OnRefresh);
+
+        if (newVfx != null)
+        {
+            int prefs = PlayerPrefs.GetInt("PlayedLevel" + levelTitle.levelNum);
+            if (prefs == 1)
+                newVfx.SetActive(false);
+        }
     }
 
     private void OnDestroy()
