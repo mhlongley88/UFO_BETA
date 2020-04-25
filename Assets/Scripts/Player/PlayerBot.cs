@@ -37,9 +37,10 @@ public class PlayerBot : MonoBehaviour
         destination = transform.position;
         playerController.allowLocalProcessInput = false;
 
-       // preset = BotConfigurator.instance.currentPreset;
+        // preset = BotConfigurator.instance.currentPreset;
 
-        playerController.inputAbduction = false;
+        //    playerController.inputAbduction = false;
+        abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
     }
 
     private void OnDestroy()
@@ -118,12 +119,14 @@ public class PlayerBot : MonoBehaviour
                             if ((p - transform.position).magnitude < 14.0f)
                             {
                                 abductOn = true;
+                                playerController.ActivateBeam();
+
                                 break;
                             }
                         }
                     }
 
-                    abductRateElapsed = Time.time + Random.Range(2.0f, 5.0f);
+                    abductRateElapsed = Time.time + Random.Range(1.0f, 4.0f);
                 }
             }
             else
@@ -131,11 +134,13 @@ public class PlayerBot : MonoBehaviour
                 if (abductRateElapsed < Time.time)
                 {
                     abductOn = false;
-                    abductRateElapsed = Time.time + Random.Range(3.0f, 5.0f);
+                    playerController.DeactivateBeam();
+
+                    abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
                 }
             }
 
-            playerController.inputAbduction = abductOn;
+            //playerController.inputAbduction = abductOn;
         }
 
         //Specials
