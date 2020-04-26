@@ -157,9 +157,9 @@ public class PlayerController : MonoBehaviour
     Rewired.Player rewirePlayer;
 
     // For Bots
-    [HideInInspector]
-    public bool inputAbduction;
-    bool oldInputAbduction;
+    //[HideInInspector]
+    //public bool inputAbduction;
+    //bool oldInputAbduction;
 
     private void Awake()
     {
@@ -238,13 +238,13 @@ public class PlayerController : MonoBehaviour
         playerControllerByGameObject.Remove(gameObject);
     }
 
-    private void ActivateBeam()
+    public void ActivateBeam()
     {
         beam.SetActive(true);
         isAbducting = true;
     }
 
-    private void DeactivateBeam()
+    public void DeactivateBeam()
     {
         beam.SetActive(false);
         isAbducting = false;
@@ -329,19 +329,18 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.paused) return;
 
         //if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
-        if ((rewirePlayer.GetButtonDown("Abduct") || inputAbduction ) && energyMeter.fillAmount != 1f)
+        if ((rewirePlayer.GetButtonDown("Abduct") ) && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             
             pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
         }
-        else if ((rewirePlayer.GetButtonUp("Abduct") && !inputAbduction))
+        else if ((rewirePlayer.GetButtonUp("Abduct")))
         {
             pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
 
         }
 
-        oldInputAbduction = inputAbduction;
         if (twinStick)
         {
             
@@ -555,13 +554,13 @@ public class PlayerController : MonoBehaviour
         //}   
 
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
-        if ((rewirePlayer.GetButtonDown("Abduct") || inputAbduction) && energyMeter.fillAmount != 1f)
+        if ((rewirePlayer.GetButtonDown("Abduct")) && energyMeter.fillAmount != 1f)
         {
             Debug.Log("Beam Input");
             ActivateBeam();
         }
         //else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
-        else if (rewirePlayer.GetButtonUp("Abduct") && !inputAbduction)
+        else if (rewirePlayer.GetButtonUp("Abduct"))
         {
             DeactivateBeam();
 
@@ -766,6 +765,7 @@ public class PlayerController : MonoBehaviour
             else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
                 if(allowLocalProcessInput) ProcessInput();
+
                 avgScaleOutput.CalculateAndOutput();
 
                 if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)

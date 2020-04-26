@@ -30,6 +30,8 @@ public class PlayerBot : MonoBehaviour
     float increaseHealthRateElapsed;
     float increaseDamageRateElapsed;
 
+    Transform targetAbduct;
+
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
@@ -37,9 +39,10 @@ public class PlayerBot : MonoBehaviour
         destination = transform.position;
         playerController.allowLocalProcessInput = false;
 
-       // preset = BotConfigurator.instance.currentPreset;
+        // preset = BotConfigurator.instance.currentPreset;
 
-        playerController.inputAbduction = false;
+        //    playerController.inputAbduction = false;
+        abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
     }
 
     private void OnDestroy()
@@ -80,9 +83,22 @@ public class PlayerBot : MonoBehaviour
         if (adversaryObject)
         {
             lookDir = Quaternion.LookRotation(adversaryObject.transform.position - transform.position, Vector3.up);
+            var ea = lookDir.eulerAngles;
+            ea.x = ea.z = 0.0f;
+            lookDir.eulerAngles = ea;
+
             if (followingPlayer)
                 destination = adversaryObject.transform.position;
         }
+        
+        if(preset.abduct)
+        {
+            if(abductOn)
+            {
+                destination = targetAbduct.position;
+            }
+        }
+
 
         playerController.ApplyExternalInput(moving ? (destination - transform.position).normalized : Vector3.zero, lookDir);
 
@@ -115,15 +131,18 @@ public class PlayerBot : MonoBehaviour
                             var p = abductable.transform.position;
                             p.y = transform.position.y;
 
-                            if ((p - transform.position).magnitude < 14.0f)
+                            if ((p - transform.position).magnitude < 6.0f)
                             {
                                 abductOn = true;
+                                targetAbduct = abductable.transform;
+                                playerController.ActivateBeam();
+
                                 break;
                             }
                         }
                     }
 
-                    abductRateElapsed = Time.time + Random.Range(2.0f, 5.0f);
+                    abductRateElapsed = Time.time + Random.Range(1.0f, 4.0f);
                 }
             }
             else
@@ -131,11 +150,13 @@ public class PlayerBot : MonoBehaviour
                 if (abductRateElapsed < Time.time)
                 {
                     abductOn = false;
-                    abductRateElapsed = Time.time + Random.Range(3.0f, 5.0f);
+                    targetAbduct = null;
+                    playerController.DeactivateBeam();
+
+                    abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
                 }
             }
-
-            playerController.inputAbduction = abductOn;
+            //playerController.inputAbduction = abductOn;
         }
 
         //Specials
