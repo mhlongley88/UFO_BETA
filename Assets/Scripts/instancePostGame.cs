@@ -5,6 +5,8 @@ using UnityEngine;
 public class instancePostGame : MonoBehaviour
 {
     public static instancePostGame instance;
+
+    public GameObject retryMatchText, nextLevelMatchText;
     // Start is called before the first frame update
     void Start()
     {

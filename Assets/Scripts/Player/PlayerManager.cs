@@ -356,6 +356,20 @@ public class PlayerManager : MonoBehaviour
             {
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+
+                if (PlayerBot.active)
+                {
+                    if (!PlayerBot.chosenPlayer.Contains(i))
+                    {
+                        if (players[i].rank == 0)
+                        {
+                            PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
+                            PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
+
+                            GameManager.Instance.goesNextLevelInsteadOfRetry = true;
+                        }
+                    }
+                }
             }
 
             GameManager.Instance.GameEnds();      
@@ -378,23 +392,23 @@ public class PlayerManager : MonoBehaviour
 
             if(allTheActivePlayersAreBots)
             {
-                LevelUIManager.Instance.lostToBots.SetActive(true);
+                // LevelUIManager.Instance.lostToBots.SetActive(true);
 
-                //int rank = 0;
-                //foreach (Player i in activePlayers)
-                //{
-                //    Debug.Log("Rank of " + i + " :  " + players[i].rank);
+                int rank = 0;
+                foreach (Player i in activePlayers)
+                {
+                    Debug.Log("Rank of " + i + " :  " + players[i].rank);
 
-                //    if (players[i].rank < 0)
-                //    {
-                //        players[i].rank = rank++;
-                //    }
+                    if (players[i].rank < 0)
+                    {
+                        players[i].rank = rank++;
+                    }
 
-                //    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-                //}
+                    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+                }
 
-                ////TODO: is it correct?
-                //GameManager.Instance.GameEnds();
+              
+                GameManager.Instance.GameEnds();
             }
         }
     }

@@ -41,7 +41,13 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
         IsMultiplayerMode = false;
         isPrivateMatch = false;
+
         //Init();
+    }
+
+    private void Start()
+    {
+        MainMenuUIManager.Instance.MainPanel.SetActive(false);
     }
 
     public void LoadSceneMaster(string sceneName)
@@ -332,6 +338,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnConnectedToMaster()
     {
+       // MainMenuUIManager.Instance.MainPanel.SetActive(false);
+
         IsMultiplayerMode = false;
         isPrivateMatch = false;
         LobbyUI.instance.FriendsListButton.SetActive(false);
@@ -350,12 +358,15 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             //    destro
             //}
             LobbyUI.instance.AuthPanel.SetActive(false);
+            
+            //
             MainMenuUIManager.Instance.MainPanel.SetActive(true);
             MainMenuUIManager.Instance.characterSelect.SetActive(false);
             //  MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
             MainMenuUIManager.Instance.cameraMoveObject.transform.position = new Vector3(MainMenuUIManager.Instance.cameraMoveObject.transform.position.x,
                 MainMenuUIManager.Instance.cameraMoveObject.transform.position.y, 42f);
 //                            MainMenuUIManager.Instance.cameraMoveObject.transform.position.z + 24f);
+
             MainMenuUIManager.Instance.currentMenu = MainMenuUIManager.Menu.Splash;
         }
         else
