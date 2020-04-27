@@ -812,21 +812,21 @@ public class PlayerController : MonoBehaviour
     bool wasMoving;
     void FixedUpdate()
     {
-        if(PlayerBot.active)
-        {
-            if(PlayerBot.chosenPlayer.Contains(player))
-            {
-                if(Input.GetKeyDown(KeyCode.L))
-                {
-                    dead = true;
+        // if(PlayerBot.active)
+        // {
+            // if(PlayerBot.chosenPlayer.Contains(player))
+            // {
+                // if(Input.GetKeyDown(KeyCode.L))
+                // {
+                    // dead = true;
 
-                    avgScaleOutput.RemovePlayer(this.gameObject.transform);
-                    PlayerManager.Instance.PlayerDied(player, playerModel.transform);
-                    Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
-                    Destroy(this.gameObject);
-                }
-            }
-        }
+                    // avgScaleOutput.RemovePlayer(this.gameObject.transform);
+                    // PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+                    // Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
+                    // Destroy(this.gameObject);
+                // }
+            // }
+        // }
 
         if (!isBoosting)
         {
