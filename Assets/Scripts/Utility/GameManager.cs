@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     public bool paused = false;
 
     public List<CharacterSelectUI> PlayerObjsMul;
-
+    public bool goesNextLevelInsteadOfRetry;
     //public GameObject conquered_go;
     //private Transform conquered_t;
 
@@ -259,23 +259,27 @@ public class GameManager : MonoBehaviour
         if (paused) TogglePause();
 
 
-        //    if (SceneManager.GetActiveScene().name != "MainMenu")
-        //      {
-        //  if (Photon.Pun.PhotonNetwork.IsMasterClient)
+        if (goesNextLevelInsteadOfRetry)
         {
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            //SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
+            MainMenuUIManager.goDirectlyToLevelSelect = true;
+            goesNextLevelInsteadOfRetry = false;
 
-            // LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
-
-            //         }
-
+            if (SceneManager.GetActiveScene().name != "MainMenu")
+            {
+                if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
+                {
+                    LobbyConnectionHandler.instance.LoadSceneMaster("MainMenu");
+                }
+                else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+                {
+                    SceneManager.LoadScene("MainMenu");
+                }
+            }
+        }
+        else
+        {
             if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
             {
-
-
-
-
                 //SceneManager.LoadScene("MainMenu");
                 //LobbyConnectionHandler.instance.LoadSceneMaster(SceneManager.GetActiveScene().name);
                 //LobbyConnectionHandler.instance.LoadSceneMaster("LevelUI");

@@ -53,6 +53,11 @@ public class LevelSelectCharacters : MonoBehaviour
     {
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
+            if(PlayerBot.active)
+            {
+                if (PlayerBot.chosenPlayer.Contains(player)) return;
+            }
+
             if (GameManager.Instance.IsPlayerInGame(player))
             {
                 GameObject temp;

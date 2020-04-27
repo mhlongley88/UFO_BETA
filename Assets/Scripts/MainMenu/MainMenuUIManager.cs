@@ -45,6 +45,8 @@ public class MainMenuUIManager : MonoBehaviour
     public CharacterSelectUI[] characterSelectMenusMulPrefabs;
     public LevelSelectCharacters levelSelectCharacters;
 
+    public static bool goDirectlyToLevelSelect;
+
     private Player playerSelectFlags = Player.None;
 
     private static MainMenuUIManager instance;
@@ -90,7 +92,24 @@ public class MainMenuUIManager : MonoBehaviour
         vCam2.SetActive(false);
 
 
+       // MainPanel.SetActive(false);
+
         characterSelect.SetActive(false);
+
+        //goDirectlyToLevelSelect = true;
+        if (goDirectlyToLevelSelect)
+        {
+            MainPanel.SetActive(false);
+
+            vCam1.SetActive(false);
+            vCam2.SetActive(true);
+            myAudioSource.PlayOneShot(toLevelSelect);
+            levelSelect.SetActive(true);
+            levelSelectCharacters.AddActivePlayers();
+            characterSelect.SetActive(false);
+            currentMenu = Menu.LevelSelect;
+            goDirectlyToLevelSelect = false;
+        }
 
     }
 
@@ -433,10 +452,30 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelectCharacters.RemoveAllPlayers();
                             levelSelect.SetActive(false);
                             characterSelect.SetActive(true);
+               
+                            if (PlayerBot.active)
+                            {
+                                cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+                                    cameraMoveObject.transform.position.z - 24f);
+
+                                foreach (var bot in PlayerBot.chosenPlayer)
+                                {
+                                    GameManager.Instance.RemovePlayerFromGame(bot);
+                                }
+
+                                PlayerBot.active = false;
+                            }
+
                             foreach (var c in characterSelectMenus)
                             {
+                                c.gameObject.SetActive(true);
+                                c.gameObject.transform.localScale = Vector3.one;
+
                                 c.ReturnFromLevelSelect();
                             }
+
+                            OnlineCharacterSelectionPanel.SetActive(false);
+                            OfflineCharacterSelectionPanel.SetActive(true);
                         }
 
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)

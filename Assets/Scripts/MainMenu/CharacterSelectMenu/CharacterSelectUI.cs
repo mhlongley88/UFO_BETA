@@ -126,7 +126,8 @@ public class CharacterSelectUI : MonoBehaviour
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             playerNameText.text = playerName;
-            currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+            if(currentCharacterModel == null)
+                currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
 
             var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
 
@@ -563,6 +564,7 @@ public class CharacterSelectUI : MonoBehaviour
                     {
                         pressStart.SetActive(true);
                         charSelect.SetActive(false);
+
                         selectState = CharacterSelectState.WaitingForPlayer;
                         GameManager.Instance.RemovePlayerFromGame(player);
                         MainMenuUIManager.Instance.selectingCharacters = false;
@@ -599,6 +601,8 @@ public class CharacterSelectUI : MonoBehaviour
             if(pressStart)
                 pressStart.SetActive(false);
             selectState = CharacterSelectState.SelectingCharacter;
+            MainMenuUIManager.Instance.selectingCharacters = true;
+
             if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv && pv.IsMine)
                 UpdateSelectionMul();
             //else if (LobbyConnectionHandler.instance.IsMultiplayerMode && !pv)
