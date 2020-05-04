@@ -363,10 +363,27 @@ public class PlayerManager : MonoBehaviour
                     {
                         if (players[i].rank == 0)
                         {
+                            if (DoubleMatch.useDoubleMatch)
+                            {
+                                for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
+                                {
+                                    var p = PlayerBot.chosenPlayer[e];
+                                    players[p].rank = -1;
+                                    players[p].lives = 3;
+                                    LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+
+                                    StartCoroutine(SpawnCoroutine(p));
+                                }
+
+                                DoubleMatch.useDoubleMatch = false;
+                                return;
+                            }
+
                             PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
                             PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
 
                             GameManager.Instance.goesNextLevelInsteadOfRetry = true;
+
 
                             if (LevelUnlockFromProgression.lastSelected != -1)
                             {
