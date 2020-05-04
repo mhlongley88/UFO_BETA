@@ -16,6 +16,7 @@ public class ShowLevelTitle : MonoBehaviour
     private AudioSource myAudioSource;
     public AudioClip levelHoverSFX;
 
+    public UnityEvent OnGetHovered = new UnityEvent();
     public static int levelStaticInt;
 
     public static OnLevelTitleSelected OnLevelIsHovered = new OnLevelTitleSelected(); 
@@ -48,7 +49,7 @@ public class ShowLevelTitle : MonoBehaviour
         if(coll.gameObject.tag == "Player")
         {
             OnLevelIsHovered.Invoke(transform);
-
+            OnGetHovered.Invoke();
             //levelTitle.GetComponent<DOTweenAnimation>().DOPlayById("Appear");
             levelTitle.SetActive(true);
             Debug.Log("hit!");

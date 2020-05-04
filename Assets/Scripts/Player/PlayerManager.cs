@@ -367,6 +367,11 @@ public class PlayerManager : MonoBehaviour
                             PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
 
                             GameManager.Instance.goesNextLevelInsteadOfRetry = true;
+
+                            if (LevelUnlockFromProgression.lastSelected != -1)
+                            {
+                                LevelUnlockFromProgression.UnlockLevel();
+                            }
                         }
                     }
                 }
