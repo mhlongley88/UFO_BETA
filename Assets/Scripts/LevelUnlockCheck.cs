@@ -7,7 +7,6 @@ public class LevelUnlockCheck : MonoBehaviour
     public static List<LevelUnlockCheck> All = new List<LevelUnlockCheck>();
     public GameObject newVfx;
     public int matchThreshold = 0;
-
     ShowLevelTitle levelTitle;
 
     private void Awake()
@@ -34,6 +33,11 @@ public class LevelUnlockCheck : MonoBehaviour
             int prefs = PlayerPrefs.GetInt("PlayedLevel" + levelTitle.levelNum);
             if (prefs == 1)
                 newVfx.SetActive(false);
+        }
+        
+        if(LevelUnlockFromProgression.IsUnlocked(levelTitle.levelNum))
+        {
+            gameObject.SetActive(true);
         }
     }
 
