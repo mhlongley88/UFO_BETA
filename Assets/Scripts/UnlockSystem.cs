@@ -155,6 +155,12 @@ public class UnlockSystem : MonoBehaviour
         //Debug.Log("Matches Completed: " + matchesCompleted);
     }
 
+    public void SetUnlockLevelFromProgression()
+    {
+        unlockedLevelNotification.Add(0);
+        unlockedLevelNotificationMM.Add(0);
+    }
+
     public bool HasThresholdForCharacter()
     {
         if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)
