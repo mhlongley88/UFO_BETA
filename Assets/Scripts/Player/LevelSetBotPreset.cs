@@ -8,6 +8,7 @@ public class LevelSetBot
     public AIPreset preset;
     public bool enableBot = false;
     public int characterIndex = 0;
+    public bool isRandomCharacter = true;
 }
 
 public class LevelSetBotPreset : MonoBehaviour

@@ -194,13 +194,13 @@ public class PlayerManager : MonoBehaviour
             PlayerBot.aiPresets.Clear();
 
             if (BotConfigurator.instance.bot1.enableBot)
-                AddBotP(BotConfigurator.instance.bot1.preset, BotConfigurator.instance.bot1.characterIndex, PlayerBotSlot.One);        
+                AddBotP(BotConfigurator.instance.bot1.preset, BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex, PlayerBotSlot.One);        
             
             if (BotConfigurator.instance.bot2.enableBot)
-                AddBotP(BotConfigurator.instance.bot2.preset, BotConfigurator.instance.bot2.characterIndex, PlayerBotSlot.Two);
+                AddBotP(BotConfigurator.instance.bot2.preset, BotConfigurator.instance.bot2.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot2.characterIndex, PlayerBotSlot.Two);
 
             if (BotConfigurator.instance.bot3.enableBot)   
-                AddBotP(BotConfigurator.instance.bot3.preset, BotConfigurator.instance.bot3.characterIndex, PlayerBotSlot.Three);           
+                AddBotP(BotConfigurator.instance.bot3.preset, BotConfigurator.instance.bot3.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot3.characterIndex, PlayerBotSlot.Three);           
 
             void AddBotP(AIPreset preset, int characterIndex, PlayerBotSlot slot)
             {
