@@ -194,15 +194,15 @@ public class PlayerManager : MonoBehaviour
             PlayerBot.aiPresets.Clear();
 
             if (BotConfigurator.instance.bot1.enableBot)
-                AddBotP(BotConfigurator.instance.bot1.preset);        
+                AddBotP(BotConfigurator.instance.bot1.preset, BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex, PlayerBotSlot.One);        
             
             if (BotConfigurator.instance.bot2.enableBot)
-                AddBotP(BotConfigurator.instance.bot2.preset);
+                AddBotP(BotConfigurator.instance.bot2.preset, BotConfigurator.instance.bot2.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot2.characterIndex, PlayerBotSlot.Two);
 
             if (BotConfigurator.instance.bot3.enableBot)   
-                AddBotP(BotConfigurator.instance.bot3.preset);           
+                AddBotP(BotConfigurator.instance.bot3.preset, BotConfigurator.instance.bot3.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot3.characterIndex, PlayerBotSlot.Three);           
 
-            void AddBotP(AIPreset preset)
+            void AddBotP(AIPreset preset, int characterIndex, PlayerBotSlot slot)
             {
                 int index = UnityEngine.Random.Range(0, possiblePlayers.Count);
                 botPlayer = possiblePlayers[index];
@@ -212,7 +212,7 @@ public class PlayerManager : MonoBehaviour
                 PlayerBot.aiPresets.Add(preset);
 
                 GameManager.Instance.AddPlayerToGame(botPlayer);
-                GameManager.Instance.SetPlayerCharacterChoice(botPlayer, UnityEngine.Random.Range(1, 6));
+                GameManager.Instance.SetPlayerCharacterChoice(botPlayer, characterIndex);
 
                 LevelUIManager.Instance.EnableUI(botPlayer);
                 players[botPlayer].instance = Instantiate(players[botPlayer].prefab, players[botPlayer].spawnPoint);
@@ -220,7 +220,7 @@ public class PlayerManager : MonoBehaviour
 
                 var bot = players[botPlayer].instance.AddComponent<PlayerBot>();
                 bot.preset = preset;
-
+                bot.slot = slot;
                 spawnedPlayerDictionary.Add(botPlayer, players[botPlayer].instance);
             }
         }
@@ -371,6 +371,10 @@ public class PlayerManager : MonoBehaviour
                                     players[p].rank = -1;
                                     players[p].lives = 3;
                                     LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+
+                                    //if (e == 0) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot1CharacterIndex);
+                                    //if (e == 1) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot2CharacterIndex);
+                                    //if (e == 2) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot3CharacterIndex);
 
                                     StartCoroutine(SpawnCoroutine(p));
                                 }

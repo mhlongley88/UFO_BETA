@@ -48,7 +48,6 @@ public class LevelUnlockCheck : MonoBehaviour
         UnlockSystem.instance.onBattlesCompletedChange.RemoveListener(OnRefresh);
     }
 
-    // Update is called once per frame
     void OnRefresh()
     {
         int matchesComplete = UnlockSystem.instance.GetMatchesCompleted();

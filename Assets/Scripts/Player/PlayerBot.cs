@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerBotSlot
+{
+    One = 1,
+    Two = 2,
+    Three = 3,
+}
+
 public class PlayerBot : MonoBehaviour
 {
     PlayerController playerController;
@@ -10,7 +17,7 @@ public class PlayerBot : MonoBehaviour
 
     public static Transform adversaryTransform;
     public static bool active;
-
+    public PlayerBotSlot slot;
     Vector3 destination;
 
     bool moving = true;
