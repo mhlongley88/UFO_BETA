@@ -64,7 +64,7 @@ public class CharacterSelectUI : MonoBehaviour
             {
                 for(int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
                 {
-                    if(wonMatches >= GameManager.Instance.Characters[e].matchThreshold)
+                    if(wonMatches >= GameManager.Instance.Characters[e].matchThreshold || CharacterUnlockFromProgression.IsUnlocked(e))
                     {
                         _selectedCharacterIndex = e;
                         break;
@@ -76,7 +76,7 @@ public class CharacterSelectUI : MonoBehaviour
 
             int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
 
-            if(wonMatches >= characterUnlockedAtWonMatches)
+            if(wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(value))
                 _selectedCharacterIndex = value;
             else 
             {
@@ -85,7 +85,7 @@ public class CharacterSelectUI : MonoBehaviour
                     for(int e = value; e < GameManager.Instance.Characters.Length; e++)
                     {
                         characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
-                        if(wonMatches >= characterUnlockedAtWonMatches)
+                        if(wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
                         {
                             _selectedCharacterIndex = e;
                             break;
@@ -220,7 +220,8 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
 
-        if(GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0)
+        if((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0) ||
+            CharacterUnlockFromProgression.IsUnlocked(selectedCharacterIndex))
         {
             if(UnlockSystem.instance.recentlyUnlockedCharacters.Contains(GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold))
                 newVfx.SetActive(true);

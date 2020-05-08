@@ -402,6 +402,11 @@ public class PlayerManager : MonoBehaviour
                             {
                                 LevelUnlockFromProgression.UnlockLevel();
                             }
+
+                             if (CharacterUnlockFromProgression.lastSelected != -1)
+                            {
+                                CharacterUnlockFromProgression.UnlockCharacter();
+                            }
                         }
                     }
                 }
