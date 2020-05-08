@@ -14,6 +14,7 @@ public class PlayerBot : MonoBehaviour
     PlayerController playerController;
     public static List<Player> chosenPlayer = new List<Player>();
     public static List<AIPreset> aiPresets = new List<AIPreset>();
+    public static List<PlayerBotSlot> aiSlots = new List<PlayerBotSlot>();
 
     public static Transform adversaryTransform;
     public static bool active;

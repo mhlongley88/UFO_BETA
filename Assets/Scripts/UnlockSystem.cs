@@ -161,6 +161,14 @@ public class UnlockSystem : MonoBehaviour
         unlockedLevelNotificationMM.Add(0);
     }
 
+    public void SetUnlockCharacterFromProgression(int matches)
+    {
+        unlockedCharacterNotification.Add(0);
+        unlockedCharacterNotificationMM.Add(0);
+
+        recentlyUnlockedCharacters.Add(matches);
+    }
+
     public bool HasThresholdForCharacter()
     {
         if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)

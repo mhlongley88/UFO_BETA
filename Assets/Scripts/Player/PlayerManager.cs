@@ -192,6 +192,7 @@ public class PlayerManager : MonoBehaviour
 
             PlayerBot.chosenPlayer.Clear();
             PlayerBot.aiPresets.Clear();
+            PlayerBot.aiSlots.Clear();
 
             if (BotConfigurator.instance.bot1.enableBot)
                 AddBotP(BotConfigurator.instance.bot1.preset, BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex, PlayerBotSlot.One);        
@@ -210,6 +211,7 @@ public class PlayerManager : MonoBehaviour
 
                 PlayerBot.chosenPlayer.Add(botPlayer);
                 PlayerBot.aiPresets.Add(preset);
+                PlayerBot.aiSlots.Add(slot);
 
                 GameManager.Instance.AddPlayerToGame(botPlayer);
                 GameManager.Instance.SetPlayerCharacterChoice(botPlayer, characterIndex);
@@ -372,9 +374,16 @@ public class PlayerManager : MonoBehaviour
                                     players[p].lives = 3;
                                     LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
 
-                                    //if (e == 0) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot1CharacterIndex);
-                                    //if (e == 1) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot2CharacterIndex);
-                                    //if (e == 2) GameManager.Instance.SetPlayerCharacterChoice(p, DoubleMatch.lastSelected.bot3CharacterIndex);
+                                    int characterOverrideIndex = -1;
+                                    switch(PlayerBot.aiSlots[e])
+                                    {
+                                        case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                        case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                        case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                    }
+
+                                    if(characterOverrideIndex != -1)
+                                        GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
 
                                     StartCoroutine(SpawnCoroutine(p));
                                 }
@@ -392,6 +401,11 @@ public class PlayerManager : MonoBehaviour
                             if (LevelUnlockFromProgression.lastSelected != -1)
                             {
                                 LevelUnlockFromProgression.UnlockLevel();
+                            }
+
+                             if (CharacterUnlockFromProgression.lastSelected != -1)
+                            {
+                                CharacterUnlockFromProgression.UnlockCharacter();
                             }
                         }
                     }
