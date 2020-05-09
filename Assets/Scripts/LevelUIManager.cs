@@ -19,6 +19,8 @@ public class LevelUIManager : MonoBehaviour
 
     public DashUIManager[] dashManager; 
 
+    public bool allInvincible;
+
     public static LevelUIManager Instance
     {
         get
