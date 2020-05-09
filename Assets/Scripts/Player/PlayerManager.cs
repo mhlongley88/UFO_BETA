@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RotaryHeart.Lib.SerializableDictionary;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
 
 [Serializable]
 public class PlayerStats
@@ -365,6 +366,16 @@ public class PlayerManager : MonoBehaviour
                         {
                             if (DoubleMatch.useDoubleMatch)
                             {
+                                DoubleMatchCutsceneRef.instance.cutscene.SetActive(true);
+
+                                LevelUIManager.Instance.allInvincible = true;
+                                var seq = DOTween.Sequence();
+                                seq.AppendInterval(DoubleMatchCutsceneRef.instance.disableMe.seconds);
+                                seq.AppendCallback(() => 
+                                {
+                                    LevelUIManager.Instance.allInvincible = false;
+                                });
+                                
                                 for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
                                 {
                                     var p = PlayerBot.chosenPlayer[e];
