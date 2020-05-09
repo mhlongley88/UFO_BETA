@@ -376,28 +376,29 @@ public class PlayerManager : MonoBehaviour
                                 seq.AppendCallback(() => 
                                 {
                                     LevelUIManager.Instance.allInvincible = false;
+                                    
+                                    for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
+                                    {
+                                        var p = PlayerBot.chosenPlayer[e];
+                                        players[p].rank = -1;
+                                        players[p].lives = 3;
+                                        LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+
+                                        int characterOverrideIndex = -1;
+                                        switch(PlayerBot.aiSlots[e])
+                                        {
+                                            case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                            case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                            case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                                        }
+
+                                        if(characterOverrideIndex != -1)
+                                            GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
+
+                                        StartCoroutine(SpawnCoroutine(p));
+                                    }
                                 });
                                 
-                                for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
-                                {
-                                    var p = PlayerBot.chosenPlayer[e];
-                                    players[p].rank = -1;
-                                    players[p].lives = 3;
-                                    LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
-
-                                    int characterOverrideIndex = -1;
-                                    switch(PlayerBot.aiSlots[e])
-                                    {
-                                        case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                        case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                        case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                    }
-
-                                    if(characterOverrideIndex != -1)
-                                        GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
-
-                                    StartCoroutine(SpawnCoroutine(p));
-                                }
 
                                 DoubleMatch.useDoubleMatch = false;
                                 return;
