@@ -321,7 +321,7 @@ public class MainMenuUIManager : MonoBehaviour
             Photon.Pun.PhotonNetwork.Destroy(levelSelectCharacters.myLevelPlayerMul);
         }
         //LobbyConnectionHandler.instance.IsMultiplayerMode = true;
-        //GameManager.Instance.RemoveAllPlayersFromGame();
+        GameManager.Instance.RemoveAllPlayersFromGame();
         ////  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
 
         //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
@@ -552,7 +552,7 @@ public class MainMenuUIManager : MonoBehaviour
                             //vCam2.SetActive(false);
                             //vCam1.SetActive(true);
                             //currentMenu = Menu.CharacterSelect;
-                            //levelSelectCharacters.RemoveAllPlayers();
+                            levelSelectCharacters.RemoveAllPlayers();
                             //levelSelect.SetActive(false);
                             //characterSelect.SetActive(true);
                             //foreach (var c in characterSelectMenus)

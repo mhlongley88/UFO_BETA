@@ -48,12 +48,11 @@ public class LevelUnlockCheck : MonoBehaviour
             gameObject.SetActive(true);
         }
 
-        StartCoroutine(Checks());
     }
 
-    IEnumerator Checks()
+    void Update()
     {
-        while(true)
+        if(hasABoss)
         {
             if(LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
@@ -92,7 +91,7 @@ public class LevelUnlockCheck : MonoBehaviour
                 }
             }
 
-            yield return null;
+           
         }
     }
 

@@ -158,9 +158,14 @@ public class CharacterSelectUI : MonoBehaviour
             rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
             //SpawnMultiplayer();
         }
+    }
 
-
-        
+    private void OnDestroy()
+    {
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            rewirePlayer.controllers.maps.SetAllMapsEnabled(false);
+        }
     }
 
     [PunRPC]
