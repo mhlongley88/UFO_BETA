@@ -9,12 +9,20 @@ public class LevelUnlockCheck : MonoBehaviour
     public int matchThreshold = 0;
     ShowLevelTitle levelTitle;
 
+    string PlayerLevelKey = "PlayedLevel";
+    string unlockedFromBeatingBossKey = "UnlockedLevelBoss";
+
+    public bool hasABoss = false;
+
+    Vector3 initialPosition;
+
     private void Awake()
     {
         All.Add(this);
 
-
         levelTitle = GetComponent<ShowLevelTitle>();
+
+        initialPosition = transform.position;
     }
 
     // Start is called before the first frame update
@@ -30,7 +38,7 @@ public class LevelUnlockCheck : MonoBehaviour
 
         if (newVfx != null)
         {
-            int prefs = PlayerPrefs.GetInt("PlayedLevel" + levelTitle.levelNum);
+            int prefs = PlayerPrefs.GetInt(PlayerLevelKey + levelTitle.levelNum);
             if (prefs == 1)
                 newVfx.SetActive(false);
         }
@@ -39,6 +47,58 @@ public class LevelUnlockCheck : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
+
+        StartCoroutine(Checks());
+    }
+
+    IEnumerator Checks()
+    {
+        while(true)
+        {
+            if(LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                // Its a multiplayer game, check if its unlocked from boss
+                if(!IsUnlockedThroughBoss())
+                    transform.position = Vector3.down * 2000;
+            }
+            else
+            {
+                bool IsRealPlayerInGame(Player p)
+                {
+                    if(PlayerBot.active)
+                    {
+                        // Bot players dont count for this statement
+                        if(PlayerBot.chosenPlayer.Contains(p)) return false;
+                    }
+
+                    return GameManager.Instance.IsPlayerInGame(p); 
+                }
+
+                int playerCountInGame = 0;
+                playerCountInGame += IsRealPlayerInGame(Player.One) ? 1 : 0;
+                playerCountInGame += IsRealPlayerInGame(Player.Two) ? 1 : 0;
+                playerCountInGame += IsRealPlayerInGame(Player.Three) ? 1 : 0;
+                playerCountInGame += IsRealPlayerInGame(Player.Four) ? 1 : 0;
+
+                // More than one player in game then its a local multiplayer, check if its unlocked from boss
+                if(playerCountInGame > 1)
+                {
+                    if(!IsUnlockedThroughBoss())
+                        transform.position = Vector3.down * 2000;
+                }
+                else 
+                {
+                    transform.position = initialPosition;
+                }
+            }
+
+            yield return null;
+        }
+    }
+
+    bool IsUnlockedThroughBoss()
+    {
+        return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0) == 1;
     }
 
     private void OnDestroy()
