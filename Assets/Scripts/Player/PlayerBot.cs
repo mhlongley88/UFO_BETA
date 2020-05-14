@@ -179,12 +179,15 @@ public class PlayerBot : MonoBehaviour
 
         if(preset.useDash)
         {
-            if((adversaryObject.transform.position - transform.position).magnitude < 4)
+            if (adversaryObject != null)
             {
-                if(useDashElaspsed < Time.time)
+                if ((adversaryObject.transform.position - transform.position).magnitude < 4)
                 {
-                    playerController.tryToBoost();
-                    useDashElaspsed = Time.time + Random.Range(0.8f, 2.0f);
+                    if (useDashElaspsed < Time.time)
+                    {
+                        playerController.tryToBoost();
+                        useDashElaspsed = Time.time + Random.Range(0.8f, 2.0f);
+                    }
                 }
             }
         }

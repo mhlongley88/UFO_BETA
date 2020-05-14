@@ -5,12 +5,15 @@ using UnityEngine;
 public class LevelUnlockCheck : MonoBehaviour
 {
     public static List<LevelUnlockCheck> All = new List<LevelUnlockCheck>();
+
     public GameObject newVfx;
     public int matchThreshold = 0;
-    ShowLevelTitle levelTitle;
+
+    [HideInInspector]
+    public ShowLevelTitle levelTitle;
 
     string PlayerLevelKey = "PlayedLevel";
-    string unlockedFromBeatingBossKey = "UnlockedLevelBoss";
+    static string unlockedFromBeatingBossKey = "UnlockedLevelBoss";
 
     public bool hasABoss = false;
 
@@ -95,6 +98,13 @@ public class LevelUnlockCheck : MonoBehaviour
         }
     }
 
+    public static void UnlockByBoss(int num)
+    {
+      //  if (hasABoss)
+        {
+            PlayerPrefs.SetInt(unlockedFromBeatingBossKey + num, 1);
+        }
+    }
     bool IsUnlockedThroughBoss()
     {
         return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0) == 1;
