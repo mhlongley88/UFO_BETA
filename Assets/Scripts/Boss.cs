@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Boss : MonoBehaviour
     public Image lifeBar;
     public AudioSource bossDeathSFX;
     public AudioSource bossLOOP;
+    public UnityEvent onDie = new UnityEvent();
 
     public int maxHealth = 40;
     public int health = 40;
@@ -29,24 +31,31 @@ public class Boss : MonoBehaviour
 
     public void OnTakeDamage()
     {
-        Debug.Log("Boss took damage");
+     //   Debug.Log("Boss took damage");
+        if (health <= 0) return;
 
         health -= 2;
         if(health <= 0)
         {
             health = 0;
 
-            animator.SetTrigger("Die");
+            if(animator) animator.SetTrigger("Die");
             cmVCam6.SetActive(true);
 
             GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>().RemoveMember(annunakiObj);
-            motionTrackAnimator.enabled = false;
-            lookAtPlayer.enabled = false;
+            if(motionTrackAnimator) motionTrackAnimator.enabled = false;
+            if(lookAtPlayer) lookAtPlayer.enabled = false;
 
             Debug.Log("Boss is Dead");
             bossDeathSFX.Play();
             bossLOOP.Stop();
-            
+
+            onDie.Invoke();
+
+            if (ShowLevelTitle.levelStaticInt > 0)
+            {
+                LevelUnlockCheck.UnlockByBoss(ShowLevelTitle.levelStaticInt);
+            }
         }
     }
 }
