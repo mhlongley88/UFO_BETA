@@ -264,6 +264,12 @@ public class GameManager : MonoBehaviour
             MainMenuUIManager.goDirectlyToLevelSelect = true;
             goesNextLevelInsteadOfRetry = false;
 
+            PlayerBot.active = false;
+            foreach(var bp in PlayerBot.chosenPlayer)
+            {
+                RemovePlayerFromGame(bp);
+            }
+
             if (SceneManager.GetActiveScene().name != "MainMenu")
             {
                 if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
