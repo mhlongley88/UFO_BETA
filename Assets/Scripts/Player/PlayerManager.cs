@@ -287,12 +287,93 @@ public class PlayerManager : MonoBehaviour
         return playersLeft;
     }
 
+    public void BossHasDied()
+    {
+        int playersLeft = GetPlayersLeft();
+        if (playersLeft >= 2) return;
+
+        var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+        players[lastPlayerAlive].rank = 0;
+
+        // Last player to kill the boss was a bot, does not count
+        if (PlayerBot.chosenPlayer.Contains(lastPlayerAlive)) return;
+
+        if (hasDoubleMatch())
+            return;
+
+        PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
+        PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
+
+        GameManager.Instance.goesNextLevelInsteadOfRetry = true;
+
+        if (LevelUnlockFromProgression.lastSelected != -1)
+        {
+            LevelUnlockFromProgression.UnlockLevel();
+        }
+
+        if (CharacterUnlockFromProgression.lastSelected != -1)
+        {
+            CharacterUnlockFromProgression.UnlockCharacter();
+        }
+
+        var activePlayers = GameManager.Instance.GetActivePlayers();
+        foreach (Player i in activePlayers)
+        {
+            Debug.Log("Rank of " + i + " :  " + players[i].rank);
+            RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+        }
+
+        GameManager.Instance.GameEnds();
+    }
+
+    bool hasDoubleMatch()
+    {
+        if (DoubleMatch.useDoubleMatch)
+        {
+            DoubleMatchCutsceneRef.instance.cutscene.SetActive(true);
+
+            LevelUIManager.Instance.allInvincible = true;
+            var seq = DOTween.Sequence();
+            seq.AppendInterval(DoubleMatchCutsceneRef.instance.disableMe.seconds);
+            seq.AppendCallback(() =>
+            {
+                LevelUIManager.Instance.allInvincible = false;
+
+                for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
+                {
+                    var p = PlayerBot.chosenPlayer[e];
+                    players[p].rank = -1;
+                    players[p].lives = 3;
+                    LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+
+                    int characterOverrideIndex = -1;
+                    switch (PlayerBot.aiSlots[e])
+                    {
+                        case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                        case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                        case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                    }
+
+                    if (characterOverrideIndex != -1)
+                        GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
+
+                    StartCoroutine(SpawnCoroutine(p));
+                }
+            });
+
+
+            DoubleMatch.useDoubleMatch = false;
+            return true;
+        }
+
+        return false;
+    }
+
     public void PlayerDied(Player player, Transform playerModel)
     {
         if (GameManager.Instance.gameOver) return;
 
         //GameManagerScript.Instance.PlayerDied(player);
-
         int currentLife = players[player].lives;
 
         bool canRespawn = currentLife > 1;
@@ -314,10 +395,13 @@ public class PlayerManager : MonoBehaviour
 
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            if (playersLeft < 2)
+            if (playersLeft > 0 && playersLeft < 2)
             {
-                var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
-                players[lastPlayerAlive].rank = 0;
+                if (spawnedPlayerDictionary.Count > 0)
+                {
+                    var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+                    players[lastPlayerAlive].rank = 0;
+                }
             }
         }
         else if (playersLeft < 2 && spawnedPlayerDictionary.Count == 1)
@@ -355,6 +439,24 @@ public class PlayerManager : MonoBehaviour
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
         {
             var activePlayers = GameManager.Instance.GetActivePlayers();
+
+            // There must be a non bot player alive to check for the boss, imagine the player died on a fight versus a bot and there is a boss
+            // if the boss is alive and the only player left is a bot, the game is over
+            var nonBotPlayer = players.Where(it => !PlayerBot.chosenPlayer.Contains(it.Key) && it.Value.lives >= 1).ToList();
+
+            // If the player is dead and the boss was or wasnt defeated, make sure it doesnt unlock the level for local/online
+            if(nonBotPlayer.Count <= 0 && Boss.instance != null)
+            {
+                LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
+            }
+
+            if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
+            {
+                // Boss still got health and there is one more player left
+                if (Boss.instance.health > 0 && playersLeft >= 1)
+                    return;
+            }
+
             foreach (Player i in activePlayers)
             {
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
@@ -366,49 +468,23 @@ public class PlayerManager : MonoBehaviour
                     {
                         if (players[i].rank == 0)
                         {
-                            if (DoubleMatch.useDoubleMatch)
+                            if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
                             {
-                                DoubleMatchCutsceneRef.instance.cutscene.SetActive(true);
-
-                                LevelUIManager.Instance.allInvincible = true;
-                                var seq = DOTween.Sequence();
-                                seq.AppendInterval(DoubleMatchCutsceneRef.instance.disableMe.seconds);
-                                seq.AppendCallback(() => 
+                                // Check if player died and boss still got health, that means player lost
+                                if (Boss.instance.health > 0)
                                 {
-                                    LevelUIManager.Instance.allInvincible = false;
-                                    
-                                    for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
-                                    {
-                                        var p = PlayerBot.chosenPlayer[e];
-                                        players[p].rank = -1;
-                                        players[p].lives = 3;
-                                        LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
-
-                                        int characterOverrideIndex = -1;
-                                        switch(PlayerBot.aiSlots[e])
-                                        {
-                                            case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                            case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                            case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                                        }
-
-                                        if(characterOverrideIndex != -1)
-                                            GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
-
-                                        StartCoroutine(SpawnCoroutine(p));
-                                    }
-                                });
-                                
-
-                                DoubleMatch.useDoubleMatch = false;
-                                return;
+                                    GameManager.Instance.GameEnds();
+                                    return;
+                                }
                             }
+
+                            if (hasDoubleMatch())
+                                return;
 
                             PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
                             PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
 
                             GameManager.Instance.goesNextLevelInsteadOfRetry = true;
-
 
                             if (LevelUnlockFromProgression.lastSelected != -1)
                             {
@@ -459,7 +535,12 @@ public class PlayerManager : MonoBehaviour
                     RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
                 }
 
-              
+                // Make sure tthat if the boss was defeated by the player and the player lost to the bots, dont unlock the level for local/online
+                if (Boss.instance != null)
+                {
+                    LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
+                }
+
                 GameManager.Instance.GameEnds();
             }
         }

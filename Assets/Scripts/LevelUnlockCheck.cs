@@ -26,6 +26,8 @@ public class LevelUnlockCheck : MonoBehaviour
         levelTitle = GetComponent<ShowLevelTitle>();
 
         initialPosition = transform.position;
+
+        //PlayerPrefs.SetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0);
     }
 
     // Start is called before the first frame update
@@ -105,6 +107,23 @@ public class LevelUnlockCheck : MonoBehaviour
             PlayerPrefs.SetInt(unlockedFromBeatingBossKey + num, 1);
         }
     }
+
+    public static void ResetUnlockByBoss(int num)
+    {
+        //  if (hasABoss)
+        {
+            PlayerPrefs.SetInt(unlockedFromBeatingBossKey + num, 0);
+        }
+    }
+
+    public static bool IsUnlockedByBoss(int num)
+    {
+        //  if (hasABoss)
+        {
+            return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + num) == 1;
+        }
+    }
+
     bool IsUnlockedThroughBoss()
     {
         return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0) == 1;

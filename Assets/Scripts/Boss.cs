@@ -6,6 +6,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
+    public static Boss instance;
+
     public Animator animator;
     public Animator motionTrackAnimator;
     public LookAtPlayer lookAtPlayer;
@@ -18,6 +20,11 @@ public class Boss : MonoBehaviour
 
     public int maxHealth = 40;
     public int health = 40;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -55,6 +62,7 @@ public class Boss : MonoBehaviour
             if (ShowLevelTitle.levelStaticInt > 0)
             {
                 LevelUnlockCheck.UnlockByBoss(ShowLevelTitle.levelStaticInt);
+                PlayerManager.Instance.BossHasDied();
             }
         }
     }
