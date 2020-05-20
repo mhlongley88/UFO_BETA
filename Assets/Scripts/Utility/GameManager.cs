@@ -189,6 +189,8 @@ public class GameManager : MonoBehaviour
         bool isGoToMenuBtnDown = false;
         bool isPauseBtnDown = false;
         bool isFromPauseToMenuDown = false;
+        bool isRestartBtnDownY = false;
+        bool isGotoPlayerLevelSelectBtnDown = false;
 
         var activePlayers = GameManager.Instance.GetActivePlayers();
         foreach (Player i in activePlayers)
@@ -209,18 +211,39 @@ public class GameManager : MonoBehaviour
             if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
             if (!isFromPauseToMenuDown)
                 isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
+
+            if (!isRestartBtnDownY) isRestartBtnDownY = playerInput.GetButton("RetryY");
+            if (!isGotoPlayerLevelSelectBtnDown) isGotoPlayerLevelSelectBtnDown = playerInput.GetButton("RetryN");
         }
 
-        if (gameOver)
+        if (LevelUIManager.Instance && LevelUIManager.Instance.lostToBots.activeInHierarchy)
         {
-            if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
+            if ((isRestartBtnDownY || Input.GetKeyDown(KeyCode.Y)))
             {
                 RestartGame();
             }
 
-            if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
+            if (isGotoPlayerLevelSelectBtnDown || Input.GetKeyDown(KeyCode.N))
             {
-                EndGameAndGoToMenu();
+                goesNextLevelInsteadOfRetry = true;
+                RestartGame();
+            }
+        }
+
+        if (gameOver)
+        {
+           
+           // else
+            {
+                if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
+                {
+                    RestartGame();
+                }
+
+                if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
+                {
+                    EndGameAndGoToMenu();
+                }
             }
         }
         else

@@ -431,23 +431,45 @@ public class PlayerManager : MonoBehaviour
             GameManager.Instance.GameEnds();
         }
 
+        bool allTheActivePlayersAreBots = true;
+        var activePlayers = GameManager.Instance.GetActivePlayers();
+
+        if (PlayerBot.active)
+        {
+            foreach (Player i in activePlayers)
+            {
+                // RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+                if (players[i].lives > 0)
+                {
+                    if (!PlayerBot.chosenPlayer.Contains(i))
+                    {
+                        allTheActivePlayersAreBots = false;
+                    }
+                }
+            }
+        }
+
         //Offline handling
-        if (!LobbyConnectionHandler.instance.IsMultiplayerMode &&  canRespawn)
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode && canRespawn)
         {
             StartCoroutine(SpawnCoroutine(player));
         }
-        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && (playersLeft < 2 || (PlayerBot.active && allTheActivePlayersAreBots) ))
         {
-            var activePlayers = GameManager.Instance.GetActivePlayers();
+          //  var activePlayers = GameManager.Instance.GetActivePlayers();
 
             // There must be a non bot player alive to check for the boss, imagine the player died on a fight versus a bot and there is a boss
             // if the boss is alive and the only player left is a bot, the game is over
-            var nonBotPlayer = players.Where(it => !PlayerBot.chosenPlayer.Contains(it.Key) && it.Value.lives >= 1).ToList();
+            var nonBotPlayer = players.Where(it => !PlayerBot.chosenPlayer.Contains(it.Key) && it.Value.lives >= 1 && it.Value.instance != null).ToList();
 
             // If the player is dead and the boss was or wasnt defeated, make sure it doesnt unlock the level for local/online
             if(nonBotPlayer.Count <= 0 && Boss.instance != null)
             {
                 LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
+                LevelUIManager.Instance.lostToBots.SetActive(true);
+             //  GameManager.Instance.gameOver = true;
+
+                return;
             }
 
             if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
@@ -502,25 +524,12 @@ public class PlayerManager : MonoBehaviour
 
             GameManager.Instance.GameEnds();      
         }
-        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && PlayerBot.active)
+        else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && PlayerBot.active && allTheActivePlayersAreBots)
         {
-            bool allTheActivePlayersAreBots = true;
-            var activePlayers = GameManager.Instance.GetActivePlayers();
-            foreach (Player i in activePlayers)
-            {       
-                // RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-                if (players[i].lives > 0)
-                {
-                    if (!PlayerBot.chosenPlayer.Contains(i))
-                    {
-                        allTheActivePlayersAreBots = false;
-                    }
-                }
-            }
-
-            if(allTheActivePlayersAreBots)
+            return;
+            //if(allTheActivePlayersAreBots)
             {
-                // LevelUIManager.Instance.lostToBots.SetActive(true);
+                LevelUIManager.Instance.lostToBots.SetActive(true);
 
                 int rank = 0;
                 foreach (Player i in activePlayers)

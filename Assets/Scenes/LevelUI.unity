@@ -554,6 +554,7 @@ MonoBehaviour:
   - {fileID: 838856551}
   - {fileID: 838856550}
   - {fileID: 838856549}
+  allInvincible: 0
 --- !u!4 &161378701
 Transform:
   m_ObjectHideFlags: 0
@@ -591,6 +592,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 182751240}
+  - component: {fileID: 182751241}
   m_Layer: 5
   m_Name: LostBots
   m_TagString: Untagged
@@ -620,6 +622,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &182751241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182751239}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83b707fb96250440b8e917272d62509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 891091207}
+  - {fileID: 457264903}
+  goToMenuWhenBack: {fileID: 0}
 --- !u!1 &189460712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,7 +1254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &457264902
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4778,7 +4796,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &891091206
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8704,8 +8722,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.000011444, y: 196.5}
-  m_SizeDelta: {x: 298.1, y: 114.6}
+  m_AnchoredPosition: {x: -0.000011444, y: 150.2}
+  m_SizeDelta: {x: 298.1, y: 182.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1722205864
 MonoBehaviour:
@@ -8725,7 +8743,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: There are only bots on the scene!
+  m_text: 'Defeated
+
+
+    Retry?
+
+    [Y/N]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8794,12 +8817,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1722205864}
-    characterCount: 33
+    characterCount: 22
     spriteCount: 0
-    spaceCount: 6
-    wordCount: 7
+    spaceCount: 3
+    wordCount: 4
     linkCount: 0
-    lineCount: 2
+    lineCount: 4
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
