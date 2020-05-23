@@ -143,7 +143,8 @@ public class SuperWeapon : Weapon
 
     public void DeactivateWeapon()
     {
-        myPlayerController.ToggleSuperWeapon(false);
+        if(myPlayerController != null) myPlayerController.ToggleSuperWeapon(false);
+        
         superWeaponMapping[currentWeapon].weaponModel.SetActive(false);
 
         specialReady.SetActive(false);
@@ -253,7 +254,9 @@ public class SuperWeapon : Weapon
             {
                 DeactivateWeapon();
             }
-            pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
+
+            if(pv != null)
+                pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }
     }
 

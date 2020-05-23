@@ -9,7 +9,7 @@ public class PlayerHealthManager : MonoBehaviour
 
     [SerializeField]
     private ScriptableHealth healthSettings;
-
+    public ScriptableHealth HealthSettings { get { return healthSettings; } set { healthSettings = value; } }
 
     private float refillDuration = 8f;
 
@@ -115,7 +115,9 @@ public class PlayerHealthManager : MonoBehaviour
     void Start()
     {
         currHealth = startingHealth;
-        lifeManager = LevelUIManager.Instance.GetLifeManager(playerController.player);
+
+        if(!playerController.pawn)
+            lifeManager = LevelUIManager.Instance.GetLifeManager(playerController.player);
 
         if(TutorialManager.instance != null)
         {
@@ -129,9 +131,12 @@ public class PlayerHealthManager : MonoBehaviour
 
     public void ApplyTintOnCircles(Color tint)
     {
-        for (int i = 0; i < lifeManager.lifeIndicators.Length; i++)
+        if (lifeManager != null)
         {
-            lifeManager.lifeIndicators[i].color = tint;
+            for (int i = 0; i < lifeManager.lifeIndicators.Length; i++)
+            {
+                lifeManager.lifeIndicators[i].color = tint;
+            }
         }
 
         for (int i = 0; i < healthCounterImages.Length; i++)

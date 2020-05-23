@@ -8,18 +8,25 @@ using System;
 using static InputManager;
 using Photon.Pun;
 using Rewired;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
+
+    public bool pawn = false;
+    [HideInInspector]
+    public GameObject pawnModel;
+
+    public bool canGrowWhenUsingSpecial = true;
+   // [HideInInspector]
+    public Vector3 offsetScale;
 
     public Player player;
    // public GameObject PlayerSpecialvCam;
     public bool twinStick = false;
     private float timeStamp;
     private Rigidbody myRigidbody;
-
-
     public float radius;
     public float power;
     public float boostHitMultiplier;
@@ -80,7 +87,7 @@ public class PlayerController : MonoBehaviour
     private float verticalInput;
     private bool beamInput;
     private bool dashInput;
-
+    public GameObject aimFlagObject;
     public GameObject DashPFX;
 
     public float invincibleDuration = 3.0f;
@@ -145,7 +152,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform modelContainer;
 
-    GameObject playerModel;
+    [HideInInspector]
+    public GameObject playerModel;
     PhotonView pv;
 
     [HideInInspector]
@@ -155,6 +163,10 @@ public class PlayerController : MonoBehaviour
 
     int rewirePlayerId;
     Rewired.Player rewirePlayer;
+
+    [HideInInspector]
+    public delegate void TakeDamage(float d);
+    public TakeDamage OnTakeDamage;
 
     // For Bots
     //[HideInInspector]
@@ -169,7 +181,6 @@ public class PlayerController : MonoBehaviour
         }
         playerControllerByGameObject.Add(gameObject, this);
 
-
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             switch (player)
@@ -179,7 +190,6 @@ public class PlayerController : MonoBehaviour
                 case Player.Three: rewirePlayerId = 2; break;
                 case Player.Four: rewirePlayerId = 3; break;
             }
-
             rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
         }
         else
@@ -198,24 +208,35 @@ public class PlayerController : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();
         beam.SetActive(false);
         originalScale = transform.localScale;
+
+        transform.localScale = offsetScale + originalScale;
+
         originalMass = myRigidbody.mass;
         powerMin = 0.0f;
 
-        playerModel = Instantiate(GameManager.Instance.GetPlayerModel(player), modelContainer);
-        playerModel.transform.localRotation = Quaternion.identity;
-        playerModel.transform.localPosition = Vector3.zero;
+        {
+            playerModel = Instantiate(pawn ? pawnModel : GameManager.Instance.GetPlayerModel(player), modelContainer);
+            playerModel.transform.localRotation = Quaternion.identity;
+            playerModel.transform.localPosition = Vector3.zero;
+        }
 
         var characterInfo = playerModel.GetComponent<CharacterLevelSelectInfo>();
 
-        // Wait a few frames to LifeManager be assigned in the Health Manager, this should be quick (Elvis)
-        while (healthManager.LifeManager == null) yield return null;
-        healthManager.LifeManager.characterHead.sprite = characterInfo.CharacterHead;
-        healthManager.ApplyTintOnCircles(characterInfo.characterLivesCircleTint);
+       // if (!pawn)
+        {
+            // Wait a few frames to LifeManager be assigned in the Health Manager, this should be quick (Elvis)
+            while (healthManager.LifeManager == null) yield return null;
 
+            if(healthManager.LifeManager != null)
+                healthManager.LifeManager.characterHead.sprite = characterInfo.CharacterHead;
+
+            healthManager.ApplyTintOnCircles(characterInfo.characterLivesCircleTint);
+        }
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         yield return new WaitForSeconds(invincibleDuration);
-        healthManager.SetInvincible(false);
+        
+        if(!pawn) healthManager.SetInvincible(false);
 
         //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         //{
@@ -453,6 +474,7 @@ public class PlayerController : MonoBehaviour
         dead = true;
 
         avgScaleOutput.RemovePlayer(this.gameObject.transform);
+
         PlayerManager.Instance.players[player].lives = livesLeft;
         PlayerManager.Instance.PlayerDied(player, playerModel.transform);
 
@@ -757,9 +779,9 @@ public class PlayerController : MonoBehaviour
 
                 avgScaleOutput.CalculateAndOutput();
 
-                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                if (Vector3.Distance(transform.localScale, (originalScale + offsetScale) + Vector3.one * scaleDelta) > 0.01f)
                 {
-                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, (originalScale + offsetScale) + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
                 }
             }
             else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -768,9 +790,9 @@ public class PlayerController : MonoBehaviour
 
                 avgScaleOutput.CalculateAndOutput();
 
-                if (Vector3.Distance(transform.localScale, originalScale + Vector3.one * scaleDelta) > 0.01f)
+                if (Vector3.Distance(transform.localScale, (originalScale + offsetScale) + Vector3.one * scaleDelta) > 0.01f)
                 {
-                    transform.localScale = Vector3.MoveTowards(transform.localScale, originalScale + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
+                    transform.localScale = Vector3.MoveTowards(transform.localScale, (originalScale + offsetScale) + Vector3.one * scaleDelta, Time.deltaTime * scaleSpeed);
                 }
             }
         }
@@ -814,7 +836,7 @@ public class PlayerController : MonoBehaviour
     {
 #if UNITY_EDITOR
         // TESTING ONLY
-        if (PlayerBot.active)
+        if (PlayerBot.active && !pawn)
         {
             if (PlayerBot.chosenPlayer.Contains(player))
             {
@@ -823,7 +845,9 @@ public class PlayerController : MonoBehaviour
                     dead = true;
 
                     avgScaleOutput.RemovePlayer(this.gameObject.transform);
+
                     PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+
                     Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
                     Destroy(this.gameObject);
                 }
@@ -868,7 +892,11 @@ public class PlayerController : MonoBehaviour
     }
     public void ChangeScale(float scaleChange)
     {
-        if (!healthManager.IsInvincible() || scaleChange > 0f)
+        if (!canGrowWhenUsingSpecial) return;
+
+        bool isntInvincible = healthManager != null ? !healthManager.IsInvincible() : true;
+
+        if (isntInvincible || scaleChange > 0f)
         {
 
             scaleDelta += scaleChange;
@@ -881,7 +909,7 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        if (dead) return;
+        if (dead || pawn) return;
 
         dead = true;
 
@@ -899,7 +927,7 @@ public class PlayerController : MonoBehaviour
             dead = true;
 
             avgScaleOutput.RemovePlayer(this.gameObject.transform);
-            PlayerManager.Instance.PlayerDied(player, playerModel.transform);
+            if(!pawn) PlayerManager.Instance.PlayerDied(player, playerModel.transform);
             Instantiate(DeathPFX, gameObject.transform.position, gameObject.transform.rotation);
             Destroy(this.gameObject);
         }
@@ -953,6 +981,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
+
         if (collidersToIgnore != null)
         {
             if (Array.FindIndex(collidersToIgnore, it => it.theCollider == other.collider) >= 0)
@@ -1005,7 +1034,10 @@ public class PlayerController : MonoBehaviour
 
     public void DoDamage(float healthDamage = -3.0f)
     {
-        healthManager.ChangeHealth(healthDamage);
+       healthManager.ChangeHealth(healthDamage);
+
+        OnTakeDamage?.Invoke(healthDamage);
+
         DropAbductedObject(1);
     }
 
