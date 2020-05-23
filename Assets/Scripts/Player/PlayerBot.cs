@@ -62,6 +62,9 @@ public class PlayerBot : MonoBehaviour
     void Update()
     {
         Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
+        var ea = lookDir.eulerAngles;
+        ea.x = ea.z = 0.0f;
+        lookDir.eulerAngles = ea;
 
         if (GameManager.Instance.paused)
         {
@@ -91,7 +94,7 @@ public class PlayerBot : MonoBehaviour
         if (adversaryObject)
         {
             lookDir = Quaternion.LookRotation(adversaryObject.transform.position - transform.position, Vector3.up);
-            var ea = lookDir.eulerAngles;
+            ea = lookDir.eulerAngles;
             ea.x = ea.z = 0.0f;
             lookDir.eulerAngles = ea;
 

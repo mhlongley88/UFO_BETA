@@ -33,7 +33,12 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
-        lifeBar.fillAmount = (float)health / (float)maxHealth;
+        if(lifeBar) lifeBar.fillAmount = (float)health / (float)maxHealth;
+    }
+
+    public void OnTakeDamage(float v)
+    {
+        OnTakeDamage();
     }
 
     public void OnTakeDamage()
@@ -42,20 +47,27 @@ public class Boss : MonoBehaviour
         if (health <= 0) return;
 
         health -= 2;
-        if(health <= 0)
+        CheckHealth();
+    }
+
+    void CheckHealth()
+    {
+        if (health <= 0)
         {
             health = 0;
 
-            if(animator) animator.SetTrigger("Die");
-            cmVCam6.SetActive(true);
+            if (animator) animator.SetTrigger("Die");
+            if (cmVCam6 != null) cmVCam6.SetActive(true);
 
-            GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>().RemoveMember(annunakiObj);
-            if(motionTrackAnimator) motionTrackAnimator.enabled = false;
-            if(lookAtPlayer) lookAtPlayer.enabled = false;
+            if (annunakiObj != null)
+                GameObject.Find("CAMERA/TargetGroup1").GetComponent<CinemachineTargetGroup>().RemoveMember(annunakiObj);
+
+            if (motionTrackAnimator) motionTrackAnimator.enabled = false;
+            if (lookAtPlayer) lookAtPlayer.enabled = false;
 
             Debug.Log("Boss is Dead");
-            bossDeathSFX.Play();
-            bossLOOP.Stop();
+            if (bossDeathSFX != null) bossDeathSFX.Play();
+            if (bossLOOP != null) bossLOOP.Stop();
 
             onDie.Invoke();
 

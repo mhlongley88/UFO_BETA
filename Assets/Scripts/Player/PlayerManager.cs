@@ -349,9 +349,30 @@ public class PlayerManager : MonoBehaviour
                     int characterOverrideIndex = -1;
                     switch (PlayerBot.aiSlots[e])
                     {
-                        case PlayerBotSlot.One: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                        case PlayerBotSlot.Two: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
-                        case PlayerBotSlot.Three: characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex; break;
+                        case PlayerBotSlot.One:
+                            {
+                                if (!BotConfigurator.instance.bot1.isRandomCharacter)
+                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                else
+                                    characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex;
+                            }
+                            break;
+                        case PlayerBotSlot.Two:
+                            {
+                                if (!BotConfigurator.instance.bot2.isRandomCharacter)
+                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                else
+                                    characterOverrideIndex = DoubleMatch.lastSelected.bot2CharacterIndex;
+                            }
+                            break;
+                        case PlayerBotSlot.Three:
+                            {
+                                if (!BotConfigurator.instance.bot3.isRandomCharacter)
+                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                else
+                                    characterOverrideIndex = DoubleMatch.lastSelected.bot3CharacterIndex;
+                            }
+                            break;
                     }
 
                     if (characterOverrideIndex != -1)
