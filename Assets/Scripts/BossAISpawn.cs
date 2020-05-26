@@ -13,6 +13,7 @@ public class BossAISpawn : MonoBehaviour
     public Transform spawnPoint;
     public ScriptableHealth scriptableHealth;
     public EnableWhenBossHealth enableWhen;
+    public EnableWhenBossHealth enableWhen2;
 
     GameObject instance;
 
@@ -38,8 +39,10 @@ public class BossAISpawn : MonoBehaviour
         if (enableWhen != null)
         {
             enableWhen.boss = boss;
-
             enableWhen.enabled = true;
+
+            enableWhen2.boss = boss;
+            enableWhen2.enabled = true;
         }
 
         instance = ai;

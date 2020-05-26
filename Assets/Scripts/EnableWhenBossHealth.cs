@@ -6,7 +6,6 @@ public class EnableWhenBossHealth : MonoBehaviour
 {
     public Boss boss;
     public GameObject objectToEnable;
-    public GameObject objectToDisable;
     public float percentage = 0.5f;
 
     void Update()

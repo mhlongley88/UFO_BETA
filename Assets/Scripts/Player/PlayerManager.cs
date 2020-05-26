@@ -439,6 +439,7 @@ public class PlayerManager : MonoBehaviour
             StartCoroutine(SpawnCoroutine(player));
         }
         else
+
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
         {
             foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
@@ -501,26 +502,26 @@ public class PlayerManager : MonoBehaviour
             foreach (Player i in activePlayers)
             {
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
-                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-
+     
                 if (PlayerBot.active)
                 {
+                    if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
+                    {
+                        // Check if player died and boss still got health, that means player lost
+                        if (Boss.instance.health > 0)
+                        {
+                            GameManager.Instance.GameEnds();
+                            return;
+                        }
+                    }
+
+                    if (hasDoubleMatch())
+                        return;
+
                     if (!PlayerBot.chosenPlayer.Contains(i))
                     {
                         if (players[i].rank == 0)
                         {
-                            if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
-                            {
-                                // Check if player died and boss still got health, that means player lost
-                                if (Boss.instance.health > 0)
-                                {
-                                    GameManager.Instance.GameEnds();
-                                    return;
-                                }
-                            }
-
-                            if (hasDoubleMatch())
-                                return;
 
                             PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
                             PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
@@ -539,13 +540,14 @@ public class PlayerManager : MonoBehaviour
                         }
                     }
                 }
+
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
             GameManager.Instance.GameEnds();      
         }
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && PlayerBot.active && allTheActivePlayersAreBots)
         {
-            return;
             //if(allTheActivePlayersAreBots)
             {
                 LevelUIManager.Instance.lostToBots.SetActive(true);
