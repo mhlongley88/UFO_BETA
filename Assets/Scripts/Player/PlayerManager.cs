@@ -351,25 +351,23 @@ public class PlayerManager : MonoBehaviour
                     {
                         case PlayerBotSlot.One:
                             {
-                                if (!BotConfigurator.instance.bot1.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                                //if (!BotConfigurator.instance.bot1.isRandomCharacter)
+                                //    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                //else
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex;
                             }
                             break;
                         case PlayerBotSlot.Two:
                             {
-                                if (!BotConfigurator.instance.bot2.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                                //if (!BotConfigurator.instance.bot2.isRandomCharacter)
+                                //    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                //else
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot2CharacterIndex;
                             }
                             break;
                         case PlayerBotSlot.Three:
                             {
-                                if (!BotConfigurator.instance.bot3.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                               
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot3CharacterIndex;
                             }
                             break;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class BossAISpawn : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class BossAISpawn : MonoBehaviour
     public GameObject prefab;
     public Transform spawnPoint;
     public ScriptableHealth scriptableHealth;
+    public EnableWhenBossHealth enableWhen;
+
+    GameObject instance;
 
     public void Spawn()
     {
@@ -30,5 +34,24 @@ public class BossAISpawn : MonoBehaviour
 
         var bot = ai.AddComponent<PlayerBot>();
         bot.preset = aiPreset;
+
+        if (enableWhen != null)
+        {
+            enableWhen.boss = boss;
+
+            enableWhen.enabled = true;
+        }
+
+        instance = ai;
+    }
+
+    public void EnableAI()
+    {
+        instance.SetActive(true);
+    }
+
+    public void DisableAI()
+    {
+        instance.SetActive(false);
     }
 }
