@@ -151,7 +151,20 @@ public class PlayerManager : MonoBehaviour
         {
             for (int i = 0; i < PlayerBot.chosenPlayer.Count; i++)
             {
-                GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], UnityEngine.Random.Range(1, 6));
+                switch(PlayerBot.chosenPlayer[i])
+                {
+                    case Player.One:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                    case Player.Two:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot2.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                    case Player.Three:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot3.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                }
+
+                
             }
         }
 
@@ -351,25 +364,23 @@ public class PlayerManager : MonoBehaviour
                     {
                         case PlayerBotSlot.One:
                             {
-                                if (!BotConfigurator.instance.bot1.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                                //if (!BotConfigurator.instance.bot1.isRandomCharacter)
+                                //    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                //else
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot1CharacterIndex;
                             }
                             break;
                         case PlayerBotSlot.Two:
                             {
-                                if (!BotConfigurator.instance.bot2.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                                //if (!BotConfigurator.instance.bot2.isRandomCharacter)
+                                //    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
+                                //else
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot2CharacterIndex;
                             }
                             break;
                         case PlayerBotSlot.Three:
                             {
-                                if (!BotConfigurator.instance.bot3.isRandomCharacter)
-                                    characterOverrideIndex = UnityEngine.Random.Range(0, 7);
-                                else
+                               
                                     characterOverrideIndex = DoubleMatch.lastSelected.bot3CharacterIndex;
                             }
                             break;
@@ -441,6 +452,7 @@ public class PlayerManager : MonoBehaviour
             StartCoroutine(SpawnCoroutine(player));
         }
         else
+
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
         {
             foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
@@ -500,29 +512,33 @@ public class PlayerManager : MonoBehaviour
                     return;
             }
 
+            int fakeRankCount = 0;
             foreach (Player i in activePlayers)
             {
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
-                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-
+     
                 if (PlayerBot.active)
                 {
+                    if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
+                    {
+                        // Check if player died and boss still got health, that means player lost
+                        if (Boss.instance.health > 0)
+                        {
+                            GameManager.Instance.GameEnds();
+                            return;
+                        }
+                    }
+
+                    if (nonBotPlayer.Count > 0)
+                    {
+                        if (hasDoubleMatch())
+                            return;
+                    }
+
                     if (!PlayerBot.chosenPlayer.Contains(i))
                     {
                         if (players[i].rank == 0)
                         {
-                            if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
-                            {
-                                // Check if player died and boss still got health, that means player lost
-                                if (Boss.instance.health > 0)
-                                {
-                                    GameManager.Instance.GameEnds();
-                                    return;
-                                }
-                            }
-
-                            if (hasDoubleMatch())
-                                return;
 
                             PostGameOptionsRetry.instance.retryMatchText.SetActive(false);
                             PostGameOptionsRetry.instance.nextLevelMatchText.SetActive(true);
@@ -540,14 +556,22 @@ public class PlayerManager : MonoBehaviour
                             }
                         }
                     }
+                    else if(nonBotPlayer.Count <= 0)
+                    {
+                        //if (players[i].rank == -1)
+                        {
+                            players[i].rank = fakeRankCount++;
+                        }
+                    }
                 }
+
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
             GameManager.Instance.GameEnds();      
         }
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && PlayerBot.active && allTheActivePlayersAreBots)
         {
-            return;
             //if(allTheActivePlayersAreBots)
             {
                 LevelUIManager.Instance.lostToBots.SetActive(true);

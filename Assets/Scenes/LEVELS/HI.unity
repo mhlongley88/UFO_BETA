@@ -1619,16 +1619,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateType: 0
   isSpeedBased: 0
-  hasOnStart: 0
+  hasOnStart: 1
   hasOnPlay: 0
   hasOnUpdate: 0
   hasOnStepComplete: 0
-  hasOnComplete: 0
+  hasOnComplete: 1
   hasOnTweenCreated: 0
   hasOnRewind: 0
   onStart:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1232142896}
+        m_MethodName: DisableAI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onPlay:
     m_PersistentCalls:
       m_Calls: []
@@ -1640,7 +1651,18 @@ MonoBehaviour:
       m_Calls: []
   onComplete:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1232142896}
+        m_MethodName: EnableAI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onTweenCreated:
     m_PersistentCalls:
       m_Calls: []
@@ -9699,31 +9721,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.1021162
+      value: -0.064615056
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.020064
+      value: 22.369177
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.383395
+      value: 0.52475214
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.016170971
+      value: 0.027369507
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.010346
+      value: 3.5700207
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.066475034
+      value: -0.7685916
       objectReference: {fileID: 0}
     - target: {fileID: 4774983664978010, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.9924172
+      value: 0.6358796
       objectReference: {fileID: 0}
     - target: {fileID: 2096403930, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -9779,7 +9801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 75099608, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.08673831
+      value: -0.08673825
       objectReference: {fileID: 0}
     - target: {fileID: 75099608, guid: a746040c8df78914499380e96fbedf4d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -16814,7 +16836,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateType: 0
   isSpeedBased: 0
-  hasOnStart: 0
+  hasOnStart: 1
   hasOnPlay: 0
   hasOnUpdate: 0
   hasOnStepComplete: 0
@@ -16823,7 +16845,18 @@ MonoBehaviour:
   hasOnRewind: 0
   onStart:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1232142896}
+        m_MethodName: DisableAI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onPlay:
     m_PersistentCalls:
       m_Calls: []
@@ -19604,6 +19637,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1232142895}
   - component: {fileID: 1232142896}
+  - component: {fileID: 1232142897}
+  - component: {fileID: 1232142898}
   m_Layer: 0
   m_Name: BossAISpawn
   m_TagString: Untagged
@@ -19643,6 +19678,38 @@ MonoBehaviour:
   prefab: {fileID: 1436105642454202, guid: d0d669e8bfc266149ae6aabb0c3a9ae7, type: 3}
   spawnPoint: {fileID: 4150960859794325}
   scriptableHealth: {fileID: 11400000, guid: dea807c12b8e0eb4a9d46bbf44df30e1, type: 2}
+  enableWhen: {fileID: 1232142897}
+  enableWhen2: {fileID: 1232142898}
+--- !u!114 &1232142897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232142894}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c06618b94c98f8f47bdee72803a0f2f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boss: {fileID: 0}
+  objectToEnable: {fileID: 1836520450}
+  percentage: 0.5
+--- !u!114 &1232142898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232142894}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c06618b94c98f8f47bdee72803a0f2f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boss: {fileID: 0}
+  objectToEnable: {fileID: 1025640008}
+  percentage: 0
 --- !u!1 &1236672295
 GameObject:
   m_ObjectHideFlags: 0
@@ -24102,7 +24169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1494757606
 Transform:
   m_ObjectHideFlags: 0
