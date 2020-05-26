@@ -151,7 +151,20 @@ public class PlayerManager : MonoBehaviour
         {
             for (int i = 0; i < PlayerBot.chosenPlayer.Count; i++)
             {
-                GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], UnityEngine.Random.Range(1, 6));
+                switch(PlayerBot.chosenPlayer[i])
+                {
+                    case Player.One:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                    case Player.Two:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot2.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                    case Player.Three:
+                        GameManager.Instance.SetPlayerCharacterChoice(PlayerBot.chosenPlayer[i], BotConfigurator.instance.bot3.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex);
+                        break;
+                }
+
+                
             }
         }
 
@@ -499,6 +512,7 @@ public class PlayerManager : MonoBehaviour
                     return;
             }
 
+            int fakeRankCount = 0;
             foreach (Player i in activePlayers)
             {
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
@@ -515,8 +529,11 @@ public class PlayerManager : MonoBehaviour
                         }
                     }
 
-                    if (hasDoubleMatch())
-                        return;
+                    if (nonBotPlayer.Count > 0)
+                    {
+                        if (hasDoubleMatch())
+                            return;
+                    }
 
                     if (!PlayerBot.chosenPlayer.Contains(i))
                     {
@@ -537,6 +554,13 @@ public class PlayerManager : MonoBehaviour
                             {
                                 CharacterUnlockFromProgression.UnlockCharacter();
                             }
+                        }
+                    }
+                    else if(nonBotPlayer.Count <= 0)
+                    {
+                        //if (players[i].rank == -1)
+                        {
+                            players[i].rank = fakeRankCount++;
                         }
                     }
                 }
