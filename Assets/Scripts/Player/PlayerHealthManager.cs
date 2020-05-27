@@ -25,6 +25,8 @@ public class PlayerHealthManager : MonoBehaviour
     [SerializeField]
     private Slider healthMeter;
 
+    public Slider HealthMeter => healthMeter;
+
     /// <summary>
     /// Time that the player last took damage
     /// </summary>
