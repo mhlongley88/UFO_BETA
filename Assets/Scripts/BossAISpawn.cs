@@ -7,6 +7,8 @@ using UnityEngine.Events;
 public class BossAISpawn : MonoBehaviour
 {
     public GameObject pawn;
+    public int bossInitialHealth = 200;
+    public Color healthBarColor;
     public float offsetScale = 6.612904f;
     public AIPreset aiPreset;
     public GameObject prefab;
@@ -28,8 +30,14 @@ public class BossAISpawn : MonoBehaviour
         playerController.offsetScale = new Vector3(offsetScale, offsetScale, offsetScale);
         playerController.aimFlagObject.SetActive(false);
         playerController.canGrowWhenUsingSpecial = false;
-      //  playerController.GetComponent<Collider>().enabled = false;
+
+        playerController.healthManager.ApplyTintOnCircles(Color.clear);
+        playerController.healthManager.HealthMeter.image.color = healthBarColor;
+
         var boss = ai.AddComponent<Boss>();
+        boss.maxHealth = bossInitialHealth;
+        boss.health = bossInitialHealth;
+
         playerController.healthManager.HealthSettings = scriptableHealth;
         playerController.OnTakeDamage += boss.OnTakeDamage;
 

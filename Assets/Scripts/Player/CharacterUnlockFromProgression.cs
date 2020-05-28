@@ -31,11 +31,17 @@ public class CharacterUnlockFromProgression : MonoBehaviour
         //unlockedState = 1;
         if (lastSelected != -1)
         {
-            if(IsUnlocked(lastSelected)) return;
+            if (IsUnlocked(lastSelected)) return;
 
-            PlayerPrefs.SetInt(keyCharacterUnlock + lastSelected, 1);
-            //UnlockNotification.instance?.SignalUnlockLevel();
-            UnlockSystem.instance.SetUnlockCharacterFromProgression(GameManager.Instance.Characters[lastSelected].matchThreshold);
+            if (lastSelected >= 0 && lastSelected < GameManager.Instance.Characters.Length)
+            {
+                PlayerPrefs.SetInt(keyCharacterUnlock + lastSelected, 1);
+                UnlockSystem.instance.SetUnlockCharacterFromProgression(GameManager.Instance.Characters[lastSelected].matchThreshold);
+            }
+            else
+            {
+                Debug.Log("CHARACTER UNLOCK PROGRESSION error: Tried to unlock a character with an index out of range of the Characters list on the Game Manager, index is " + lastSelected);
+            }
         }
     }
 
