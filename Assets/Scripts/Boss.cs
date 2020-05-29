@@ -17,7 +17,7 @@ public class Boss : MonoBehaviour
     public AudioSource bossDeathSFX;
     public AudioSource bossLOOP;
     public UnityEvent onDie = new UnityEvent();
-
+    public bool invincible = false;
     public int maxHealth = 40;
     public int health = 40;
 
@@ -44,7 +44,7 @@ public class Boss : MonoBehaviour
     public void OnTakeDamage()
     {
      //   Debug.Log("Boss took damage");
-        if (health <= 0) return;
+        if (health <= 0 || invincible) return;
 
         health -= 2;
         CheckHealth();

@@ -53,6 +53,16 @@ public class PlayerBot : MonoBehaviour
         abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
     }
 
+    private void OnDisable()
+    {
+        Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
+        var ea = lookDir.eulerAngles;
+        ea.x = ea.z = 0.0f;
+        lookDir.eulerAngles = ea;
+
+        playerController.ApplyExternalInput(Vector3.zero, lookDir);
+    }
+
     private void OnDestroy()
     {
         //chosenPlayer.Remove(playerController.player);

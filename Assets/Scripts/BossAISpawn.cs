@@ -32,7 +32,8 @@ public class BossAISpawn : MonoBehaviour
         playerController.canGrowWhenUsingSpecial = false;
 
         playerController.healthManager.ApplyTintOnCircles(Color.clear);
-        playerController.healthManager.HealthMeter.image.color = healthBarColor;
+        if(playerController.healthManager.HealthMeter.image != null)
+            playerController.healthManager.HealthMeter.image.color = healthBarColor;
 
         var boss = ai.AddComponent<Boss>();
         boss.maxHealth = bossInitialHealth;
