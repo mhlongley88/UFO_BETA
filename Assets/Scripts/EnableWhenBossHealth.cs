@@ -35,6 +35,7 @@ public class EnableWhenBossHealth : MonoBehaviour
             var seq = DOTween.Sequence();
             seq.Append(boss.transform.DOMove(firstPos, 2.8f));
             seq.Join(boss.transform.DORotateQuaternion(firstRot, 2.8f));
+         //   seq.Join(boss.transform.DOScale(resetBossPosTo.localScale, 2.8f));
             seq.AppendCallback(() =>
             {
                 objectToEnable.SetActive(true);

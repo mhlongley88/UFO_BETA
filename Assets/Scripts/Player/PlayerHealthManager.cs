@@ -151,17 +151,20 @@ public class PlayerHealthManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //refill health
-        if (CurrHealth < maxHealth && Time.time >= lastDamageTime + refillDelay)
+        if (!playerController.pawn)
         {
-            CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, CurrHealth / maxHealth + Time.deltaTime / refillDuration);
-        }
+            //refill health
+            if (CurrHealth < maxHealth && Time.time >= lastDamageTime + refillDelay)
+            {
+                CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, CurrHealth / maxHealth + Time.deltaTime / refillDuration);
+            }
 
-        var lives = PlayerManager.Instance.players[playerController.player].lives;
-        for (int i = 0; i < healthCounterImages.Length; i++)
-        {
-            if(i >= lives)
-                healthCounterImages[i].color = Color.clear;      
+            var lives = PlayerManager.Instance.players[playerController.player].lives;
+            for (int i = 0; i < healthCounterImages.Length; i++)
+            {
+                if (i >= lives)
+                    healthCounterImages[i].color = Color.clear;
+            }
         }
     }
 

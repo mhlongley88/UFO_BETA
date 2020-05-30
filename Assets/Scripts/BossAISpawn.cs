@@ -19,6 +19,9 @@ public class BossAISpawn : MonoBehaviour
 
     GameObject instance;
 
+    Boss bossInstance;
+    PlayerHealthManager healthManager;
+
     public void Spawn()
     {
         GameObject ai = Instantiate(pawn, spawnPoint.position, spawnPoint.rotation);
@@ -35,15 +38,30 @@ public class BossAISpawn : MonoBehaviour
         if(playerController.healthManager.HealthMeter.image != null)
             playerController.healthManager.HealthMeter.image.color = healthBarColor;
 
-        var boss = ai.AddComponent<Boss>();
+       var boss = ai.AddComponent<Boss>();
         boss.maxHealth = bossInitialHealth;
         boss.health = bossInitialHealth;
+
+        scriptableHealth.startingHealth = bossInitialHealth;
+        scriptableHealth.maxHealth = bossInitialHealth;
+        scriptableHealth.minHealth = 0;
 
         playerController.healthManager.HealthSettings = scriptableHealth;
         playerController.OnTakeDamage += boss.OnTakeDamage;
 
+        healthManager = playerController.healthManager;
+
         var bot = ai.AddComponent<PlayerBot>();
         bot.preset = aiPreset;
+
+        DOVirtual.DelayedCall(0.23f, () =>
+        {
+            playerController.healthManager.SetInvincible(false);
+
+            healthManager.HealthMeter.minValue = 0;
+            healthManager.HealthMeter.maxValue = 1;
+            healthManager.HealthMeter.value = 1;
+        });
 
         if (enableWhen != null)
         {
@@ -54,7 +72,18 @@ public class BossAISpawn : MonoBehaviour
             enableWhen2.enabled = true;
         }
 
+        bossInstance = boss;
         instance = ai;
+    }
+
+    private void Update()
+    {
+        if (healthManager != null && bossInstance != null)
+        {
+
+            healthManager.HealthMeter.value = (float)bossInstance.health / (float)bossInstance.maxHealth;
+        }
+
     }
 
     public void EnableAI()

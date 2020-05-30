@@ -234,9 +234,9 @@ public class PlayerController : MonoBehaviour
         }
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
-        yield return new WaitForSeconds(invincibleDuration);
+        if(!pawn) yield return new WaitForSeconds(invincibleDuration);
         
-        if(!pawn) healthManager.SetInvincible(false);
+        healthManager.SetInvincible(false);
 
         //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         //{
@@ -1034,7 +1034,7 @@ public class PlayerController : MonoBehaviour
 
     public void DoDamage(float healthDamage = -3.0f)
     {
-       healthManager.ChangeHealth(healthDamage);
+        if(!pawn) healthManager.ChangeHealth(healthDamage);
 
         OnTakeDamage?.Invoke(healthDamage);
 
