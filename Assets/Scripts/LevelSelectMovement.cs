@@ -143,6 +143,11 @@ public class LevelSelectMovement : MonoBehaviour
         {
             direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));
 
+            int leftCount = 0;
+            int rightCount = 0;
+            int upCount = 0;
+            int downCount = 0;
+
             for (int i = 0; i < playersAmount; i++)
             {
                 float h = Input.GetAxisRaw("P" + (i + 1) + "_Horizontal");
@@ -154,21 +159,25 @@ public class LevelSelectMovement : MonoBehaviour
                 bool up = v > .6f;
                 bool down = v < -.6f;
 
-                if (left) Translate(translateSpeed, 0);
-                if (right) Translate(-translateSpeed, 0);
+                if (left) leftCount++;
+                if (right) rightCount++;
 
-                if (up) Translate(0, translateSpeed);
-                if (down) Translate(0, -translateSpeed);
+                if (up) upCount++;
+                if (down) downCount++;
             }
 
             // Rotate with left/right arrows
-            if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
-            if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
+            if (Input.GetKey(KeyCode.A)) leftCount++;
+            if (Input.GetKey(KeyCode.D)) rightCount++;
 
             // Translate forward/backward with up/down arrows
-            if (Input.GetKey(KeyCode.W)) Translate(0, translateSpeed);
-            if (Input.GetKey(KeyCode.S)) Translate(0, -translateSpeed);
+            if (Input.GetKey(KeyCode.W)) upCount++;
+            if (Input.GetKey(KeyCode.S)) downCount++;
 
+            if (leftCount > 0)  Translate(translateSpeed, 0);
+            if (rightCount > 0) Translate(-translateSpeed, 0);
+            if (upCount > 0)    Translate(0, translateSpeed);
+            if (downCount > 0) Translate(0, -translateSpeed);
             // Translate left/right with A/D. Bad keys but quick test.
             //if (Input.GetKey(KeyCode.A)) Translate(translateSpeed, 0);
             //if (Input.GetKey(KeyCode.D)) Translate(-translateSpeed, 0);
