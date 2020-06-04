@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool HasCutsceneObjectsActive { get; private set; }
 
     public void Awake()
     {
@@ -184,6 +185,9 @@ public class GameManager : MonoBehaviour
     {
         // Debug.Log(Input.GetJoystickNames().Length);
 
+        var cutsceneObjects = GameObject.FindGameObjectsWithTag("CutsceneObject");
+        HasCutsceneObjectsActive = cutsceneObjects.Length > 0;
+
         //  Debug.Log(playerSelectionDict.Count);
         bool isRestartBtnDown = false;
         bool isGoToMenuBtnDown = false;
@@ -280,7 +284,6 @@ public class GameManager : MonoBehaviour
         gameOver = false;
         canAdvance = false;
         if (paused) TogglePause();
-
 
         if (goesNextLevelInsteadOfRetry)
         {

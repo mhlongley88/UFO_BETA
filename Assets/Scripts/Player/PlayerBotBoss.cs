@@ -53,7 +53,7 @@ public class PlayerBotBoss : MonoBehaviour
     {
         Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
 
-        if (GameManager.Instance.paused)
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
         {
             playerBossController.ApplyExternalInput(Vector3.zero, lookDir);
             return;
