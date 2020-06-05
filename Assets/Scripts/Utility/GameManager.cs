@@ -657,6 +657,8 @@ public class GameManager : MonoBehaviour
 
     public void TogglePause()
     {
+        if (LoadLevelPostCutscene.instance != null) return;
+
         if(TutorialManager.instance != null)
         {
             if (!TutorialManager.instance.canGoToMenu)
