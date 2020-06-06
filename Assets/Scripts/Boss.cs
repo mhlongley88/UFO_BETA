@@ -6,6 +6,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
+    public static bool hadJustBeenDefeated;
+
     public static Boss instance;
 
     public Animator animator;
@@ -73,6 +75,9 @@ public class Boss : MonoBehaviour
 
             if (ShowLevelTitle.levelStaticInt > 0)
             {
+                // Register Boss had just been defeated
+                hadJustBeenDefeated = true;
+
                 LevelUnlockCheck.UnlockByBoss(ShowLevelTitle.levelStaticInt);
                 PlayerManager.Instance.BossHasDied();
             }
