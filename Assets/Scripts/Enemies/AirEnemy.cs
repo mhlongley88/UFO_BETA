@@ -72,7 +72,7 @@ public class AirEnemy : Enemy
     // Update is called once per frame
     public void Update()
     {
-        if (GameManager.Instance.paused)
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
         {
             formationAnimator.SetFloat("Speed", 0.0f);
             return;
@@ -94,7 +94,7 @@ public class AirEnemy : Enemy
     [PunRPC]
     private void Fire()
     {
-        if (GameManager.Instance.paused) return;
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive) return;
         
         MommaBullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 

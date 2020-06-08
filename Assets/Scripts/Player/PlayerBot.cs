@@ -76,7 +76,7 @@ public class PlayerBot : MonoBehaviour
         ea.x = ea.z = 0.0f;
         lookDir.eulerAngles = ea;
 
-        if (GameManager.Instance.paused)
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
         {
             playerController.ApplyExternalInput(Vector3.zero, lookDir);
             return;

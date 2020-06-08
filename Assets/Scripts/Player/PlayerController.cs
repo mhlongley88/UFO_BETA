@@ -291,7 +291,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 GetInputAxis()
     {
-        return GameManager.Instance.paused ? Vector2.zero : rewirePlayer.GetAxis2D("Horizontal", "Vertical");
+        return (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive) ? Vector2.zero : rewirePlayer.GetAxis2D("Horizontal", "Vertical");
     }
 
     bool isControllerDecided = false;
@@ -347,7 +347,7 @@ public class PlayerController : MonoBehaviour
         verticalInput = axis.y;
         moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
 
-        if (GameManager.Instance.paused) return;
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive) return;
 
         //if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
         if ((rewirePlayer.GetButtonDown("Abduct") ) && energyMeter.fillAmount != 1f)
@@ -568,7 +568,7 @@ public class PlayerController : MonoBehaviour
         moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
 
 
-        if (GameManager.Instance.paused) return;
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive) return;
 
         //if (horizontalInput != 0f || verticalInput != 0f)
         //{
