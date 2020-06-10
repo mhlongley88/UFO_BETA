@@ -14,7 +14,7 @@ public class BossCongratulationsBeat : MonoBehaviour
     {
         if(!verified)
         {
-            if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
+            if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash || MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.LevelSelect)
             {
                 if (Boss.hadJustBeenDefeated)
                 {
@@ -58,7 +58,9 @@ public class BossCongratulationsBeat : MonoBehaviour
         if (congratsPanel.activeInHierarchy)
         {
             congratsPanel.SetActive(false);
-            menuPanel.SetActive(true);
+
+            if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
+                menuPanel.SetActive(true);
         }
     }
 }
