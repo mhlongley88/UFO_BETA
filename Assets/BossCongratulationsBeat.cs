@@ -48,12 +48,17 @@ public class BossCongratulationsBeat : MonoBehaviour
                 if (!forwardToLevelBtn) forwardToLevelBtn = playerInput.GetButtonDown("SkipCutscene");
             }
 
+            if (congratsPanel.activeInHierarchy)
+            {
+                menuPanel.SetActive(false);
+            }
+
             if (forwardToLevelBtn)
                 Continue();
         }
     }
 
-    void Continue()
+    public void Continue()
     {
         if (congratsPanel.activeInHierarchy)
         {
