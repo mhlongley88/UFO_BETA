@@ -10,6 +10,8 @@ public class Boss : MonoBehaviour
 
     public static Boss instance;
 
+    public bool showCongratulationsScreenAfter = false;
+
     public Animator animator;
     public Animator motionTrackAnimator;
     public LookAtPlayer lookAtPlayer;
@@ -76,7 +78,7 @@ public class Boss : MonoBehaviour
             if (ShowLevelTitle.levelStaticInt > 0)
             {
                 // Register Boss had just been defeated
-                hadJustBeenDefeated = true;
+                if(showCongratulationsScreenAfter) hadJustBeenDefeated = true;
 
                 LevelUnlockCheck.UnlockByBoss(ShowLevelTitle.levelStaticInt);
                 PlayerManager.Instance.BossHasDied();

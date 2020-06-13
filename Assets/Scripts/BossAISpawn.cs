@@ -38,7 +38,8 @@ public class BossAISpawn : MonoBehaviour
         if(playerController.healthManager.HealthMeter.image != null)
             playerController.healthManager.HealthMeter.image.color = healthBarColor;
 
-       var boss = ai.AddComponent<Boss>();
+        var boss = ai.AddComponent<Boss>();
+        boss.showCongratulationsScreenAfter = true;
         boss.maxHealth = bossInitialHealth;
         boss.health = bossInitialHealth;
 
