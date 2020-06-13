@@ -7,8 +7,10 @@ public class BossCongratulationsBeat : MonoBehaviour
 {
     public GameObject congratsPanel;
     public GameObject menuPanel;
-
+    public Transform playerCharacterSpawnPoint;
     bool verified = false;
+
+    GameObject playerCharacterInstance;
 
     void Update()
     {
@@ -22,7 +24,14 @@ public class BossCongratulationsBeat : MonoBehaviour
                     congratsPanel.SetActive(true);
                     menuPanel.SetActive(false);
 
-                    // disable splash menu
+                    var players = GameManager.Instance.GetActivePlayers();
+                    var userPlayer = players.Find(it => !PlayerBot.chosenPlayer.Contains(it));
+                    var characterPrefabIndex = GameManager.Instance.GetPlayerCharacterChoice(userPlayer);
+                    var characterPrefab = GameManager.Instance.Characters[characterPrefabIndex].characterModel;
+
+                    playerCharacterInstance = Instantiate(characterPrefab, playerCharacterSpawnPoint);
+                    playerCharacterInstance.transform.localScale = Vector3.one;
+
                     verified = true;
                 }
             }
@@ -63,6 +72,9 @@ public class BossCongratulationsBeat : MonoBehaviour
         if (congratsPanel.activeInHierarchy)
         {
             congratsPanel.SetActive(false);
+
+            if(playerCharacterInstance != null)
+                Destroy(playerCharacterInstance);
 
             if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
                 menuPanel.SetActive(true);
