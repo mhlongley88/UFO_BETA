@@ -666,7 +666,9 @@ public class GameManager : MonoBehaviour
         }
 
         paused = !paused;
-        PauseMenu.instance.menuCanvasObj.SetActive(paused);
+
+        if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
+            PauseMenu.instance.menuCanvasObj.SetActive(paused);
 
         //if (paused)
         //{
