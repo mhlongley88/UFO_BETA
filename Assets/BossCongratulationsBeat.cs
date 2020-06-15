@@ -8,9 +8,10 @@ public class BossCongratulationsBeat : MonoBehaviour
     public GameObject congratsPanel;
     public GameObject menuPanel;
     public Transform playerCharacterSpawnPoint;
+    public Transform[] croniesSpawnPoints;
     bool verified = false;
 
-    GameObject playerCharacterInstance;
+    List<GameObject> characterInstances = new List<GameObject>();
 
     void Update()
     {
@@ -26,11 +27,25 @@ public class BossCongratulationsBeat : MonoBehaviour
 
                     var players = GameManager.Instance.GetActivePlayers();
                     var userPlayer = players.Find(it => !PlayerBot.chosenPlayer.Contains(it));
-                    var characterPrefabIndex = GameManager.Instance.GetPlayerCharacterChoice(userPlayer);
-                    var characterPrefab = GameManager.Instance.Characters[characterPrefabIndex].characterModel;
 
-                    playerCharacterInstance = Instantiate(characterPrefab, playerCharacterSpawnPoint);
-                    playerCharacterInstance.transform.localScale = Vector3.one;
+                    void SpawnCharacterOnEndScreen(Player player, Transform spawnPoint)
+                    {
+                        var characterPrefabIndex = GameManager.Instance.GetPlayerCharacterChoice(player);
+                        var characterPrefab = GameManager.Instance.Characters[characterPrefabIndex].characterModel;
+
+                        var playerCharacterInstance = Instantiate(characterPrefab, spawnPoint);
+                        playerCharacterInstance.transform.localScale = Vector3.one;
+
+                        characterInstances.Add(playerCharacterInstance);
+                    }
+
+                    SpawnCharacterOnEndScreen(userPlayer, playerCharacterSpawnPoint);
+
+                    int cronieSpawnIndex = 0;
+                    foreach (var p in players)
+                    {
+                        SpawnCharacterOnEndScreen(p, croniesSpawnPoints[cronieSpawnIndex++]);
+                    }
 
                     verified = true;
                 }
@@ -73,8 +88,11 @@ public class BossCongratulationsBeat : MonoBehaviour
         {
             congratsPanel.SetActive(false);
 
-            if(playerCharacterInstance != null)
-                Destroy(playerCharacterInstance);
+            if (characterInstances != null && characterInstances.Count > 0)
+            {
+                foreach(var p in characterInstances)
+                    Destroy(p);
+            }
 
             if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
                 menuPanel.SetActive(true);
