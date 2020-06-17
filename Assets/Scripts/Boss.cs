@@ -24,6 +24,7 @@ public class Boss : MonoBehaviour
     public bool invincible = false;
     public int maxHealth = 40;
     public int health = 40;
+    public float delayToShowDeathAnim = 4.0f;
 
     private void Awake()
     {

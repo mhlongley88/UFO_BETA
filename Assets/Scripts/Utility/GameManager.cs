@@ -254,7 +254,7 @@ public class GameManager : MonoBehaviour
         {
             if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                if(TutorialManager.instance == null)
+                if(TutorialManager.instance == null && !HasCutsceneObjectsActive)
                     TogglePause();
             }
 
