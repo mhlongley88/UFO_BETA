@@ -981,6 +981,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnCollisionEnter(Collision other)
     {
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive) return;
 
         if (collidersToIgnore != null)
         {

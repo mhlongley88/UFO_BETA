@@ -10,13 +10,14 @@ public class BossAISpawn : MonoBehaviour
     public int bossInitialHealth = 200;
     public Color healthBarColor;
     public float offsetScale = 6.612904f;
+    public float delayToShowDeathAnim = 7.6f;
     public AIPreset aiPreset;
     public GameObject prefab;
     public Transform spawnPoint;
     public ScriptableHealth scriptableHealth;
     public EnableWhenBossHealth enableWhen;
     public EnableWhenBossHealth enableWhen2;
-
+    
     GameObject instance;
 
     Boss bossInstance;
@@ -42,6 +43,7 @@ public class BossAISpawn : MonoBehaviour
         boss.showCongratulationsScreenAfter = true;
         boss.maxHealth = bossInitialHealth;
         boss.health = bossInitialHealth;
+        boss.delayToShowDeathAnim = 7.6f;
 
         scriptableHealth.startingHealth = bossInitialHealth;
         scriptableHealth.maxHealth = bossInitialHealth;

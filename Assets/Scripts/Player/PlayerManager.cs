@@ -336,7 +336,10 @@ public class PlayerManager : MonoBehaviour
             RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
         }
 
-        GameManager.Instance.GameEnds();
+        DOVirtual.DelayedCall(Boss.instance.delayToShowDeathAnim, () =>
+            {
+                GameManager.Instance.GameEnds();
+            });
     }
 
     bool hasDoubleMatch()
@@ -519,12 +522,16 @@ public class PlayerManager : MonoBehaviour
      
                 if (PlayerBot.active)
                 {
-                    if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
+                    if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt))
                     {
                         // Check if player died and boss still got health, that means player lost
-                        if (Boss.instance.health > 0)
+                        if (Boss.instance.health > 0 && nonBotPlayer.Count <= 0)
                         {
                             GameManager.Instance.GameEnds();
+                            return;
+                        }
+                        else if(nonBotPlayer.Count > 1)
+                        {
                             return;
                         }
                     }
