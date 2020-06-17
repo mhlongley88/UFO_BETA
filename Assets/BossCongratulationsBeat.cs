@@ -41,10 +41,10 @@ public class BossCongratulationsBeat : MonoBehaviour
 
                     SpawnCharacterOnEndScreen(userPlayer, playerCharacterSpawnPoint);
 
-                    int cronieSpawnIndex = 0;
-                    foreach (var p in players)
+                    //int cronieSpawnIndex = 0;
+                    foreach (var spawnPoint in croniesSpawnPoints)
                     {
-                        SpawnCharacterOnEndScreen(p, croniesSpawnPoints[cronieSpawnIndex++]);
+                        SpawnCharacterOnEndScreen(userPlayer, spawnPoint);
                     }
 
                     verified = true;
