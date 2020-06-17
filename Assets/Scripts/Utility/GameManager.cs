@@ -7,6 +7,7 @@ using Cinemachine;
 using static NormalWeapon;
 using static SuperWeapon;
 using Rewired;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -254,7 +255,7 @@ public class GameManager : MonoBehaviour
         {
             if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
-                if(TutorialManager.instance == null && !HasCutsceneObjectsActive)
+                if(TutorialManager.instance == null)// && !HasCutsceneObjectsActive)
                     TogglePause();
             }
 
@@ -666,6 +667,7 @@ public class GameManager : MonoBehaviour
         }
 
         paused = !paused;
+        DOTween.TogglePauseAll();
 
         if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
             PauseMenu.instance.menuCanvasObj.SetActive(paused);
