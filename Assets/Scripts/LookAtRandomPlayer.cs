@@ -21,10 +21,12 @@ public class LookAtRandomPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.paused) return;
+
         if (delayElapsed > Time.time) return;
 
         var activePlayers = GameManager.Instance.GetActivePlayers();
-        if (activePlayers.Count > 0 && elapsedRate < Time.time)
+        if (activePlayers.Count > 0 && (elapsedRate < Time.time || target == null))
         {
             var player = activePlayers[Random.Range(0, activePlayers.Count)];
 
