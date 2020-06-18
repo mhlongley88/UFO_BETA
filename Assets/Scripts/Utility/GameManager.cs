@@ -667,7 +667,7 @@ public class GameManager : MonoBehaviour
         }
 
         paused = !paused;
-        DOTween.TogglePauseAll();
+        //DOTween.TogglePauseAll();
 
         if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
             PauseMenu.instance.menuCanvasObj.SetActive(paused);
