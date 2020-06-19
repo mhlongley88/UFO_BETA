@@ -14,6 +14,8 @@ public class BossCongratulationsBeat : MonoBehaviour
 
     List<GameObject> characterInstances = new List<GameObject>();
 
+    public GameObject unlockedBermudaTriangleScreen, unlockedOokaChookaScreen, playOnlineEncouragementScreen;
+
     void Update()
     {
         if(!verified)
@@ -74,7 +76,7 @@ public class BossCongratulationsBeat : MonoBehaviour
                 if (!forwardToLevelBtn) forwardToLevelBtn = playerInput.GetButtonDown("SkipCutscene");
             }
 
-            if (congratsPanel.activeInHierarchy)
+            if (congratsPanel.activeInHierarchy || unlockedBermudaTriangleScreen.activeInHierarchy || unlockedOokaChookaScreen.activeInHierarchy || playOnlineEncouragementScreen.activeInHierarchy)
             {
                 menuPanel.SetActive(false);
                 tutorialButton.SetActive(false);
@@ -99,8 +101,10 @@ public class BossCongratulationsBeat : MonoBehaviour
 
             if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
             {
-                menuPanel.SetActive(true);
-                tutorialButton.SetActive(true);
+                //menuPanel.SetActive(false);
+                //tutorialButton.SetActive(false);
+
+                unlockedBermudaTriangleScreen.SetActive(true);
             }
         }
     }

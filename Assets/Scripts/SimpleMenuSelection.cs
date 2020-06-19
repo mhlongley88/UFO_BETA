@@ -10,9 +10,10 @@ public class SimpleMenuSelection : MonoBehaviour
     static SimpleMenuSelection previousFocused;
     static List<SimpleMenuSelection> allMenus = new List<SimpleMenuSelection>();
 
-
     public Button[] items;
     public SimpleMenuSelection goToMenuWhenBack;
+
+    public string submitBtnName = "Submit";
 
     Vector3[] originalScales;
     int index = 0;
@@ -82,7 +83,7 @@ public class SimpleMenuSelection : MonoBehaviour
 
                 }
 
-                if (rewirePlayer.GetButtonDown("Submit"))
+                if (rewirePlayer.GetButtonDown(submitBtnName))
                     items[index].onClick.Invoke();
 
 
