@@ -11,7 +11,6 @@ public class AudioSourcePauseHandle : MonoBehaviour
     void Awake()
     {
         sources = GetComponentsInChildren<AudioSource>(true);
-
         valuePaused = GameManager.Instance.paused;
     }
 

@@ -7,6 +7,7 @@ public class BossCongratulationsBeat : MonoBehaviour
 {
     public GameObject congratsPanel;
     public GameObject menuPanel;
+    public GameObject tutorialButton;
     public Transform playerCharacterSpawnPoint;
     public Transform[] croniesSpawnPoints;
     bool verified = false;
@@ -24,6 +25,7 @@ public class BossCongratulationsBeat : MonoBehaviour
                     Boss.hadJustBeenDefeated = false;
                     congratsPanel.SetActive(true);
                     menuPanel.SetActive(false);
+                    tutorialButton.SetActive(false);
 
                     var players = GameManager.Instance.GetActivePlayers();
                     var userPlayer = players.Find(it => !PlayerBot.chosenPlayer.Contains(it));
@@ -75,6 +77,7 @@ public class BossCongratulationsBeat : MonoBehaviour
             if (congratsPanel.activeInHierarchy)
             {
                 menuPanel.SetActive(false);
+                tutorialButton.SetActive(false);
             }
 
             if (forwardToLevelBtn)
@@ -95,7 +98,10 @@ public class BossCongratulationsBeat : MonoBehaviour
             }
 
             if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
+            {
                 menuPanel.SetActive(true);
+                tutorialButton.SetActive(true);
+            }
         }
     }
 }
