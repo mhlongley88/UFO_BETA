@@ -42,7 +42,7 @@ public class ShowLevelTitle : MonoBehaviour
     {
         if(levelStaticInt == levelNum)
         {
-            PlayerPrefs.SetInt(PlayedLevelPrefsKey + levelNum, 1);
+            UserPrefs.instance.SetInt(PlayedLevelPrefsKey + levelNum, 1);
         }
     }
 

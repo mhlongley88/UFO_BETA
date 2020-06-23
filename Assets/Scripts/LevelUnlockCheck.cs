@@ -27,7 +27,7 @@ public class LevelUnlockCheck : MonoBehaviour
 
         initialPosition = transform.position;
 
-        //PlayerPrefs.SetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0);
+        //UserPrefs.instance.SetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0);
     }
 
     // Start is called before the first frame update
@@ -43,7 +43,7 @@ public class LevelUnlockCheck : MonoBehaviour
 
         if (newVfx != null)
         {
-            int prefs = PlayerPrefs.GetInt(PlayerLevelKey + levelTitle.levelNum);
+            int prefs = UserPrefs.instance.GetInt(PlayerLevelKey + levelTitle.levelNum);
             if (prefs == 1)
                 newVfx.SetActive(false);
         }
@@ -104,7 +104,7 @@ public class LevelUnlockCheck : MonoBehaviour
     {
       //  if (hasABoss)
         {
-            PlayerPrefs.SetInt(unlockedFromBeatingBossKey + num, 1);
+            UserPrefs.instance.SetInt(unlockedFromBeatingBossKey + num, 1);
         }
     }
 
@@ -112,7 +112,7 @@ public class LevelUnlockCheck : MonoBehaviour
     {
         //  if (hasABoss)
         {
-            PlayerPrefs.SetInt(unlockedFromBeatingBossKey + num, 0);
+            UserPrefs.instance.SetInt(unlockedFromBeatingBossKey + num, 0);
         }
     }
 
@@ -120,13 +120,13 @@ public class LevelUnlockCheck : MonoBehaviour
     {
         //  if (hasABoss)
         {
-            return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + num) == 1;
+            return UserPrefs.instance.GetInt(unlockedFromBeatingBossKey + num) == 1;
         }
     }
 
     bool IsUnlockedThroughBoss()
     {
-        return PlayerPrefs.GetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0) == 1;
+        return UserPrefs.instance.GetInt(unlockedFromBeatingBossKey + levelTitle.levelNum, 0) == 1;
     }
 
     private void OnDestroy()

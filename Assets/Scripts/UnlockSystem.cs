@@ -42,7 +42,7 @@ public class UnlockSystem : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        matchesCompleted = PlayerPrefs.GetInt(BattlesCompletedPrefsKey, 0);
+        matchesCompleted = UserPrefs.instance.GetInt(BattlesCompletedPrefsKey, 0);
     }
 
     int matchesCompleted = 0;
@@ -62,7 +62,7 @@ public class UnlockSystem : MonoBehaviour
                 allMatchesThresholdForLevels.Add(LevelUnlockCheck.All[i].matchThreshold);
         }
 
-        //matchesCompleted = PlayerPrefs.GetInt(BattlesCompletedPrefsKey, 0);
+        //matchesCompleted = UserPrefs.instance.GetInt(BattlesCompletedPrefsKey, 0);
 
         //Debug.Log("Getting matches completed at initialization: " + matchesCompleted);
     }
@@ -116,8 +116,8 @@ public class UnlockSystem : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.O))
 		{
 			matchesCompleted = 0;
-			PlayerPrefs.SetInt(BattlesCompletedPrefsKey, matchesCompleted);
-			PlayerPrefs.Save();
+			UserPrefs.instance.SetInt(BattlesCompletedPrefsKey, matchesCompleted);
+			UserPrefs.instance.Save();
 		
 			Debug.Log("Zeroed Matches Completed: " + matchesCompleted);
 		}
@@ -133,8 +133,8 @@ public class UnlockSystem : MonoBehaviour
     public void SaveMatchesCompleted()
     {
         matchesCompleted++;
-        PlayerPrefs.SetInt(BattlesCompletedPrefsKey, matchesCompleted);
-        PlayerPrefs.Save();
+        UserPrefs.instance.SetInt(BattlesCompletedPrefsKey, matchesCompleted);
+        UserPrefs.instance.Save();
 
         onBattlesCompletedChange.Invoke();
 
