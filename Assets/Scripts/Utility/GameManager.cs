@@ -235,43 +235,46 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (gameOver)
+        // Only checks in game play
+        if (LevelUIManager.Instance != null)
         {
-           
-           // else
+            if (gameOver)
             {
-                if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
+
+                // else
                 {
-                    RestartGame();
+                    if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
+                    {
+                        RestartGame();
+                    }
+
+                    if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
+                    {
+                        EndGameAndGoToMenu();
+                    }
+                }
+            }
+            else
+            {
+                if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
+                {
+                    if (TutorialManager.instance == null)// && !HasCutsceneObjectsActive)
+                        TogglePause();
                 }
 
-                if (canAdvance == true && isGoToMenuBtnDown || Input.GetKeyDown(KeyCode.M))
+                if (paused)
                 {
-                    EndGameAndGoToMenu();
+                    if (isFromPauseToMenuDown)
+                    {
+                        TogglePause();
+
+                        SceneManager.LoadScene("MainMenu");
+                        gameOver = false;
+                        canAdvance = false;
+                    }
                 }
             }
         }
-        else
-        {
-            if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
-            {
-                if(TutorialManager.instance == null)// && !HasCutsceneObjectsActive)
-                    TogglePause();
-            }
-
-            if(paused)
-            {
-                if(isFromPauseToMenuDown)
-                {
-                    TogglePause();
-
-                    SceneManager.LoadScene("MainMenu");
-                    gameOver = false;
-                    canAdvance = false;
-                }
-            }
-        }
-
        /* if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
@@ -335,6 +338,8 @@ public class GameManager : MonoBehaviour
 
         gameOver = false;
         canAdvance = false;
+        if (paused) TogglePause();
+
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
             if (LobbyConnectionHandler.instance.IsMultiplayerMode && Photon.Pun.PhotonNetwork.CurrentRoom != null)
