@@ -12,8 +12,8 @@ public class LevelUnlockCheck : MonoBehaviour
     [HideInInspector]
     public ShowLevelTitle levelTitle;
 
-    string PlayerLevelKey = "PlayedLevel";
-    static string unlockedFromBeatingBossKey = "UnlockedLevelBoss";
+    string PlayerLevelKey = "UFOPlayedLevel";
+    static string unlockedFromBeatingBossKey = "UFOUnlockedLevelBoss";
 
     public bool hasABoss = false;
 

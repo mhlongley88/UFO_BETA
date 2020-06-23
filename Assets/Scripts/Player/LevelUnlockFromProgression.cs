@@ -8,7 +8,7 @@ public class LevelUnlockFromProgression : MonoBehaviour
 
     public bool allowUnlockFromProgression = false;
     public int unlocksWhatLevel = -1;
-    static string keyLevelUnlock = "_UFO_LevelUnlockedProgression_";
+    static string keyLevelUnlock = "UFOLevelUnlockedProgression";
     //int unlockedState;
    // public int UnlockedState => unlockedState;
 
