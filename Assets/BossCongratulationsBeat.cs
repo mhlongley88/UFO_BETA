@@ -99,13 +99,22 @@ public class BossCongratulationsBeat : MonoBehaviour
                     Destroy(p);
             }
 
-            if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
+            if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash || MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.LevelSelect)
             {
-                //menuPanel.SetActive(false);
+                menuPanel.SetActive(false);
                 //tutorialButton.SetActive(false);
 
                 unlockedBermudaTriangleScreen.SetActive(true);
             }
+        }
+    }
+
+    public void PostFinishSceens()
+    {
+        if (MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
+        {
+            menuPanel.SetActive(true);
+            tutorialButton.SetActive(true);
         }
     }
 }
