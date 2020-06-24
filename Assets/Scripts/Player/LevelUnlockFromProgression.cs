@@ -8,14 +8,14 @@ public class LevelUnlockFromProgression : MonoBehaviour
 
     public bool allowUnlockFromProgression = false;
     public int unlocksWhatLevel = -1;
-    static string keyLevelUnlock = "_UFO_LevelUnlockedProgression_";
+    static string keyLevelUnlock = "UFOLevelUnlockedProgression";
     //int unlockedState;
    // public int UnlockedState => unlockedState;
 
     // Start is called before the first frame update
     void Awake()
     {
-        //unlockedState = PlayerPrefs.GetInt(keyLevelUnlock + unlocksWhatLevel, 0);
+        //unlockedState = UserPrefs.instance.GetInt(keyLevelUnlock + unlocksWhatLevel, 0);
     }
 
     public void SetThisProgression()
@@ -33,7 +33,7 @@ public class LevelUnlockFromProgression : MonoBehaviour
         {
             if(IsUnlocked(lastSelected)) return;
 
-            PlayerPrefs.SetInt(keyLevelUnlock + lastSelected, 1);
+            UserPrefs.instance.SetInt(keyLevelUnlock + lastSelected, 1);
             //UnlockNotification.instance?.SignalUnlockLevel();
             
             UnlockSystem.instance.SetUnlockLevelFromProgression();
@@ -42,7 +42,7 @@ public class LevelUnlockFromProgression : MonoBehaviour
 
     public static bool IsUnlocked(int levelNum)
     {
-        int r = PlayerPrefs.GetInt(keyLevelUnlock + levelNum, 0);
+        int r = UserPrefs.instance.GetInt(keyLevelUnlock + levelNum, 0);
         return r == 1;
     }
 }

@@ -15,7 +15,7 @@ public class CharacterUnlockFromProgression : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        //unlockedState = PlayerPrefs.GetInt(keyLevelUnlock + unlocksWhatLevel, 0);
+        //unlockedState = UserPrefs.instance.GetInt(keyLevelUnlock + unlocksWhatLevel, 0);
     }
 
     public void SetThisProgression()
@@ -35,7 +35,7 @@ public class CharacterUnlockFromProgression : MonoBehaviour
 
             if (lastSelected >= 0 && lastSelected < GameManager.Instance.Characters.Length)
             {
-                PlayerPrefs.SetInt(keyCharacterUnlock + lastSelected, 1);
+                UserPrefs.instance.SetInt(keyCharacterUnlock + lastSelected, 1);
                 UnlockSystem.instance.SetUnlockCharacterFromProgression(GameManager.Instance.Characters[lastSelected].matchThreshold);
             }
             else
@@ -47,7 +47,7 @@ public class CharacterUnlockFromProgression : MonoBehaviour
 
     public static bool IsUnlocked(int characterIndex)
     {
-        int r = PlayerPrefs.GetInt(keyCharacterUnlock + characterIndex, 0);
+        int r = UserPrefs.instance.GetInt(keyCharacterUnlock + characterIndex, 0);
         return r == 1;
     }
 }

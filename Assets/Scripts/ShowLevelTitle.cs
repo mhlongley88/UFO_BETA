@@ -19,7 +19,9 @@ public class ShowLevelTitle : MonoBehaviour
     public UnityEvent OnGetHovered = new UnityEvent();
     public static int levelStaticInt;
 
-    public static OnLevelTitleSelected OnLevelIsHovered = new OnLevelTitleSelected(); 
+    public static OnLevelTitleSelected OnLevelIsHovered = new OnLevelTitleSelected();
+
+    const string PlayedLevelPrefsKey = "PlayedLevel";
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +42,7 @@ public class ShowLevelTitle : MonoBehaviour
     {
         if(levelStaticInt == levelNum)
         {
-            PlayerPrefs.SetInt("PlayedLevel" + levelNum, 1);
+            UserPrefs.instance.SetInt(PlayedLevelPrefsKey + levelNum, 1);
         }
     }
 
