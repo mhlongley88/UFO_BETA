@@ -79,6 +79,12 @@ public class PlayerBot : MonoBehaviour
         if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
         {
             playerController.ApplyExternalInput(Vector3.zero, lookDir);
+            abductOn = false;
+            targetAbduct = null;
+            playerController.DeactivateBeam();
+
+            if(playerController.superWeaponActive) playerController.ToggleSuperWeapon(false);
+
             return;
         }
 

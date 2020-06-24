@@ -27,6 +27,9 @@ public class MainMenuUIManager : MonoBehaviour
     public GameObject levelSelect;
     public GameObject mainTitle;
 
+    public GameObject mainTitleAlienCharacters;
+    public GameObject mainTitleDust, mainTitleStars;
+
     public GameObject cameraMoveObject;
 
     public GameObject vCam1;
@@ -175,6 +178,10 @@ public class MainMenuUIManager : MonoBehaviour
     void Update()
     {
         mainTitle.SetActive(!levelSelect.activeInHierarchy);
+
+        mainTitleAlienCharacters.SetActive(mainTitle.activeInHierarchy);
+        mainTitleDust.SetActive(mainTitle.activeInHierarchy);
+        mainTitleStars.SetActive(mainTitle.activeInHierarchy);
 
         levelInt = ShowLevelTitle.levelStaticInt;
         if (isPC)
