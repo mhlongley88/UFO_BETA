@@ -335,6 +335,7 @@ public class GameManager : MonoBehaviour
     public void EndGameAndGoToMenu()
     {
         PlayerBot.active = false;
+        DoubleMatch.useDoubleMatch = false;
 
         gameOver = false;
         canAdvance = false;

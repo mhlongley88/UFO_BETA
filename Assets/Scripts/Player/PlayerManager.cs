@@ -65,6 +65,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    bool useDoubleMatch;
 
     public void Awake()
     {
@@ -97,6 +98,8 @@ public class PlayerManager : MonoBehaviour
     }
     public void Start()
     {
+        useDoubleMatch = DoubleMatch.useDoubleMatch;
+
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             foreach (Player p in GameManager.Instance.GetActivePlayersMul(false))
@@ -344,7 +347,7 @@ public class PlayerManager : MonoBehaviour
 
     bool hasDoubleMatch()
     {
-        if (DoubleMatch.useDoubleMatch)
+        if (useDoubleMatch)
         {
             DoubleMatchCutsceneRef.instance.cutscene.SetActive(true);
 
@@ -397,7 +400,7 @@ public class PlayerManager : MonoBehaviour
             });
 
 
-            DoubleMatch.useDoubleMatch = false;
+            useDoubleMatch = false;
             return true;
         }
 
