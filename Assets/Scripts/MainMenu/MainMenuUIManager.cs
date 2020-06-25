@@ -30,10 +30,11 @@ public class MainMenuUIManager : MonoBehaviour
     public GameObject mainTitleAlienCharacters;
     public GameObject mainTitleDust, mainTitleStars;
 
-    public GameObject cameraMoveObject;
+    //public GameObject cameraMoveObject;
 
-    public GameObject vCam1;
-    public GameObject vCam2;
+    public GameObject vCam1SplashMenu;
+    public GameObject vCam2LevelSelect;
+    public GameObject vCam3CharacterSelect;
 
     public Menu currentMenu = Menu.Splash;
 
@@ -91,8 +92,9 @@ public class MainMenuUIManager : MonoBehaviour
             isConsole = true;
         }
 
-            vCam1.SetActive(true);
-        vCam2.SetActive(false);
+        SetCameraView(vCam1SplashMenu);
+        //vCam1.SetActive(true);;
+        //vCam2.SetActive(false);
 
 
        // MainPanel.SetActive(false);
@@ -104,8 +106,10 @@ public class MainMenuUIManager : MonoBehaviour
         {
             MainPanel.SetActive(false);
 
-            vCam1.SetActive(false);
-            vCam2.SetActive(true);
+            //vCam1.SetActive(false);
+            //vCam2.SetActive(true);
+            SetCameraView(vCam2LevelSelect);
+
             myAudioSource.PlayOneShot(toLevelSelect);
             levelSelect.SetActive(true);
             levelSelectCharacters.AddActivePlayers();
@@ -225,8 +229,10 @@ public class MainMenuUIManager : MonoBehaviour
                         if (rewirePlayer.GetButtonDown("Submit"))
                         {
 
-                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
-                            characterSelect.SetActive(true);
+                           // cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+                            //SetCameraView(vCam1)
+
+                          //  characterSelect.SetActive(true);
                             myAudioSource.PlayOneShot(StartGameSFX);
                             currentMenu = Menu.CharacterSelect;
                         }
@@ -235,15 +241,19 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
-                            cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+                            
+
+
                             currentMenu = Menu.Splash;
                         }
                         if (CharacterSelectPlayersReady())
                         {
                             // if (CharacterSelectPlayersReady())
                             // {
-                            vCam1.SetActive(false);
-                            vCam2.SetActive(true);
+                            //vCam1.SetActive(false);
+                            //vCam2.SetActive(true);
+                            SetCameraView(vCam2LevelSelect);
+
                             myAudioSource.PlayOneShot(toLevelSelect);
                             levelSelect.SetActive(true);
                             levelSelectCharacters.AddActivePlayers();
@@ -256,8 +266,10 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
-                            vCam2.SetActive(false);
-                            vCam1.SetActive(true);
+                            //vCam2.SetActive(false);
+                            //vCam1.SetActive(true);
+                            SetCameraView(vCam1SplashMenu);
+
                             currentMenu = Menu.CharacterSelect;
                             levelSelectCharacters.RemoveAllPlayers();
                             levelSelect.SetActive(false);
@@ -287,8 +299,11 @@ public class MainMenuUIManager : MonoBehaviour
     {
         LobbyConnectionHandler.instance.IsMultiplayerMode = false;
         GameManager.Instance.RemoveAllPlayersFromGame();
-        cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
-                                  cameraMoveObject.transform.position.z - 24f);
+        //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+        //                          cameraMoveObject.transform.position.z - 24f);
+
+        SetCameraView(vCam3CharacterSelect);
+
         // characterSelect.transform.localScale = new Vector3(0.3229257f, 0.3229257f, 0.3229257f); 
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
         characterSelect.SetActive(true);
@@ -310,8 +325,11 @@ public class MainMenuUIManager : MonoBehaviour
         if(LobbyConnectionHandler.instance.isPrivateMatch)
             LobbyUI.instance.FriendsListButton.SetActive(true);
         Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = true;
-        vCam2.SetActive(false);
-        vCam1.SetActive(true);
+        //vCam2.SetActive(false);
+        //vCam1.SetActive(true);
+
+        SetCameraView(vCam3CharacterSelect);
+
         currentMenu = Menu.CharacterSelect;
         levelSelectCharacters.RemoveAllPlayers();
         levelSelect.SetActive(false);
@@ -351,10 +369,13 @@ public class MainMenuUIManager : MonoBehaviour
         LobbyConnectionHandler.instance.IsMultiplayerMode = true;
        // LobbyUI.instance.FriendsListButton.SetActive(true);
         GameManager.Instance.RemoveAllPlayersFromGame();
-      //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
+        //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
 
-        cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
-                                  cameraMoveObject.transform.position.z - 24f);
+        //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
+        //                          cameraMoveObject.transform.position.z - 24f);
+
+        SetCameraView(vCam3CharacterSelect);
+
         characterSelect.SetActive(true);
         myAudioSource.PlayOneShot(StartGameSFX);
         currentMenu = Menu.CharacterSelect;
@@ -428,17 +449,21 @@ public class MainMenuUIManager : MonoBehaviour
                             currentMenu = Menu.Splash;
                            
                             characterSelect.SetActive(false);
-                           
-                            cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y, 
-                            cameraMoveObject.transform.position.z + 24f);
+
+                            //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y, 
+                            //cameraMoveObject.transform.position.z + 24f);
+                            SetCameraView(vCam1SplashMenu);
+
                             MainPanel.SetActive(true);
                         }
                         if (CharacterSelectPlayersReady())
                         {
                             // if (CharacterSelectPlayersReady())
                             // {
-                            vCam1.SetActive(false);
-                            vCam2.SetActive(true);
+                            //vCam1.SetActive(false);
+                            //vCam2.SetActive(true);
+                            SetCameraView(vCam2LevelSelect);
+
                             myAudioSource.PlayOneShot(toLevelSelect);
                             levelSelect.SetActive(true);
                             levelSelectCharacters.AddActivePlayers();
@@ -453,17 +478,18 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
-                            vCam2.SetActive(false);
-                            vCam1.SetActive(true);
+                            //vCam2.SetActive(false);
+                            //vCam1.SetActive(true);
+                            SetCameraView(vCam3CharacterSelect);
+
                             currentMenu = Menu.CharacterSelect;
                             levelSelectCharacters.RemoveAllPlayers();
                             levelSelect.SetActive(false);
                             characterSelect.SetActive(true);
-               
+
                             if (PlayerBot.active)
                             {
-                                cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
-                                    cameraMoveObject.transform.position.z - 24f);
+                               // SetCameraView(vCam3CharacterSelect);
 
                                 foreach (var bot in PlayerBot.chosenPlayer)
                                 {
@@ -539,8 +565,10 @@ public class MainMenuUIManager : MonoBehaviour
                         {
                             // if (CharacterSelectPlayersReady())
                             // {
-                            vCam1.SetActive(false);
-                            vCam2.SetActive(true);
+                            //vCam1.SetActive(false);
+                            //vCam2.SetActive(true);
+                            SetCameraView(vCam2LevelSelect);
+
                             myAudioSource.PlayOneShot(toLevelSelect);
                             levelSelect.SetActive(true);
                             levelSelectCharacters.AddActivePlayers();
@@ -577,5 +605,14 @@ public class MainMenuUIManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetCameraView(GameObject obj)
+    {
+        vCam1SplashMenu.SetActive(false);
+        vCam2LevelSelect.SetActive(false);
+        vCam3CharacterSelect.SetActive(false);
+
+        obj.SetActive(true);
     }
 }

@@ -33,10 +33,6 @@ public class LevelUnlockCheck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(gameObject.name == "TKYO")
-        {
-            int abc = 0;
-        }
 
         int matchesComplete = UnlockSystem.instance.GetMatchesCompleted();
 

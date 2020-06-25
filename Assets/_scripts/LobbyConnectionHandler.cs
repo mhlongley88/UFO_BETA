@@ -8,6 +8,8 @@ using DG.Tweening;
 using Steamworks;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PlayFab;
+using Rewired.Utils.Platforms.Windows;
+
 public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks, IConnectionCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 {
     public static LobbyConnectionHandler instance;
@@ -368,11 +370,13 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 MainMenuUIManager.Instance.MainPanel.SetActive(true);
                 MainMenuUIManager.Instance.characterSelect.SetActive(false);
                 //  MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
-                MainMenuUIManager.Instance.cameraMoveObject.transform.position = new Vector3(MainMenuUIManager.Instance.cameraMoveObject.transform.position.x,
-                    MainMenuUIManager.Instance.cameraMoveObject.transform.position.y, 42f);
+                //MainMenuUIManager.Instance.cameraMoveObject.transform.position = new Vector3(MainMenuUIManager.Instance.cameraMoveObject.transform.position.x,
+                //    MainMenuUIManager.Instance.cameraMoveObject.transform.position.y, 42f);
+
                 //                            MainMenuUIManager.Instance.cameraMoveObject.transform.position.z + 24f);
 
                 MainMenuUIManager.Instance.currentMenu = MainMenuUIManager.Menu.Splash;
+                MainMenuUIManager.Instance.SetCameraView(MainMenuUIManager.Instance.vCam1SplashMenu);
             }
         }
         else
