@@ -984,6 +984,14 @@ public class PlayerController : MonoBehaviour
             if (abductedObjects.Count > 0)
             {
                 obj = abductedObjects.Pop();
+
+                Rigidbody rb = obj.GetComponent<Rigidbody>();
+                Collider col = obj.GetComponent<Collider>();
+                if (col != null)
+                    col.isTrigger = false;
+
+                if (rb != null) rb.isKinematic = false;
+
                 obj.transform.position = transform.position;
                 obj.SetActive(true);
             }
