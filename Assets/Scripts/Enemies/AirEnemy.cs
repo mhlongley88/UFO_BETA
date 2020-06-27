@@ -160,7 +160,7 @@ public class AirEnemy : Enemy
                // if(chosenPlayerEnum != Player.None)
                 chosenPlayer = PlayerManager.Instance.players[chosenPlayerEnum];
 
-                if(PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(chosenPlayerEnum))
+                if(PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(chosenPlayerEnum) && PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum] != null)
                     targetTransform = PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform;// == null ? PlayerManager.Instance.spawnedPlayerDictionary[chosenPlayerEnum].transform: null;
             }
         }

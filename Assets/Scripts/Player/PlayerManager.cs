@@ -591,7 +591,8 @@ public class PlayerManager : MonoBehaviour
                 {
                     Debug.Log("Rank of " + i + " :  " + players[i].rank);
 
-                    if (players[i].rank < 0)
+                    //if (players[i].rank < 0)
+                    if(PlayerBot.chosenPlayer.Contains(i))
                     {
                         players[i].rank = rank++;
                     }
