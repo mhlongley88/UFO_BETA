@@ -18,7 +18,7 @@ public class LoadIntroSceneLevel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ShowLevelTitle.levelStaticInt == levelTitle.levelNum)
+        if(ShowLevelTitle.levelStaticInt == levelTitle.levelNum && GameManager.Instance.GetActivePlayers().Count == 1)
         {
             introSceneLevel = levelName;
         }
