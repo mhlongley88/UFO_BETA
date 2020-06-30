@@ -29,6 +29,7 @@ public class MainMenuUIManager : MonoBehaviour
 
     public GameObject mainTitleAlienCharacters;
     public GameObject mainTitleDust, mainTitleStars;
+    public GameObject tryTutorialScreen;
 
     //public GameObject cameraMoveObject;
 
@@ -282,7 +283,10 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
-                            SceneManager.LoadScene("LoadingRoom");
+                            if (UnlockSystem.instance.MatchesCompleted <= 0)
+                                tryTutorialScreen.SetActive(true);
+                            else
+                                SceneManager.LoadScene("LoadingRoom");
                         }
                         break;
                 }
@@ -514,7 +518,10 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
-                            SceneManager.LoadScene("LoadingRoom");
+                            if (UnlockSystem.instance.MatchesCompleted <= 0)
+                                tryTutorialScreen.SetActive(true);
+                            else
+                                SceneManager.LoadScene("LoadingRoom");
                         }
                         break;
                 }
@@ -614,5 +621,10 @@ public class MainMenuUIManager : MonoBehaviour
         vCam3CharacterSelect.SetActive(false);
 
         obj.SetActive(true);
+    }
+
+    public void LoadRoom()
+    {
+        SceneManager.LoadScene("LoadingRoom");
     }
 }

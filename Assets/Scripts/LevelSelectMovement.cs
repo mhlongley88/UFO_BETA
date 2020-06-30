@@ -141,6 +141,12 @@ public class LevelSelectMovement : MonoBehaviour
         //}
         else if(!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
+            if(MainMenuUIManager.Instance.tryTutorialScreen.activeInHierarchy)
+            {
+                Translate(0, 0);
+                return;
+            }
+
             direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));
 
             int leftCount = 0;
