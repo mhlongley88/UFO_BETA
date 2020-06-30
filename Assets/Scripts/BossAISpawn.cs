@@ -43,7 +43,7 @@ public class BossAISpawn : MonoBehaviour
         boss.showCongratulationsScreenAfter = true;
         boss.maxHealth = bossInitialHealth;
         boss.health = bossInitialHealth;
-        boss.delayToShowDeathAnim = 7.6f;
+        boss.delayToShowDeathAnim = delayToShowDeathAnim;
 
         scriptableHealth.startingHealth = bossInitialHealth;
         scriptableHealth.maxHealth = bossInitialHealth;
