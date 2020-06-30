@@ -83,7 +83,7 @@ public class SimpleMenuSelection : MonoBehaviour
 
                 }
 
-                if (rewirePlayer.GetButtonDown(submitBtnName))
+                if (rewirePlayer.GetButtonDown(submitBtnName) && items[index].interactable)
                     items[index].onClick.Invoke();
 
 

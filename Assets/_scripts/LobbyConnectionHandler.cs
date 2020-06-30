@@ -49,7 +49,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     private void Start()
     {
-        MainMenuUIManager.Instance.MainPanel.SetActive(false);
+        MainMenuUIManager.Instance.OnlineButton.interactable = false;
     }
 
     public void LoadSceneMaster(string sceneName)
@@ -342,16 +342,24 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnConnectedToMaster()
     {
-       // MainMenuUIManager.Instance.MainPanel.SetActive(false);
+        // MainMenuUIManager.Instance.MainPanel.SetActive(false);
 
+        // Maybe the player was reconnected after a sudden disconnection from the internet
+        bool shouldBounceBackToMenu = false;
+
+        if (IsMultiplayerMode) // it entered the multiplayer mode on character selection
+            shouldBounceBackToMenu = true;
+            
+        
         IsMultiplayerMode = false;
+
         isPrivateMatch = false;
         LobbyUI.instance.FriendsListButton.SetActive(false);
         if (LobbyUI.instance != null)
         {
             Debug.Log(PhotonNetwork.LocalPlayer.UserId);
             LobbyUI.instance.isPrivateMatch = LobbyUI.instance.isPublicMatch = false;
-            MainMenuUIManager.Instance.OnlineButton.SetActive(false);
+            MainMenuUIManager.Instance.OnlineButton.interactable = true;
             if (!this.GetComponent<PhotonView>())
             {
                 pv = this.gameObject.AddComponent<PhotonView>();//MainMenuUIManager.Instance.PV_GameObj.GetComponent<PhotonView>();
@@ -364,17 +372,11 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             LobbyUI.instance.AuthPanel.SetActive(false);
 
             //
-            if (MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.LevelSelect)
+            if (MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.LevelSelect && shouldBounceBackToMenu)
             {
                 //
                 MainMenuUIManager.Instance.MainPanel.SetActive(true);
                 MainMenuUIManager.Instance.characterSelect.SetActive(false);
-                //  MainMenuUIManager.Instance.cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
-                //MainMenuUIManager.Instance.cameraMoveObject.transform.position = new Vector3(MainMenuUIManager.Instance.cameraMoveObject.transform.position.x,
-                //    MainMenuUIManager.Instance.cameraMoveObject.transform.position.y, 42f);
-
-                //                            MainMenuUIManager.Instance.cameraMoveObject.transform.position.z + 24f);
-
                 MainMenuUIManager.Instance.currentMenu = MainMenuUIManager.Menu.Splash;
                 MainMenuUIManager.Instance.SetCameraView(MainMenuUIManager.Instance.vCam1SplashMenu);
             }

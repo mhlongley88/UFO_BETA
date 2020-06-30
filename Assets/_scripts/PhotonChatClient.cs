@@ -44,7 +44,8 @@ public class PhotonChatClient : MonoBehaviour, IChatClientListener
 
     public void OnDisconnected()
     {
-        throw new System.NotImplementedException();
+
+        //throw new System.NotImplementedException();
     }
 
     public void OnConnected()

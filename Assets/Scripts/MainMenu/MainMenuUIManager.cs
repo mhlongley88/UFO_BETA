@@ -18,7 +18,7 @@ public class MainMenuUIManager : MonoBehaviour
         CharacterSelect
     }
     public GameObject PV_GameObj;
-    public GameObject OnlineButton;
+    public Button OnlineButton;
     public GameObject MainPanel;
     public GameObject OfflineCharacterSelectionPanel;
     public GameObject OnlineCharacterSelectionPanel;
@@ -124,7 +124,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         if (Photon.Pun.PhotonNetwork.NetworkClientState == Photon.Realtime.ClientState.ConnectedToMasterServer)
         {
-            OnlineButton.SetActive(false);
+            OnlineButton.interactable = false;
         }
     }
 

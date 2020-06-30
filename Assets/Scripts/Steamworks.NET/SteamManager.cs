@@ -84,6 +84,8 @@ public class SteamManager : MonoBehaviour {
 			if (SteamAPI.RestartAppIfNecessary((AppId_t)1141070)) {
 				Application.Quit();
 				return;
+
+				
 			}
 		}
 		catch (System.DllNotFoundException e) { // We catch this exception here, as it will be the first occurrence of it.
