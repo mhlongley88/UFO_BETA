@@ -201,6 +201,9 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Start()
     {
+        if(TutorialManager.instance != null && player == Player.One)
+            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+
         currentWeapon = normalWeapon;
         avgScaleOutput = GameObject.FindGameObjectWithTag("AverageScaleOutput").GetComponent<AverageScaleOutput>();
         avgScaleOutput.AddPlayer(this.gameObject.transform);
@@ -383,7 +386,7 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("console");
             }
             
-            if((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
+            if((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode || (TutorialManager.instance != null && player == Player.One)) && rightStickDirection == Vector2.zero)
             {
                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 
@@ -616,7 +619,7 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("console");
             }
 
-            if ((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
+            if ((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode || (TutorialManager.instance != null && player == Player.One)) && rightStickDirection == Vector2.zero)
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
