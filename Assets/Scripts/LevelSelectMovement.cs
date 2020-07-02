@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Rewired;
+
 public class LevelSelectMovement : MonoBehaviour
 {
     public int playersAmount = 4;
@@ -73,8 +75,10 @@ public class LevelSelectMovement : MonoBehaviour
 
             for (int i = 0; i < playersAmount; i++)
             {
-                float h = Input.GetAxisRaw("P" + (i + 1) + "_Horizontal");
-                float v = Input.GetAxisRaw("P" + (i + 1) + "_Vertical");
+                Rewired.Player rewirePlayer = ReInput.players.GetPlayer(i);
+
+                float h = rewirePlayer.GetAxis("Horizontal");
+                float v = rewirePlayer.GetAxis("Vertical");
 
                 bool right = h > .2f;
                 bool left = h < -.2f;
@@ -156,8 +160,10 @@ public class LevelSelectMovement : MonoBehaviour
 
             for (int i = 0; i < playersAmount; i++)
             {
-                float h = Input.GetAxisRaw("P" + (i + 1) + "_Horizontal");
-                float v = Input.GetAxisRaw("P" + (i + 1) + "_Vertical");
+                Rewired.Player rewirePlayer = ReInput.players.GetPlayer(i);
+
+                float h = rewirePlayer.GetAxis("Horizontal");
+                float v = rewirePlayer.GetAxis("Vertical");
 
                 bool right = h > .2f;
                 bool left = h < -.2f;
