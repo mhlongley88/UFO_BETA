@@ -113,7 +113,7 @@ public class TutorialAnimations : MonoBehaviour
                         performedAction[activePlayers[i]] = true;
                     
                     // Also verifiy mouse movement for player4
-                    if (activePlayers[i] == Player.Four)
+                    if (activePlayers[i] == Player.Four || activePlayers[i] == Player.One)
                     {
                         if(Input.GetAxis("Mouse X") != 0.0f || Input.GetAxis("Mouse Y") != 0.0f)
                             performedAction[activePlayers[i]] = true;

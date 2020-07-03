@@ -2,24 +2,41 @@
 using System.Collections;
 using System.ComponentModel;
 using Steamworks;
+using System.Linq;
 
-// This is a port of StatsAndAchievements.cpp from SpaceWar, the official Steamworks Example.
-class SteamGameAchievements : MonoBehaviour
+public class SteamGameAchievements : MonoBehaviour
 {
-	private enum Achievement : int
+	public static SteamGameAchievements instance;
+
+	public enum Achievement : int
 	{
 		UFO_ACHIEVEMENT_1_0,
 		UFO_ACHIEVEMENT_1_1,
 		UFO_ACHIEVEMENT_1_2,
 		UFO_ACHIEVEMENT_1_3,
 		UFO_ACHIEVEMENT_1_4,
+		UFO_ACHIEVEMENT_1_5,
+		UFO_ACHIEVEMENT_1_6,
+		UFO_ACHIEVEMENT_1_7,
+		UFO_ACHIEVEMENT_1_8,
+		UFO_ACHIEVEMENT_1_9,
+		UFO_ACHIEVEMENT_1_10,
+		UFO_ACHIEVEMENT_1_11,
 	};
 
 	private Achievement_t[] m_Achievements = new Achievement_t[] {
-		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_0, "0", ""),
-		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_1, "1", ""),
-		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_2, "2", ""),
-		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_3, "3", "")
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_0, "We Come In Peace", "Completed first match"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_1, "Double Trouble", "Won first Double Match"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_2, "Annunaki DESTROYED", "Defeated Annunaki Titan!"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_3, "Robot X DESTROYED", "Beat Tokyo Boss"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_4, "First Contact", "Played first Online Match"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_5, "Watch the Skies!", "Played a full 4 Player Local Multiplayer Match"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_6, "RULER of EARTH", "Completed Single Player Adventure"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_7, "Mysteries of the Bermuda Triangle : REVEALED", "Match completed on Bonus Level (BRMD)"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_8, "Destruction Overlord", "Completed 100 Matches"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_9, "The Conqueror of All Time", "Completed 200 Matches"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_10, "Online Invader", "Played 50 Online Matches"),
+		new Achievement_t(Achievement.UFO_ACHIEVEMENT_1_11, "Across the Universe", "Played as every single character")
 	};
 
 	// Our GameID
@@ -32,22 +49,23 @@ class SteamGameAchievements : MonoBehaviour
 	// Should we store stats this frame?
 	private bool m_bStoreStats;
 
-	// Current Stat details
-	private float m_flGameFeetTraveled;
-	private float m_ulTickCountGameStart;
-	private double m_flGameDurationSeconds;
-
-	// Persisted Stat details
-	private int m_nTotalGamesPlayed;
-	private int m_nTotalNumWins;
-	private int m_nTotalNumLosses;
-	private float m_flTotalFeetTraveled;
-	private float m_flMaxFeetTraveled;
-	private float m_flAverageSpeed;
-
 	protected Callback<UserStatsReceived_t> m_UserStatsReceived;
 	protected Callback<UserStatsStored_t> m_UserStatsStored;
 	protected Callback<UserAchievementStored_t> m_UserAchievementStored;
+
+	private void Awake()
+	{
+		if (instance)
+		{
+			if (instance != this)
+				Destroy(gameObject);
+
+			return;
+		}
+
+		instance = this;
+		DontDestroyOnLoad(gameObject);
+	}
 
 	void OnEnable()
 	{
@@ -93,124 +111,32 @@ class SteamGameAchievements : MonoBehaviour
 
 		// Get info from sources
 
-		if(!m_Achievements[1].m_bAchieved)
-			UnlockAchievement(m_Achievements[1]);
-
-
 		// Evaluate achievements
 		foreach (Achievement_t achievement in m_Achievements)
 		{
 			if (achievement.m_bAchieved)
 				continue;
-
-			//switch (achievement.m_eAchievementID)
-			//{
-			//	case Achievement.ACH_WIN_ONE_GAME:
-			//		if (m_nTotalNumWins != 0)
-			//		{
-			//			UnlockAchievement(achievement);
-			//		}
-			//		break;
-			//	case Achievement.ACH_WIN_100_GAMES:
-			//		if (m_nTotalNumWins >= 100)
-			//		{
-			//			UnlockAchievement(achievement);
-			//		}
-			//		break;
-			//	case Achievement.ACH_TRAVEL_FAR_ACCUM:
-			//		if (m_flTotalFeetTraveled >= 5280)
-			//		{
-			//			UnlockAchievement(achievement);
-			//		}
-			//		break;
-			//	case Achievement.ACH_TRAVEL_FAR_SINGLE:
-			//		if (m_flGameFeetTraveled >= 500)
-			//		{
-			//			UnlockAchievement(achievement);
-			//		}
-			//		break;
-			//}
 		}
 
 		//Store stats in the Steam database if necessary
 		if (m_bStoreStats)
 		{
-			// already set any achievements in UnlockAchievement
-
-			// set stats
-			//SteamUserStats.SetStat("NumGames", m_nTotalGamesPlayed);
-			//SteamUserStats.SetStat("NumWins", m_nTotalNumWins);
-			//SteamUserStats.SetStat("NumLosses", m_nTotalNumLosses);
-			//SteamUserStats.SetStat("FeetTraveled", m_flTotalFeetTraveled);
-			//SteamUserStats.SetStat("MaxFeetTraveled", m_flMaxFeetTraveled);
-			// Update average feet / second stat
-			//SteamUserStats.UpdateAvgRateStat("AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds);
-			// The averaged result is calculated for us
-			//SteamUserStats.GetStat("AverageSpeed", out m_flAverageSpeed);
-
 			bool bSuccess = SteamUserStats.StoreStats();
-			// If this failed, we never sent anything to the server, try
-			// again later.
 			m_bStoreStats = !bSuccess;
 		}
 	}
 
-	//-----------------------------------------------------------------------------
-	// Purpose: Accumulate distance traveled
-	//-----------------------------------------------------------------------------
-	public void AddDistanceTraveled(float flDistance)
+	public void UnlockAchievement(Achievement achievement)
 	{
-		m_flGameFeetTraveled += flDistance;
+		var a = m_Achievements.FirstOrDefault(it => it.m_eAchievementID == achievement);
+		if (a != null)
+			UnlockAchievement(a);
 	}
 
-	//-----------------------------------------------------------------------------
-	// Purpose: Game state has changed
-	//-----------------------------------------------------------------------------
-	//public void OnGameStateChange(EClientGameState eNewState)
-	//{
-	//	if (!m_bStatsValid)
-	//		return;
-
-	//	if (eNewState == EClientGameState.k_EClientGameActive)
-	//	{
-	//		// Reset per-game stats
-	//		m_flGameFeetTraveled = 0;
-	//		m_ulTickCountGameStart = Time.time;
-	//	}
-	//	else if (eNewState == EClientGameState.k_EClientGameWinner || eNewState == EClientGameState.k_EClientGameLoser)
-	//	{
-	//		if (eNewState == EClientGameState.k_EClientGameWinner)
-	//		{
-	//			m_nTotalNumWins++;
-	//		}
-	//		else
-	//		{
-	//			m_nTotalNumLosses++;
-	//		}
-
-	//		// Tally games
-	//		m_nTotalGamesPlayed++;
-
-	//		// Accumulate distances
-	//		m_flTotalFeetTraveled += m_flGameFeetTraveled;
-
-	//		// New max?
-	//		if (m_flGameFeetTraveled > m_flMaxFeetTraveled)
-	//			m_flMaxFeetTraveled = m_flGameFeetTraveled;
-
-	//		// Calc game duration
-	//		m_flGameDurationSeconds = Time.time - m_ulTickCountGameStart;
-
-	//		// We want to update stats the next frame.
-	//		m_bStoreStats = true;
-	//	}
-	//}
-
-	//-----------------------------------------------------------------------------
-	// Purpose: Unlock this achievement
-	//-----------------------------------------------------------------------------
 	private void UnlockAchievement(Achievement_t achievement)
 	{
+		if (achievement.m_bAchieved) return;
+
 		achievement.m_bAchieved = true;
 
 		// the icon may change once it's unlocked
@@ -223,10 +149,6 @@ class SteamGameAchievements : MonoBehaviour
 		m_bStoreStats = true;
 	}
 
-	//-----------------------------------------------------------------------------
-	// Purpose: We have stats data from Steam. It is authoritative, so update
-	//			our data with those results now.
-	//-----------------------------------------------------------------------------
 	private void OnUserStatsReceived(UserStatsReceived_t pCallback)
 	{
 		if (!SteamManager.Initialized)
@@ -330,17 +252,6 @@ class SteamGameAchievements : MonoBehaviour
 			GUILayout.Label("Steamworks not Initialized");
 			return;
 		}
-
-		GUILayout.Label("m_ulTickCountGameStart: " + m_ulTickCountGameStart);
-		GUILayout.Label("m_flGameDurationSeconds: " + m_flGameDurationSeconds);
-		GUILayout.Label("m_flGameFeetTraveled: " + m_flGameFeetTraveled);
-		GUILayout.Space(10);
-		GUILayout.Label("NumGames: " + m_nTotalGamesPlayed);
-		GUILayout.Label("NumWins: " + m_nTotalNumWins);
-		GUILayout.Label("NumLosses: " + m_nTotalNumLosses);
-		GUILayout.Label("FeetTraveled: " + m_flTotalFeetTraveled);
-		GUILayout.Label("MaxFeetTraveled: " + m_flMaxFeetTraveled);
-		GUILayout.Label("AverageSpeed: " + m_flAverageSpeed);
 
 		GUILayout.BeginArea(new Rect(Screen.width - 300, 0, 300, 800));
 		foreach (Achievement_t ach in m_Achievements)

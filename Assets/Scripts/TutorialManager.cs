@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PlayersReadyToJoint
@@ -13,6 +14,7 @@ public class PlayersReadyToJoint
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager instance;
+    public GameObject skipPanel;
     public PlayersReadyToJoint[] players;
     public TutorialAnimations currentTutorialAnimations;
     public TutorialAnimations tutorialAnimationsPrefab;
@@ -20,6 +22,9 @@ public class TutorialManager : MonoBehaviour
     public GameObject cityDesign;
     public bool canGoToMenu = false;
     bool allPlayersInGame = false;
+
+    public static int levelIntAfterSkipTutorial;
+    public static string introLevelNameAfterSkipTutorial;
 
     Vector3 firstTutorialAnimationsPos;
     Quaternion firstTutorialAnimationsRot;
@@ -95,6 +100,8 @@ public class TutorialManager : MonoBehaviour
         
         if (canGoToMenu)
         {
+            skipPanel.SetActive(true);
+
             int rewirePlayerId = 1;
             var activePlayers = GameManager.Instance.GetActivePlayers();
             foreach (Player i in activePlayers)
@@ -113,5 +120,34 @@ public class TutorialManager : MonoBehaviour
             }
         }
         
+    }
+
+    bool loading = false;
+    public void GoToLA()
+    {
+        if (loading) return;
+
+        loading = true;
+
+        canGoToMenu = false;
+        skipPanel.SetActive(false);
+
+        var activePlayers = GameManager.Instance.GetActivePlayers();
+        GameManager.Instance.RemoveAllPlayersFromGame();
+
+        if(activePlayers.Count == 1)
+        {
+            if (activePlayers[0] == Player.One)
+                GameManager.Instance.AddPlayerToGame(Player.Four);
+        }
+        else
+        {
+            foreach (Player i in activePlayers)
+                GameManager.Instance.AddPlayerToGame(i);
+        }
+
+        LoadIntroSceneLevel.introSceneLevel = introLevelNameAfterSkipTutorial;
+        ShowLevelTitle.levelStaticInt = levelIntAfterSkipTutorial;
+        SceneManager.LoadScene("LoadingRoom");
     }
 }

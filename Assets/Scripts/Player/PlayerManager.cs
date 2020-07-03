@@ -467,6 +467,8 @@ public class PlayerManager : MonoBehaviour
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
             }
 
+            UnlockSystem.instance.SaveOnlineMatchesCompleted();
+
             GameManager.Instance.GameEnds();
         }
 
@@ -577,6 +579,9 @@ public class PlayerManager : MonoBehaviour
 
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
+
+            if(!PlayerBot.active && activePlayers.Count == 4) //Full 4 player local multiplayer match
+                SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_5);
 
             GameManager.Instance.GameEnds();      
         }

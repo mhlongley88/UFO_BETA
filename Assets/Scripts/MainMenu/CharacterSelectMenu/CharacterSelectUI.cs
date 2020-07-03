@@ -99,6 +99,25 @@ public class CharacterSelectUI : MonoBehaviour
                         }
                     }
                 }
+                else
+                {
+                    for (int e = value; e >= 0; e--)
+                    {
+                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+                        if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+                        {
+                            _selectedCharacterIndex = e;
+                            break;
+                        }
+                        else
+                        {
+                            if (e == GameManager.Instance.Characters.Length - 1)
+                            {
+                                e = -1;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
