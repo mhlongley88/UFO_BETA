@@ -105,6 +105,8 @@ public class BossCongratulationsBeat : MonoBehaviour
                 //tutorialButton.SetActive(false);
 
                 unlockedBermudaTriangleScreen.SetActive(true);
+                // bermuda triangle revealed
+                SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_7);
             }
         }
     }

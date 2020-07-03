@@ -25,9 +25,14 @@ public class UnlockSystem : MonoBehaviour
     public List<int> recentlyUnlockedCharacters = new List<int>();
     public List<int> recentlyUnlockedLevels = new List<int>();
 
+    int matchesCompleted = 0;
     public int MatchesCompleted => matchesCompleted;
 
     const string BattlesCompletedPrefsKey = "UFOBattlesCompleted";
+    const string OnlineBattlesCompletedPrefsKey = "UFOOnlineBattlesCompleted";
+
+    int onlineMatchesCompleted = 0;
+    public int OnlineMatchesCompleted => onlineMatchesCompleted;
 
     private void Awake()
     {
@@ -43,9 +48,9 @@ public class UnlockSystem : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         matchesCompleted = UserPrefs.instance.GetInt(BattlesCompletedPrefsKey, 0);
+        onlineMatchesCompleted = UserPrefs.instance.GetInt(OnlineBattlesCompletedPrefsKey, 0);
     }
 
-    int matchesCompleted = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -130,11 +135,34 @@ public class UnlockSystem : MonoBehaviour
 #endif
 	}
 
+    public void SaveOnlineMatchesCompleted()
+    {
+        if(onlineMatchesCompleted == 0)
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_4);
+
+        onlineMatchesCompleted++;
+
+        UserPrefs.instance.SetInt(OnlineBattlesCompletedPrefsKey, onlineMatchesCompleted);
+        UserPrefs.instance.Save();
+
+        if(onlineMatchesCompleted == 50)
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_10);
+    }
+
     public void SaveMatchesCompleted()
     {
+        if(matchesCompleted == 0)
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_0);
+
         matchesCompleted++;
         UserPrefs.instance.SetInt(BattlesCompletedPrefsKey, matchesCompleted);
         UserPrefs.instance.Save();
+
+        if(matchesCompleted == 100)
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_8);
+        if (matchesCompleted == 200)
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_9);
+
 
         onBattlesCompletedChange.Invoke();
 
