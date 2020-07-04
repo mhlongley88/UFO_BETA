@@ -201,8 +201,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Start()
     {
-        if(TutorialManager.instance != null && player == Player.One)
-            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+        //if(TutorialManager.instance != null && player == Player.One && GameManager.Instance.GetActivePlayers().Count == 1)
+        //    rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
 
         currentWeapon = normalWeapon;
         avgScaleOutput = GameObject.FindGameObjectWithTag("AverageScaleOutput").GetComponent<AverageScaleOutput>();
