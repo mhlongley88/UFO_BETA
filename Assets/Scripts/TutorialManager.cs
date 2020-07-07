@@ -137,7 +137,7 @@ public class TutorialManager : MonoBehaviour
 
         if(activePlayers.Count == 1)
         {
-            if (activePlayers[0] == Player.One)
+           // if (activePlayers[0] == Player.One)
                 GameManager.Instance.AddPlayerToGame(Player.Four);
         }
         else
