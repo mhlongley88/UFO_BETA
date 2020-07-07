@@ -75,6 +75,9 @@ public class GameManager : MonoBehaviour
 
     public bool HasCutsceneObjectsActive { get; private set; }
 
+    const string PlayedWithCharacterKey = "UFO_PlayedWithCharacter";
+    public UnlockSteamAchievement playedWithAllCharactersAchievement;
+
     public void Awake()
     {
         Cursor.visible = true;
@@ -109,6 +112,21 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
         GamesCompletedTally.gameWasCompleted = false;
 
+        bool playedWithAllCharacters = true;
+        for (int i = 0; i < characters.Length; i++)
+        {
+            var playedWithCharacter = UserPrefs.instance.GetBool(PlayedWithCharacterKey + i, false);
+            if(!playedWithCharacter)
+            {
+                playedWithAllCharacters = true;
+                break;
+            }
+        }
+
+        if(playedWithAllCharacters)
+        {
+            playedWithAllCharactersAchievement.Unlock();
+        }
     }
 
     IEnumerator delayCheck()
@@ -653,6 +671,12 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log(this.name);
         return characters[GetPlayerCharacterChoice(player)].characterModel;
+    }
+
+    public void SetPlayerPlayedWithThisModel(Player player)
+    {
+        int characterIndex = GetPlayerCharacterChoice(player);
+        UserPrefs.instance.SetBool(PlayedWithCharacterKey + characterIndex, true);
     }
 
     public SuperWeaponTypes GetCharacterSuperWeapon(int index)

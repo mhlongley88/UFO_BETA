@@ -221,6 +221,17 @@ public class PlayerController : MonoBehaviour
             playerModel = Instantiate(pawn ? pawnModel : GameManager.Instance.GetPlayerModel(player), modelContainer);
             playerModel.transform.localRotation = Quaternion.identity;
             playerModel.transform.localPosition = Vector3.zero;
+
+            // Mark that you played with this model
+            if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+            {
+                GameManager.Instance.SetPlayerPlayedWithThisModel(player);
+            }
+            else
+            {
+                if(pv.IsMine)
+                    GameManager.Instance.SetPlayerPlayedWithThisModel(player);
+            }
         }
 
         var characterInfo = playerModel.GetComponent<CharacterLevelSelectInfo>();

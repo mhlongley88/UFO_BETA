@@ -5,6 +5,12 @@ using UnityEngine;
 public class UnlockSteamAchievement : MonoBehaviour
 {
     public SteamGameAchievements.Achievement achievement;
+    public bool unlockOnEnable = false;
+
+    private void OnEnable()
+    {
+        Unlock();
+    }
 
     public void Unlock()
     {
