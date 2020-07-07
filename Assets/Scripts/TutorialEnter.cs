@@ -20,7 +20,11 @@ public class TutorialEnter : MonoBehaviour
         TutorialManager.introLevelNameAfterSkipTutorial = laLoadIntro.levelName;
         laLevelUnlockFromProgression.SetThisProgression();
 
-        GameManager.Instance.AddPlayerToGame(Player.One);
+        if(GameManager.Instance.GetActivePlayers().Count == 0)
+            GameManager.Instance.AddPlayerToGame(Player.Four);
+
+        // Dont show intro now, just when going to LA really
+        LoadIntroSceneLevel.introSceneLevel = "";
 
         ShowLevelTitle.levelStaticInt = 17;
         SceneManager.LoadScene("LoadingRoom");
