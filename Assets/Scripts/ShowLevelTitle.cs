@@ -74,5 +74,8 @@ public class ShowLevelTitle : MonoBehaviour
         //levelTitle.GetComponent<DOTweenAnimation>().DOPlayById("Disappear");
         //levelTitle.GetComponent<DOTweenAnimation>().DORewindAllById("Appear");
         levelStaticInt = 0;
+
+        if (MainMenuUIManager.Instance.tryTutorialScreen.activeInHierarchy)
+            MainMenuUIManager.Instance.tryTutorialScreen.SetActive(false);
     }
 }

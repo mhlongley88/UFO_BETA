@@ -44,7 +44,7 @@ public class PlayerBot : MonoBehaviour
     {
         playerController = GetComponent<PlayerController>();
 
-        destination = transform.position;
+        destination = transform.position + transform.forward * 20.0f;
         playerController.allowLocalProcessInput = false;
 
         // preset = BotConfigurator.instance.currentPreset;

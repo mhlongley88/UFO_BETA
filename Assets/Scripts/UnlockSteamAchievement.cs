@@ -9,7 +9,8 @@ public class UnlockSteamAchievement : MonoBehaviour
 
     private void OnEnable()
     {
-        Unlock();
+        if(unlockOnEnable)
+            Unlock();
     }
 
     public void Unlock()
