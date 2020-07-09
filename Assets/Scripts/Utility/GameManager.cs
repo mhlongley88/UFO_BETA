@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
             var playedWithCharacter = UserPrefs.instance.GetBool(PlayedWithCharacterKey + i, false);
             if(!playedWithCharacter)
             {
-                playedWithAllCharacters = true;
+                playedWithAllCharacters = false;
                 break;
             }
         }
