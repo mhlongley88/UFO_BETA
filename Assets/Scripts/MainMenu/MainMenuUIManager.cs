@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using static InputManager;
 using Rewired;
+using Cinemachine;
 
 public class MainMenuUIManager : MonoBehaviour
 {
@@ -36,6 +37,9 @@ public class MainMenuUIManager : MonoBehaviour
     public GameObject vCam1SplashMenu;
     public GameObject vCam2LevelSelect;
     public GameObject vCam3CharacterSelect;
+    public CinemachineBrain cinemachineBrain;
+    public float blendTimeTransitionToCharacterSelect = 0.7f;
+    public float blendTimeDefault = 2.0f;
 
     public Menu currentMenu = Menu.Splash;
 
@@ -182,6 +186,12 @@ public class MainMenuUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(vCam1SplashMenu.activeInHierarchy)
+        {
+            cinemachineBrain.m_DefaultBlend.m_Time = blendTimeTransitionToCharacterSelect;
+        }else
+            cinemachineBrain.m_DefaultBlend.m_Time = blendTimeDefault;
+
         mainTitle.SetActive(!levelSelect.activeInHierarchy);
 
         mainTitleAlienCharacters.SetActive(mainTitle.activeInHierarchy);

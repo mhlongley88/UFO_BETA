@@ -76,7 +76,7 @@ public class UnlockSystem : MonoBehaviour
     {
         // unlockedCharacterNotification.Add(0);
 
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (SceneManager.GetActiveScene().name == "MainMenu" && MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
         {
             if (unlockedLevelNotificationMM.Count > 0)
             {
