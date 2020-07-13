@@ -135,12 +135,12 @@ public class TutorialManager : MonoBehaviour
         var activePlayers = GameManager.Instance.GetActivePlayers();
         GameManager.Instance.RemoveAllPlayersFromGame();
 
-        if(activePlayers.Count == 1)
-        {
-           // if (activePlayers[0] == Player.One)
-                GameManager.Instance.AddPlayerToGame(Player.Four);
-        }
-        else
+        //if(activePlayers.Count == 1)
+        //{
+        //   // if (activePlayers[0] == Player.One)
+        //        GameManager.Instance.AddPlayerToGame(Player.Four);
+        //}
+        //else
         {
             foreach (Player i in activePlayers)
                 GameManager.Instance.AddPlayerToGame(i);
