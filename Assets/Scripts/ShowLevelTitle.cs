@@ -17,6 +17,7 @@ public class ShowLevelTitle : MonoBehaviour
     public AudioClip levelHoverSFX;
 
     public UnityEvent OnGetHovered = new UnityEvent();
+    public UnityEvent OnGetUnHovered = new UnityEvent();
     public static int levelStaticInt;
 
     public static OnLevelTitleSelected OnLevelIsHovered = new OnLevelTitleSelected();
@@ -74,6 +75,8 @@ public class ShowLevelTitle : MonoBehaviour
         //levelTitle.GetComponent<DOTweenAnimation>().DOPlayById("Disappear");
         //levelTitle.GetComponent<DOTweenAnimation>().DORewindAllById("Appear");
         levelStaticInt = 0;
+
+        OnGetUnHovered.Invoke();
 
         if (MainMenuUIManager.Instance.tryTutorialScreen.activeInHierarchy)
             MainMenuUIManager.Instance.tryTutorialScreen.SetActive(false);

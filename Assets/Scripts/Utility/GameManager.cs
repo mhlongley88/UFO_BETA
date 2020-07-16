@@ -352,8 +352,8 @@ public class GameManager : MonoBehaviour
 
     public void EndGameAndGoToMenu()
     {
-        if (DoubleMatch.useDoubleMatch)
-            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_1);
+        if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
+            SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
 
         PlayerBot.active = false;
         DoubleMatch.useDoubleMatch = false;
