@@ -329,6 +329,12 @@ public class GameManager : MonoBehaviour
                     SceneManager.LoadScene("MainMenu");
                 }
             }
+
+            if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
+            {
+                SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
+                UnlockAchievementPostLevel.chosen = false;
+            }
         }
         else
         {
@@ -353,7 +359,10 @@ public class GameManager : MonoBehaviour
     public void EndGameAndGoToMenu()
     {
         if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
+        {
             SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
+            UnlockAchievementPostLevel.chosen = false;
+        }
 
         PlayerBot.active = false;
         DoubleMatch.useDoubleMatch = false;
