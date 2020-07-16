@@ -17,6 +17,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public bool IsMultiplayerMode, isPrivateMatch;
     public PhotonView pv;
     public Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
+
+    bool showGUI = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -94,12 +96,16 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     // Update is called once per frame
     void Update()
     {
-
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            showGUI = !showGUI;
+        }
     }
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 200, 40), PhotonNetwork.NetworkClientState.ToString());
+        if(showGUI)
+            GUI.Label(new Rect(10, 10, 200, 40), PhotonNetwork.NetworkClientState.ToString());
     }
 
     public void StartMatchMaking()
