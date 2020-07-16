@@ -704,6 +704,8 @@ public class PlayerController : MonoBehaviour
             superWeapon.gameObject.SetActive(false);
             //superWeaponActive = false;
             currentWeapon = normalWeapon;
+            normalWeapon.ReloadWeapon();
+
             currentWeapon.canFire = true;
             //superWeapon.DeactivateWeapon();
             Debug.Log(currentWeapon.name);

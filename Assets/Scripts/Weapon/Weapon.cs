@@ -87,6 +87,10 @@ public abstract class Weapon : MonoBehaviour
         shootDirection = newDirection;
     }
 
+    public void ReloadWeapon()
+    {
+        currentAmmo = GetCurrentWeaponSetting().MaxAmmo;
+    }
 
     public virtual ScriptableWeapon GetCurrentWeaponSettings()
     {
