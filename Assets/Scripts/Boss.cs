@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,11 @@ public class Boss : MonoBehaviour
     public int maxHealth = 40;
     public int health = 40;
     public float delayToShowDeathAnim = 4.0f;
+    public bool addExtraHealth = false;
+    public int extraHealth = 100;
+    public int addExtraHealthWhenNumPlayersBigger = 2;
+
+    bool checkedExtraHealth = false;
 
     private void Awake()
     {
@@ -38,6 +44,16 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
+        if(!checkedExtraHealth)
+        {
+            if (addExtraHealth && GameManager.Instance.GetActivePlayers().Count > addExtraHealthWhenNumPlayersBigger && !PlayerBot.active)
+            {
+                health += extraHealth;
+            }
+
+            checkedExtraHealth = true;
+        }
+
         if(lifeBar) lifeBar.fillAmount = (float)health / (float)maxHealth;
     }
 

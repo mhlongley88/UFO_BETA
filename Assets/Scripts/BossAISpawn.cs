@@ -40,6 +40,7 @@ public class BossAISpawn : MonoBehaviour
             playerController.healthManager.HealthMeter.image.color = healthBarColor;
 
         var boss = ai.AddComponent<Boss>();
+        boss.addExtraHealth = true;
         boss.showCongratulationsScreenAfter = true;
         boss.maxHealth = bossInitialHealth;
         boss.health = bossInitialHealth;
@@ -56,7 +57,7 @@ public class BossAISpawn : MonoBehaviour
 
         var bot = ai.AddComponent<PlayerBot>();
         bot.preset = aiPreset;
-
+        
         DOVirtual.DelayedCall(0.23f, () =>
         {
             playerController.healthManager.SetInvincible(false);
