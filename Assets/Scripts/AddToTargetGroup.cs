@@ -36,6 +36,11 @@ public class AddToTargetGroup : MonoBehaviour
         }
     }
 
+    public void RemoveFromTargetGroup()
+    {
+        MyTargetGroup.RemoveMember(myTransform);
+    }
+
     // Update is called once per frame
     void Update()
     {
