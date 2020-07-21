@@ -5,6 +5,7 @@ using RotaryHeart.Lib.SerializableDictionary;
 using UnityEngine;
 using System.Linq;
 using DG.Tweening;
+using UnityEngine.Jobs;
 
 [Serializable]
 public class PlayerStats
@@ -520,9 +521,24 @@ public class PlayerManager : MonoBehaviour
                     return;
             }
 
-            int fakeRankCount = 0;
+
+            var onlyNonBotPlayer = players.FirstOrDefault(it => !PlayerBot.chosenPlayer.Contains(it.Key)).Value;
+            int[] ranks = new int[3] { 1, 2, 3 };
+            int rankIndex = 0;
+
             foreach (Player i in activePlayers)
             {
+                if (nonBotPlayer.Count <= 0)
+                {
+                    // Dont change the player rank, let it where he died and dont change the winner bot rank
+                    if (players[i] != onlyNonBotPlayer && players[i].rank != 0)
+                    {
+                        if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
+
+                        players[i].rank = ranks[rankIndex++];
+                    }
+                }
+
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
      
                 if (PlayerBot.active)
@@ -572,7 +588,7 @@ public class PlayerManager : MonoBehaviour
                     {
                         //if (players[i].rank == -1)
                         {
-                            players[i].rank = fakeRankCount++;
+                        //    players[i].rank = fakeRankCount++;
                         }
                     }
                 }
