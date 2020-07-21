@@ -11,15 +11,19 @@ public class BossDoDamage : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        GameObject obj = collision.gameObject;
-
-        if(GameUtils.LayerMaskContains(obj.layer, ufoMask))
+        if (Boss.instance != null && Boss.instance.health >= 0)
         {
-            PlayerController pc = PlayerController.playerControllerByGameObject[obj];
-            pc.DoDamage(damage);
-            pc.ApplyForce(collision.contacts[0].point);
 
-            Instantiate(BulletHitPFX, gameObject.transform.position, gameObject.transform.rotation);
+            GameObject obj = collision.gameObject;
+
+            if (GameUtils.LayerMaskContains(obj.layer, ufoMask))
+            {
+                PlayerController pc = PlayerController.playerControllerByGameObject[obj];
+                pc.DoDamage(damage);
+                pc.ApplyForce(collision.contacts[0].point);
+
+                Instantiate(BulletHitPFX, gameObject.transform.position, gameObject.transform.rotation);
+            }
         }
     }
 }
