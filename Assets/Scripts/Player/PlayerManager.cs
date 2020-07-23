@@ -505,10 +505,12 @@ public class PlayerManager : MonoBehaviour
             var nonBotPlayer = players.Where(it => !PlayerBot.chosenPlayer.Contains(it.Key) && it.Value.lives >= 1 && it.Value.instance != null).ToList();
 
             // If the player is dead and the boss was or wasnt defeated, make sure it doesnt unlock the level for local/online
-            if(nonBotPlayer.Count <= 0 && Boss.instance != null && Boss.instance.health > 0)
+            if(nonBotPlayer.Count <= 0)
             {
-                LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
                 LevelUIManager.Instance.lostToBots.SetActive(true);
+
+                if(Boss.instance != null && (Boss.instance.health > 0 || Boss.instance.health <= 0))
+                    LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
              //  GameManager.Instance.gameOver = true;
 
                 return;
