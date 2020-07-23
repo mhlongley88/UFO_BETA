@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Boss : MonoBehaviour
 {
     public static bool hadJustBeenDefeated;
+    public static bool defeatedBefore;
 
     public static Boss instance;
 
@@ -40,6 +41,13 @@ public class Boss : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+
+        if (LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt))
+        {
+            defeatedBefore = true;
+        }
+        else
+            defeatedBefore = false;
     }
 
     void Update()
