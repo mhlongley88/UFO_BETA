@@ -24,4 +24,14 @@ public class LifeManager : MonoBehaviour
             }
         }
     }
+
+    public void DisableAllElements()
+    {
+        for (int i = 0; i < lifeIndicators.Length; i++)
+        {
+            lifeIndicators[i].gameObject.SetActive(false);
+        }
+
+        characterHead.gameObject.SetActive(false);
+    }
 }

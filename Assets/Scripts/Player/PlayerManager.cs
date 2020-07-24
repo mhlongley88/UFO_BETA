@@ -350,6 +350,13 @@ public class PlayerManager : MonoBehaviour
     {
         if (useDoubleMatch)
         {
+            for (int e = 0; e < PlayerBot.chosenPlayer.Count; e++)
+            {
+                var p = PlayerBot.chosenPlayer[e];
+                var lifeManager = LevelUIManager.Instance.GetLifeManager(p);
+                lifeManager.gameObject.SetActive(false);
+            }
+
             DoubleMatchCutsceneRef.instance.cutscene.SetActive(true);
 
             LevelUIManager.Instance.allInvincible = true;
@@ -364,7 +371,10 @@ public class PlayerManager : MonoBehaviour
                     var p = PlayerBot.chosenPlayer[e];
                     players[p].rank = -1;
                     players[p].lives = 3;
-                    LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
+
+                    var lifeManager = LevelUIManager.Instance.GetLifeManager(p);
+                    lifeManager.ChangeLifeCount(players[p].lives);
+                    lifeManager.gameObject.SetActive(true);
 
                     int characterOverrideIndex = -1;
                     switch (PlayerBot.aiSlots[e])
@@ -397,6 +407,7 @@ public class PlayerManager : MonoBehaviour
                         GameManager.Instance.SetPlayerCharacterChoice(p, characterOverrideIndex);
 
                     StartCoroutine(SpawnCoroutine(p));
+
                 }
             });
 
@@ -655,6 +666,7 @@ public class PlayerManager : MonoBehaviour
                 spawnedPlayerDictionary[player] = players[player].instance;
             else
                 spawnedPlayerDictionary.Add(player, players[player].instance);
+
         }
 
     }

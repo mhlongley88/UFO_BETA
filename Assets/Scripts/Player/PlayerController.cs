@@ -148,6 +148,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 rightStickDirection;
 
     public GameObject specialReady;
+    public Image playerIndicator;
 
     [SerializeField]
     private Transform modelContainer;
@@ -248,7 +249,15 @@ public class PlayerController : MonoBehaviour
         }
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
-        if(!pawn) yield return new WaitForSeconds(invincibleDuration);
+
+        playerIndicator.color = characterInfo.characterLivesCircleTint;
+
+        if(PlayerBot.active && !PlayerBot.chosenPlayer.Contains(player))
+        {
+            playerIndicator.gameObject.SetActive(true);
+        }
+
+        if (!pawn) yield return new WaitForSeconds(invincibleDuration);
         
         healthManager.SetInvincible(false);
 
