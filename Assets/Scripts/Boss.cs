@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Newtonsoft.Json;
+
 public class Boss : MonoBehaviour
 {
     public static bool hadJustBeenDefeated;
@@ -56,7 +58,8 @@ public class Boss : MonoBehaviour
         {
             if (addExtraHealth && GameManager.Instance.GetActivePlayers().Count > addExtraHealthWhenNumPlayersBigger && !PlayerBot.active)
             {
-                health += extraHealth;
+                maxHealth += extraHealth;
+                health = maxHealth;
             }
 
             checkedExtraHealth = true;
