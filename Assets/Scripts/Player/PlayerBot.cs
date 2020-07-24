@@ -122,7 +122,16 @@ public class PlayerBot : MonoBehaviour
         {
             if(abductOn)
             {
-                destination = targetAbduct.position;
+                if (targetAbduct != null)
+                {
+                    destination = targetAbduct.position;
+                }
+                else
+                {
+                    abductOn = false;
+                    targetAbduct = null;
+                    playerController.DeactivateBeam();
+                }
             }
         }
 
@@ -160,11 +169,14 @@ public class PlayerBot : MonoBehaviour
 
                             if ((p - transform.position).magnitude < 6.0f)
                             {
-                                abductOn = true;
-                                targetAbduct = abductable.transform;
-                                playerController.ActivateBeam();
+                                if (abductable != null)
+                                {
+                                    abductOn = true;
+                                    targetAbduct = abductable.transform;
+                                    playerController.ActivateBeam();
 
-                                break;
+                                    break;
+                                }
                             }
                         }
                     }
