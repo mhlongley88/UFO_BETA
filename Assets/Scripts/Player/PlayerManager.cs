@@ -537,7 +537,7 @@ public class PlayerManager : MonoBehaviour
 
 
             var onlyNonBotPlayer = players.FirstOrDefault(it => !PlayerBot.chosenPlayer.Contains(it.Key)).Value;
-            int[] ranks = new int[3] { 1, 2, 3 };
+            int[] ranks = new int[4] { 0, 1, 2, 3 };
             int rankIndex = 0;
 
             foreach (Player i in activePlayers)
@@ -545,9 +545,11 @@ public class PlayerManager : MonoBehaviour
                 if (nonBotPlayer.Count <= 0)
                 {
                     // Dont change the player rank, let it where he died and dont change the winner bot rank
-                    if (players[i] != onlyNonBotPlayer && players[i].rank != 0)
+                    if (players[i] != onlyNonBotPlayer)
                     {
                         if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
+
+                        if (rankIndex >= ranks.Length) break;
 
                         players[i].rank = ranks[rankIndex++];
                     }

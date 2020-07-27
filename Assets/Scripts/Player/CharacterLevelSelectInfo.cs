@@ -19,7 +19,9 @@ public class CharacterLevelSelectInfo : MonoBehaviour
     [SerializeField]
     private Sprite characterHead;
     [SerializeField]
-    public Color characterLivesCircleTint;
+    private Color characterLivesCircleTint;
+    [SerializeField]
+    private GameObject muzzleFlashVfx;
 
     public string Name { get { return _name; } }
     public Sprite WeaponType { get { return _weaponType; } }
@@ -30,4 +32,6 @@ public class CharacterLevelSelectInfo : MonoBehaviour
 
     public Sprite CharacterHead => characterHead;
     public Color CharacterLivesCircleTint => characterLivesCircleTint;
+
+    public GameObject MuzzleFlashVfx => muzzleFlashVfx;
 }

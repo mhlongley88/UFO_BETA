@@ -245,12 +245,12 @@ public class PlayerController : MonoBehaviour
             if(healthManager.LifeManager != null)
                 healthManager.LifeManager.characterHead.sprite = characterInfo.CharacterHead;
 
-            healthManager.ApplyTintOnCircles(characterInfo.characterLivesCircleTint);
+            healthManager.ApplyTintOnCircles(characterInfo.CharacterLivesCircleTint);
         }
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
 
-        playerIndicator.color = characterInfo.characterLivesCircleTint;
+        playerIndicator.color = characterInfo.CharacterLivesCircleTint;
 
         if(PlayerBot.active && !PlayerBot.chosenPlayer.Contains(player))
         {
