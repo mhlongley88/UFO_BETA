@@ -96,6 +96,7 @@ public class PlayerHealthManager : MonoBehaviour
         }
     }
 
+    float refillElapsed = 0.0f;
 
     public void Awake()
     {
@@ -156,7 +157,8 @@ public class PlayerHealthManager : MonoBehaviour
             //refill health
             if (CurrHealth < maxHealth && Time.time >= lastDamageTime + refillDelay)
             {
-                CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, CurrHealth / maxHealth + Time.deltaTime / refillDuration);
+                refillElapsed += Time.deltaTime;
+                CurrHealth = Mathf.Lerp(CurrHealth, maxHealth, refillElapsed / refillDuration);
             }
 
             var lives = PlayerManager.Instance.players[playerController.player].lives;
@@ -166,6 +168,8 @@ public class PlayerHealthManager : MonoBehaviour
                     healthCounterImages[i].color = Color.clear;
             }
         }
+
+        healthMeter.value = currHealth / maxHealth;
     }
 
     public void ChangeHealth(float healAmount)
@@ -175,7 +179,9 @@ public class PlayerHealthManager : MonoBehaviour
             if (healAmount < 0f)
             {
                 lastDamageTime = Time.time;
+                refillElapsed = 0;
             }
+
             CurrHealth = Mathf.Clamp(CurrHealth + healAmount, minHealth, maxHealth);
             healthMeter.value = currHealth / maxHealth;
 

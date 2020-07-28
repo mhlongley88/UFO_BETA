@@ -542,23 +542,21 @@ public class PlayerManager : MonoBehaviour
 
             foreach (Player i in activePlayers)
             {
-                if (nonBotPlayer.Count <= 0)
-                {
-                    // Dont change the player rank, let it where he died and dont change the winner bot rank
-                    if (players[i] != onlyNonBotPlayer)
-                    {
-                        if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
-
-                        if (rankIndex >= ranks.Length) break;
-
-                        players[i].rank = ranks[rankIndex++];
-                    }
-                }
-
-                Debug.Log("Rank of " + i + " :  " + players[i].rank);
-     
                 if (PlayerBot.active)
                 {
+                    if (nonBotPlayer.Count <= 0)
+                    {
+                        // Dont change the player rank, let it where he died and dont change the winner bot rank
+                        if (players[i] != onlyNonBotPlayer)
+                        {
+                            if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
+
+                            if (rankIndex >= ranks.Length) break;
+
+                            players[i].rank = ranks[rankIndex++];
+                        }
+                    }
+     
                     if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt))
                     {
                         // Check if player died and boss still got health, that means player lost
@@ -609,6 +607,7 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
 
+                Debug.Log("Rank of " + i + " :  " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
