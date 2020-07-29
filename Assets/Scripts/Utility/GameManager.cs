@@ -421,6 +421,9 @@ public class GameManager : MonoBehaviour
 
     public void GameEnds()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         // winnerPlayer = winner;
 
         //winsText.SetActive(true);
