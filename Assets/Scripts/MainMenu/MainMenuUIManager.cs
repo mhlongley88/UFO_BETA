@@ -637,4 +637,9 @@ public class MainMenuUIManager : MonoBehaviour
     {
         SceneManager.LoadScene("LoadingRoom");
     }
+
+    public void SimulateBackFromOnlineMode()
+    {
+        Photon.Pun.PhotonNetwork.LeaveRoom();
+    }
 }

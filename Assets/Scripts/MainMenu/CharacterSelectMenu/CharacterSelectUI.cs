@@ -636,4 +636,35 @@ public class CharacterSelectUI : MonoBehaviour
                 UpdateSelection();
         }
     }
+
+    public void SwitchCharacterMul(float side)
+    {
+        float horizontalInput = side;
+        float keyThreshold = 0.8f;
+
+        if (player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode)
+            keyThreshold = 0.1f;
+
+        if (canCycle)
+        {
+            if (horizontalInput < -keyThreshold)
+            {
+                SyncSelection(false);
+                //pv.RPC("SyncSelection", RpcTarget.All, false);
+
+            }
+            else if (horizontalInput > keyThreshold)
+            {
+                SyncSelection(true);
+                //pv.RPC("SyncSelection", RpcTarget.All, true);
+            }
+        }
+        else
+        {
+            if (horizontalInput > -keyThreshold && horizontalInput < keyThreshold)
+            {
+                canCycle = true;
+            }
+        }
+    }
 }

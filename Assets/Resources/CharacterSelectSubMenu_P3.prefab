@@ -403,6 +403,8 @@ GameObject:
   - component: {fileID: 8988050568288500166}
   - component: {fileID: 8988050568288500184}
   - component: {fileID: 8988050568288500185}
+  - component: {fileID: 6251165304960496611}
+  - component: {fileID: 756494694429448197}
   m_Layer: 0
   m_Name: R_Arrow
   m_TagString: Untagged
@@ -578,6 +580,45 @@ MonoBehaviour:
   optionalRotationMode: 0
   optionalScrambleMode: 0
   optionalString: 
+--- !u!114 &6251165304960496611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8988050568288500167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568edc06a877c074cb50399762a5b9fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8988050568908820542}
+        m_MethodName: SwitchCharacterMul
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &756494694429448197
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8988050568288500167}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 14.080005, y: 20.480005, z: 0.20000014}
+  m_Center: {x: 0.000030517578, y: 0, z: 0.000015258789}
 --- !u!1 &8988050568362059716
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,6 +835,8 @@ GameObject:
   - component: {fileID: 8988050568366011764}
   - component: {fileID: 8988050568366011766}
   - component: {fileID: 8988050568366011767}
+  - component: {fileID: 886951771882483905}
+  - component: {fileID: 2727357965875977750}
   m_Layer: 0
   m_Name: L_Arrow
   m_TagString: Untagged
@@ -969,6 +1012,45 @@ MonoBehaviour:
   optionalRotationMode: 0
   optionalScrambleMode: 0
   optionalString: 
+--- !u!114 &886951771882483905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8988050568366011765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568edc06a877c074cb50399762a5b9fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8988050568908820542}
+        m_MethodName: SwitchCharacterMul
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: -1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &2727357965875977750
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8988050568366011765}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 14.080005, y: 20.480005, z: 0.20000014}
+  m_Center: {x: 0.000030517578, y: 0, z: 0.000015258789}
 --- !u!1 &8988050568383817882
 GameObject:
   m_ObjectHideFlags: 0
@@ -1883,6 +1965,7 @@ MonoBehaviour:
   damageSlider: {fileID: 1750946375262810460}
   rateOfFireSlider: {fileID: 1750946375988437306}
   accuracySlider: {fileID: 1750946376673937228}
+  newVfx: {fileID: 0}
   pv: {fileID: 8988050568908820529}
   isSynced: 0
 --- !u!82 &8988050568908820543
