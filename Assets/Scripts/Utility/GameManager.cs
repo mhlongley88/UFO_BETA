@@ -358,6 +358,9 @@ public class GameManager : MonoBehaviour
 
     public void EndGameAndGoToMenu()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
         {
             SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
@@ -421,8 +424,6 @@ public class GameManager : MonoBehaviour
 
     public void GameEnds()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
 
         // winnerPlayer = winner;
 

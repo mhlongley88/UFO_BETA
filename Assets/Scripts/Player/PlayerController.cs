@@ -169,10 +169,14 @@ public class PlayerController : MonoBehaviour
     public delegate void TakeDamage(float d);
     public TakeDamage OnTakeDamage;
 
+    public float mouseRotationDamp = 16.0f;
     // For Bots
     //[HideInInspector]
     //public bool inputAbduction;
     //bool oldInputAbduction;
+
+    Plane castPlane;
+    Vector3 rayShootPoint;
 
     private void Awake()
     {
@@ -198,6 +202,8 @@ public class PlayerController : MonoBehaviour
             rewirePlayer = ReInput.players.GetPlayer(0);
             rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
         }
+
+        castPlane = new Plane(Vector3.up, transform.position);
     }
 
     IEnumerator Start()
@@ -408,19 +414,29 @@ public class PlayerController : MonoBehaviour
             
             if((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
             {
-               // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
-                
+                // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
+                castPlane.SetNormalAndPosition(Vector3.up, transform.position);
+                float dist;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (castPlane.Raycast(ray, out dist))
+                {
+                    rayShootPoint = ray.GetPoint(dist);
 
-                this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                    Quaternion targetRotation = Quaternion.LookRotation(rayShootPoint - transform.position, Vector3.up);
+                    targetRotation.x = 0;
+                    targetRotation.z = 0;
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.smoothDeltaTime * mouseRotationDamp);
+                }
 
-                Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+                //this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
 
+                //Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
-                Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+                //Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
 
-                float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+                //float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
 
-                transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+                //transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
             }
         }
 
@@ -643,13 +659,26 @@ public class PlayerController : MonoBehaviour
             {
                 // if (rightStickDirection != Vector2.zero)// > 0.1)//rightStickDirection != Vector2.zero)
                 {
-                    Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+                    castPlane.SetNormalAndPosition(Vector3.up, transform.position);
+                    float dist;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (castPlane.Raycast(ray, out dist))
+                    {
+                        rayShootPoint = ray.GetPoint(dist);
 
-                    Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+                        Quaternion targetRotation = Quaternion.LookRotation(rayShootPoint - transform.position, Vector3.up);
+                        targetRotation.x = 0;
+                        targetRotation.z = 0;
+                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.smoothDeltaTime * mouseRotationDamp);
+                    }
 
-                    float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+                    //Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
-                    transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
+                    //Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+                    //float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+                    //transform.rotation = Quaternion.Euler(new Vector3(0f, -angle, 0f));
                 }
             }
         }

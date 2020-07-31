@@ -96,6 +96,9 @@ public class PlayerManager : MonoBehaviour
         {
             instance = this;
         }
+
+        Cursor.lockState = CursorLockMode.Confined;
+      //  Cursor.visible = false;
     }
     public void Start()
     {
