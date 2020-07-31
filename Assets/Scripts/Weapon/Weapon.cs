@@ -24,15 +24,32 @@ public abstract class Weapon : MonoBehaviour
     public int currentAmmo;
 
     public bool canFire = true;
-
+    public float muzzleFlashLifetime = 2.0f;
     protected int firePositionIndex = 0;
 
     public abstract ScriptableWeapon GetCurrentWeaponSetting();
+
+    GameObject muzzleFlash = null;
 
     public virtual void Fire_OtherInstances(Vector3 fireDirection)
     {
 
     }
+
+    public void SetMuzzleFlash(GameObject muzzlePrefab)
+    {
+        muzzleFlash = muzzlePrefab;
+    }
+
+
+    protected void SpawnMuzzleFlash(Vector3 point)
+    {
+        if (muzzleFlash != null)
+        {
+            var muzzleInstance = Instantiate(muzzleFlash, point + transform.forward, muzzleFlash.transform.rotation);
+        }
+    }
+
     //Photon.Pun.PhotonView pv;
     public virtual void Fire()
     {
@@ -51,11 +68,15 @@ public abstract class Weapon : MonoBehaviour
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
+                    var bulletSpawnPoint = transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]);
+                    SpawnMuzzleFlash(bulletSpawnPoint);
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoint, Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
                 {
+                    var bulletSpawnPoint = transform.position;
+           
                     b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position, Quaternion.identity).GetComponent<Bullet>();
                 }
                 b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);

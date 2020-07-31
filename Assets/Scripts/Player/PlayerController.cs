@@ -178,6 +178,8 @@ public class PlayerController : MonoBehaviour
     Plane castPlane;
     Vector3 rayShootPoint;
 
+    CharacterLevelSelectInfo characterInfo;
+
     private void Awake()
     {
         if (this.GetComponent<PhotonView>())
@@ -241,7 +243,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        var characterInfo = playerModel.GetComponent<CharacterLevelSelectInfo>();
+        characterInfo = playerModel.GetComponent<CharacterLevelSelectInfo>();
 
        // if (!pawn)
         {
@@ -255,6 +257,9 @@ public class PlayerController : MonoBehaviour
         }
         normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
         superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
+
+        normalWeapon.SetMuzzleFlash(characterInfo.MuzzleFlashVfx);
+        superWeapon.SetMuzzleFlash(characterInfo.MuzzleFlashVfx);
 
         playerIndicator.color = characterInfo.CharacterLivesCircleTint;
 
@@ -544,6 +549,7 @@ public class PlayerController : MonoBehaviour
         if (pv.IsMine)
         {
             Debug.Log(currentWeapon.name);
+
             currentWeapon.Fire();
         }
         //else if(currentWeapon.canFire && currentWeapon.currentAmmo > 0)

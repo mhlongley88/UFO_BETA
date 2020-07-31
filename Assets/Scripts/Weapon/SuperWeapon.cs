@@ -177,12 +177,16 @@ public class SuperWeapon : Weapon
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
+                    var bulletSpawnPoint = transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]);
+                    SpawnMuzzleFlash(bulletSpawnPoint);
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoint, Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
                 {
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position, Quaternion.identity).GetComponent<Bullet>();
+                    var bulletSpawnPoint = transform.position;
+                    SpawnMuzzleFlash(bulletSpawnPoint);
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoint, Quaternion.identity).GetComponent<Bullet>();
                 }
                 b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
             }
@@ -234,12 +238,16 @@ public class SuperWeapon : Weapon
                         firePositionIndex = 0;
                     }
 
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]), Quaternion.identity).GetComponent<Bullet>();
+                    var bulletSpawnPoint = transform.TransformPoint(GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex]);
+                    SpawnMuzzleFlash(bulletSpawnPoint);
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoint, Quaternion.identity).GetComponent<Bullet>();
                     firePositionIndex++;
                 }
                 else
                 {
-                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position, Quaternion.identity).GetComponent<Bullet>();
+                    var bulletSpawnPoint = transform.position;
+                    SpawnMuzzleFlash(bulletSpawnPoint);
+                    b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoint, Quaternion.identity).GetComponent<Bullet>();
                 }
                 b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * shootDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
             }
