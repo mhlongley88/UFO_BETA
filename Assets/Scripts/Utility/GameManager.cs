@@ -282,14 +282,14 @@ public class GameManager : MonoBehaviour
 
                 if (paused)
                 {
-                    if (isFromPauseToMenuDown)
-                    {
-                        TogglePause();
+                    //if (isFromPauseToMenuDown)
+                    //{
+                    //    TogglePause();
 
-                        SceneManager.LoadScene("MainMenu");
-                        gameOver = false;
-                        canAdvance = false;
-                    }
+                    //    SceneManager.LoadScene("MainMenu");
+                    //    gameOver = false;
+                    //    canAdvance = false;
+                    //}
                 }
             }
         }
