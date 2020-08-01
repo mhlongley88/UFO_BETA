@@ -52,72 +52,80 @@ public class CharacterSelectUI : MonoBehaviour
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
         set 
         {
-            int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
-
-            if(value >= GameManager.Instance.Characters.Length)
+            if (!LobbyConnectionHandler.instance.IsMultiplayerMode || (pv && pv.IsMine))
             {
-                _selectedCharacterIndex = 0;
-                return;
-            }
+                int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
 
-            if(value < 0)
-            {
-                for(int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
+                if (value >= GameManager.Instance.Characters.Length)
                 {
-                    if(wonMatches >= GameManager.Instance.Characters[e].matchThreshold || CharacterUnlockFromProgression.IsUnlocked(e))
-                    {
-                        _selectedCharacterIndex = e;
-                        break;
-                    }
+                    _selectedCharacterIndex = 0;
+                    return;
                 }
 
-                return;
-            }
-
-            int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
-
-            if(wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(value))
-                _selectedCharacterIndex = value;
-            else 
-            {
-                if(value > _selectedCharacterIndex)
+                if (value < 0)
                 {
-                    for(int e = value; e < GameManager.Instance.Characters.Length; e++)
+                    for (int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
                     {
-                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
-                        if(wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+                        if (wonMatches >= GameManager.Instance.Characters[e].matchThreshold || CharacterUnlockFromProgression.IsUnlocked(e))
                         {
                             _selectedCharacterIndex = e;
                             break;
                         }
-                        else 
-                        {
-                            if(e == GameManager.Instance.Characters.Length - 1)
-                            {
-                                e = -1;
-                            }
-                        }
                     }
+
+                    return;
                 }
+
+
+                int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
+
+                if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(value))
+                    _selectedCharacterIndex = value;
                 else
                 {
-                    for (int e = value; e >= 0; e--)
+                    if (value > _selectedCharacterIndex)
                     {
-                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
-                        if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+                        for (int e = value; e < GameManager.Instance.Characters.Length; e++)
                         {
-                            _selectedCharacterIndex = e;
-                            break;
-                        }
-                        else
-                        {
-                            if (e == GameManager.Instance.Characters.Length - 1)
+                            characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+                            if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
                             {
-                                e = -1;
+                                _selectedCharacterIndex = e;
+                                break;
+                            }
+                            else
+                            {
+                                if (e == GameManager.Instance.Characters.Length - 1)
+                                {
+                                    e = -1;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int e = value; e >= 0; e--)
+                        {
+                            characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+                            if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+                            {
+                                _selectedCharacterIndex = e;
+                                break;
+                            }
+                            else
+                            {
+                                if (e == GameManager.Instance.Characters.Length - 1)
+                                {
+                                    e = -1;
+                                }
                             }
                         }
                     }
                 }
+            }
+            else
+            {
+                _selectedCharacterIndex = value;
             }
         }
     }
@@ -199,6 +207,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             Destroy(characterModelContainer.transform.GetChild(i).gameObject);
         }
+
         selectedCharacterIndex = Mathf.Abs(index) % GameManager.Instance.CharactersMul.Length;
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.SetParent(characterModelContainer);
@@ -239,7 +248,7 @@ public class CharacterSelectUI : MonoBehaviour
         else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
 
         //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
-
+        
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
@@ -634,37 +643,6 @@ public class CharacterSelectUI : MonoBehaviour
             //    Destroy(this.gameObject);
             else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
                 UpdateSelection();
-        }
-    }
-
-    public void SwitchCharacterMul(float side)
-    {
-        float horizontalInput = side;
-        float keyThreshold = 0.8f;
-
-        if (player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode)
-            keyThreshold = 0.1f;
-
-        if (canCycle)
-        {
-            if (horizontalInput < -keyThreshold)
-            {
-                SyncSelection(false);
-                //pv.RPC("SyncSelection", RpcTarget.All, false);
-
-            }
-            else if (horizontalInput > keyThreshold)
-            {
-                SyncSelection(true);
-                //pv.RPC("SyncSelection", RpcTarget.All, true);
-            }
-        }
-        else
-        {
-            if (horizontalInput > -keyThreshold && horizontalInput < keyThreshold)
-            {
-                canCycle = true;
-            }
         }
     }
 }
