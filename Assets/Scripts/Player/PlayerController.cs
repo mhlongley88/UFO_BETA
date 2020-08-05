@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            rewirePlayer = ReInput.players.GetPlayer(0);
+            rewirePlayer = ReInput.players.GetPlayer(3);
             rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
         }
     }

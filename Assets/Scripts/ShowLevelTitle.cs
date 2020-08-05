@@ -55,7 +55,7 @@ public class ShowLevelTitle : MonoBehaviour
             OnGetHovered.Invoke();
             //levelTitle.GetComponent<DOTweenAnimation>().DOPlayById("Appear");
             levelTitle.SetActive(true);
-            Debug.Log("hit!");
+            Debug.Log(levelNum + "TriggerEnter");
             levelStaticInt = levelNum;
             myAudioSource.PlayOneShot(levelHoverSFX);
         }

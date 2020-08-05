@@ -251,10 +251,7 @@ public class PlayerManager : MonoBehaviour
         //Debug.Log("Spawning:  " + GameManager.Instance.GetActivePlayersMul(true)[0]);
         foreach (Player i in GameManager.Instance.GetActivePlayersMul(true))
         {
-            Debug.Log("Spawning11" + playersMul[i].prefab.name);
-            
-
-            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(playersMul[i].prefab.name, playersMul[i].spawnPoint.position, Quaternion.identity);
+            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(players[i].prefab.name, players[i].spawnPoint.position, Quaternion.identity);
            // temp.tag = "Player";
             //temp.GetComponent<PlayerController>().enabled = true;
             temp.transform.SetParent(players[i].spawnPoint);
@@ -478,7 +475,7 @@ public class PlayerManager : MonoBehaviour
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
                 Debug.Log("Rank of " + i + " :  " + players[i].rank);
             }
-
+            //Uncomment this
             UnlockSystem.instance.SaveOnlineMatchesCompleted();
 
             GameManager.Instance.GameEnds();

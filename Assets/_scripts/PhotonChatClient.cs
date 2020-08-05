@@ -11,7 +11,7 @@ public class PhotonChatClient : MonoBehaviour, IChatClientListener
     void Start()
     {
         instance = this;
-        //chatClient = new ChatClient(this);
+        chatClient = new ChatClient(this);
         //// Set your favourite region. "EU", "US", and "ASIA" are currently supported.
         //chatClient.ChatRegion = "ASIA";
         //chatClient.Connect(chatAppId, chatAppVersion, new AuthenticationValues(userID));
@@ -22,7 +22,7 @@ public class PhotonChatClient : MonoBehaviour, IChatClientListener
     }
     public void Connect(string chatAppId, string chatAppVersion, string userID)
     {
-        chatClient = new ChatClient(this);
+        //chatClient = new ChatClient(this);
         myUserId = userID;
         // Set your favourite region. "EU", "US", and "ASIA" are currently supported.
         chatClient.ChatRegion = "ASIA";

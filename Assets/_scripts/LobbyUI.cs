@@ -107,6 +107,9 @@ public class LobbyUI : MonoBehaviour
         LobbyConnectionHandler.instance.IsMultiplayerMode = false;
     }
 
-    
+    public void GetSteamFriends()
+    {
+        SteamScript.instance.GetUserFriends();
+    }
 
 }

@@ -34,7 +34,7 @@ namespace Rewired.Demos {
         private int selectedControllerId = 0;
         private List<Row> rows = new List<Row>();
 
-        private Player player { get { return ReInput.players.GetPlayer(0); } }
+        private Player player { get { return ReInput.players.GetPlayer(3); } }
         private ControllerMap controllerMap {
             get {
                 if(controller == null) return null;

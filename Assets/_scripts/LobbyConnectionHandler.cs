@@ -9,7 +9,7 @@ using Steamworks;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PlayFab;
 using Rewired.Utils.Platforms.Windows;
-
+using Rewired;
 public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks, IConnectionCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 {
     public static LobbyConnectionHandler instance;
@@ -18,7 +18,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public PhotonView pv;
     public Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
 
-    bool showGUI = false;
+    public bool showGUI = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -171,7 +171,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public Player myPlayerMul;
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined Room" + PhotonNetwork.CurrentRoom.Name);
+        //Debug.Log("Joined Room" + PhotonNetwork.CurrentRoom.Name);
         //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         //{
         //    SceneManager.LoadScene("LoadingRoom");
@@ -180,7 +180,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
        
             MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
 
-        if(isPrivateMatch)
+        //if(isPrivateMatch)
             LobbyUI.instance.FriendsListButton.SetActive(true);
         RefreshCharacterSelectMul();
 
@@ -346,11 +346,15 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     }
 
+
     public override void OnConnectedToMaster()
     {
         // MainMenuUIManager.Instance.MainPanel.SetActive(false);
 
         // Maybe the player was reconnected after a sudden disconnection from the internet
+
+        ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
+
         bool shouldBounceBackToMenu = false;
 
         if (IsMultiplayerMode) // it entered the multiplayer mode on character selection

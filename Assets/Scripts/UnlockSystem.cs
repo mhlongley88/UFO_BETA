@@ -28,6 +28,9 @@ public class UnlockSystem : MonoBehaviour
     int matchesCompleted = 0;
     public int MatchesCompleted => matchesCompleted;
 
+    public bool EnableDebugging;
+    public int TempMatchesCompleted;
+
     const string BattlesCompletedPrefsKey = "UFOBattlesCompleted";
     const string OnlineBattlesCompletedPrefsKey = "UFOOnlineBattlesCompleted";
 
@@ -223,6 +226,11 @@ public class UnlockSystem : MonoBehaviour
 
     public int GetMatchesCompleted()
     {
+        if (EnableDebugging)
+        {
+            return TempMatchesCompleted;
+        }
         return matchesCompleted;
+        //return 300;
     }
 }
