@@ -178,11 +178,41 @@ public class CharacterSelectUI : MonoBehaviour
         else
         {
             pv = this.GetComponent<PhotonView>();
-            if(pv.IsMine)
+
+            int spawnIndex = 0;
+            int counter = 0;
+            foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+            {
+                if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+                {
+                    spawnIndex = counter;
+                    break;
+                }
+                counter++;
+            }
+            //Debug.Log(spawnIndex + "?");
+            //rewirePlayer = ReInput.players.GetPlayer(spawnIndex);
+            //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+
+            if (pv.IsMine)
                 pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
 
-            rewirePlayer = ReInput.players.GetPlayer(0);
-            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+            //foreach()
+            //rewirePlayer.
+            //Assign Controllers for Online Match. Keyboard and all joysticks control current player.
+            foreach (Rewired.Player player in ReInput.players.AllPlayers)
+            {
+                player.controllers.ClearControllersOfType(ControllerType.Joystick);
+            }
+
+            rewirePlayer = ReInput.players.GetPlayer(3);
+            //rewirePlayer.controllers.hasKeyboard = true;
+            //rewirePlayer.controllers.hasMouse = true;
+            foreach (Rewired.Joystick joystick in ReInput.controllers.Joysticks)
+            {
+                rewirePlayer.controllers.AddController(joystick, true);
+            }
+            //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
             //SpawnMultiplayer();
         }
     }
