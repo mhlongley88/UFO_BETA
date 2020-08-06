@@ -24,7 +24,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Rewired;
 public class ControllerConnectionManager : MonoBehaviour
 {
     // Create a singleton that can be referenced from any script ( E.g. "ControllerConnectionManager.instance.StartChecking();" )
@@ -45,6 +45,7 @@ public class ControllerConnectionManager : MonoBehaviour
 
     public void Awake()
     {
+       // instance = this;
  
       //  DontDestroyOnLoad(this);
     }
@@ -68,6 +69,81 @@ public class ControllerConnectionManager : MonoBehaviour
             // Start the coroutine so that it runs every UpdateFrequencyInSeconds seconds
             StartCoroutine("CheckConnections");
         }
+        // Listen for controller connection events
+        ReInput.ControllerConnectedEvent += OnControllerConnected;
+
+        // Assign each Joystick to a Player initially
+        AssignAllJoySticksToPlayers();
+    }
+
+    public void AssignAllJoySticksToPlayers()
+    {
+        
+        
+            foreach (Rewired.Player player in ReInput.players.AllPlayers)
+            {
+                player.controllers.ClearControllersOfType(ControllerType.Joystick);//.ClearAllControllers();
+            }
+        int playerIndex = 0;
+        Debug.Log("Length Joytick Array" + ReInput.controllers.Joysticks.Count);
+            foreach (Joystick j in ReInput.controllers.Joysticks)
+            {
+                //if (ReInput.controllers.IsJoystickAssigned(j)) continue; // Joystick is already assigned
+
+            // Assign Joystick to first Player that doesn't have any assigned
+            //ReInput.players.AllPlayers[3].controllers.hasKeyboard = false;
+            //ReInput.players.AllPlayers[3].controllers.hasMouse = false;
+            //AssignJoystickToNextOpenPlayer(j);
+            if(playerIndex < ReInput.players.allPlayerCount - 1)
+            {
+                Debug.Log("Controller Testing" + j + "" + playerIndex);
+                ReInput.players.GetPlayer(playerIndex).controllers.AddController(j, true);
+                Debug.Log("Controller test?????????????????????????????" + j);
+            }
+            else
+            {
+                break;
+            }
+            }
+
+
+        //ReInput.players.AllPlayers[3].controllers.hasKeyboard = true;
+        //ReInput.players.AllPlayers[3].controllers.hasMouse = true;
+
+
+    }
+    // This will be called when a controller is connected
+    void OnControllerConnected(ControllerStatusChangedEventArgs args)
+    {
+        if (args.controllerType != ControllerType.Joystick) return; // skip if this isn't a Joystick
+
+        // Assign Joystick to first Player that doesn't have any assigned
+        
+            AssignJoystickToNextOpenPlayer(ReInput.controllers.GetJoystick(args.controllerId));
+
+        
+    }
+
+    void AssignJoystickToNextOpenPlayer(Joystick j)
+    {
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            Rewired.Player rewirePlayer;
+            rewirePlayer = ReInput.players.GetPlayer(3);
+            rewirePlayer.controllers.AddController(j, true);Debug.Log("Adding Mul");
+        }
+        else
+        {
+            foreach (Rewired.Player p in ReInput.players.Players)
+            {
+                Debug.Log("Adding Off?????????????");
+                if (p.controllers.joystickCount > 0) continue; // player already has a joystick
+                p.controllers.AddController(j, true); // assign joystick to player
+                Debug.Log("Adding Off");
+                return;
+            }
+        }
+        
     }
 
     private IEnumerator CheckConnections()
@@ -85,7 +161,7 @@ public class ControllerConnectionManager : MonoBehaviour
             for (int i = 0; i < names.Length; i++)
             {
                 // If a change in the list was detected, set changed to true and add its index to the index List
-                if (oldnames[i] != names[i])
+                if (oldnames[i] != null && oldnames[i] != names[i])
                 {
                     changed = true;
                     index.Add(i);
@@ -97,6 +173,10 @@ public class ControllerConnectionManager : MonoBehaviour
                 ControllerChangeDetected(index);
 
             oldnames = names;
+
+
+
+
 
             // Wait for UpdateFrequencyInSeconds seconds before running CheckConnections() again
             yield return new WaitForSeconds(UpdateFrequencyInSeconds);
@@ -149,15 +229,18 @@ public class ControllerConnectionManager : MonoBehaviour
             else
             {
                 #region Debug Messages to console
-                if (oldnames[i].Length == 19)
-                    Debug.LogWarning("PS4 Controller disconnected!");
-                else if (oldnames[i].Length == 33)
-                    Debug.LogWarning("Xbox Controller disconnected!");
-                else
-                    Debug.LogWarning("Controller disconnected!");
-                #endregion
-                GM.TogglePause();
-                Cursor.visible = false;
+                if (oldnames != null && oldnames[i] != null)
+                {
+                    if (oldnames[i].Length == 19)
+                        Debug.LogWarning("PS4 Controller disconnected!");
+                    else if (oldnames[i].Length == 33)
+                        Debug.LogWarning("Xbox Controller disconnected!");
+                    else
+                        Debug.LogWarning("Controller disconnected!");
+                    #endregion
+                    GM.TogglePause();
+                    Cursor.visible = false;
+                }
                 // Place code specific for disconnections here (E.g. Automatically pause the game):
                 // ...
 

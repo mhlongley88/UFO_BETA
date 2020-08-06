@@ -22,8 +22,8 @@ namespace Rewired.Demos {
         private void OnEnable() {
             if(!ReInput.isReady) return;
 
-            Player player = ReInput.players.GetPlayer(0);
-            if(player == null) return;
+            Player player = ReInput.players.GetPlayer(3);
+            if (player == null) return;
 
             // Subscribe to input events
             player.AddInputEventDelegate(OnMoveReceivedX, UpdateLoopType.Update, InputActionEventType.AxisActive, "Horizontal");
@@ -41,8 +41,8 @@ namespace Rewired.Demos {
         private void OnDisable() {
             if(!ReInput.isReady) return;
 
-            Player player = ReInput.players.GetPlayer(0);
-            if(player == null) return;
+            Player player = ReInput.players.GetPlayer(3);
+            if (player == null) return;
 
             // Unsubscribe from input events
             player.RemoveInputEventDelegate(OnMoveReceivedX);

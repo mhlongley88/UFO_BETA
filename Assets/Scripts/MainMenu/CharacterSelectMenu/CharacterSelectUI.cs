@@ -539,7 +539,15 @@ public class CharacterSelectUI : MonoBehaviour
         readyObject.SetActive(true);
         selectState = CharacterSelectState.SelectingCharacter;
     }
+    public void EnableCharacterSelectSplashScreen()
+    {
+        pressStart.SetActive(true);
+        charSelect.SetActive(false);
 
+        selectState = CharacterSelectState.WaitingForPlayer;
+        GameManager.Instance.RemovePlayerFromGame(player);
+        MainMenuUIManager.Instance.selectingCharacters = false;
+    }
     private void Update()
     {
         //pStatsInfo.SetActive(charSelect.activeInHierarchy);

@@ -133,6 +133,8 @@ public class MainMenuUIManager : MonoBehaviour
         }
     }
 
+    
+
     private bool CharacterSelectPlayersReady()
     {
         bool ready = false;
@@ -291,6 +293,7 @@ public class MainMenuUIManager : MonoBehaviour
                             }
                         }
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        //Debug.Log("LevelSelect");
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             if (UnlockSystem.instance.MatchesCompleted <= 0)
@@ -387,6 +390,11 @@ public class MainMenuUIManager : MonoBehaviour
 
         //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y,
         //                          cameraMoveObject.transform.position.z - 24f);
+        //Rewired.Player p;
+        //p.controllers.ClearAllControllers();
+        //rewirePlayer = ReInput.players.GetPlayer(3);
+
+        
 
         SetCameraView(vCam3CharacterSelect);
 
@@ -440,7 +448,9 @@ public class MainMenuUIManager : MonoBehaviour
                 }
 
                 rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
-
+                //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+               // Debug.Log("Rewired" + rewirePlayerId);
+                //rewirePlayer = ReInput.players.GetPlayer(3);
                 switch (currentMenu)
                 {
                     //case Menu.Splash:
@@ -460,7 +470,14 @@ public class MainMenuUIManager : MonoBehaviour
                         if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && rewirePlayer.GetButtonDown("Back"))
                         {
                           //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
-                            currentMenu = Menu.Splash;
+
+                            foreach(CharacterSelectUI characterSelect in characterSelectMenus)
+                            {
+                                characterSelect.EnableCharacterSelectSplashScreen();
+
+                            }
+
+                            //currentMenu = Menu.Splash;
                            
                             characterSelect.SetActive(false);
 
@@ -557,7 +574,8 @@ public class MainMenuUIManager : MonoBehaviour
                     case Player.Four: rewirePlayerId = 3; break;
                 }
 
-                rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+                //rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+                rewirePlayer = ReInput.players.GetPlayer(3);
 
                 switch (currentMenu)
                 {
@@ -613,6 +631,7 @@ public class MainMenuUIManager : MonoBehaviour
                             //}
                         }
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
+                        Debug.Log("LevelSelect?" + ShowLevelTitle.levelStaticInt);
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             //SceneManager.LoadScene("LoadingRoom");
@@ -636,10 +655,5 @@ public class MainMenuUIManager : MonoBehaviour
     public void LoadRoom()
     {
         SceneManager.LoadScene("LoadingRoom");
-    }
-
-    public void SimulateBackFromOnlineMode()
-    {
-        Photon.Pun.PhotonNetwork.LeaveRoom();
     }
 }
