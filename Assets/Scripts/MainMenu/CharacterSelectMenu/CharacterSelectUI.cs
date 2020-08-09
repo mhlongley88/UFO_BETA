@@ -219,9 +219,13 @@ public class CharacterSelectUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        // (NOTE: Elvis) I commented this because after getting back from the online menu, I couldnt move around the menu anymore with the keyboard
+        // because disabling are controllers maps removes the controllers from the player's input, nothing works anymore.
+        // If there is another reason to use this command let me know so I can work around this, but entering online mode and going back without going to 
+        // level selection will disable all controls for the player, including keyboard.
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            rewirePlayer.controllers.maps.SetAllMapsEnabled(false);
+            //rewirePlayer.controllers.maps.SetAllMapsEnabled(false);
         }
     }
 
@@ -681,6 +685,37 @@ public class CharacterSelectUI : MonoBehaviour
             //    Destroy(this.gameObject);
             else if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
                 UpdateSelection();
+        }
+    }
+
+    public void SwitchCharacterMul(float side)
+    {
+        float horizontalInput = side;
+        float keyThreshold = 0.8f;
+
+        if (player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode)
+            keyThreshold = 0.1f;
+
+        if (canCycle)
+        {
+            if (horizontalInput < -keyThreshold)
+            {
+                SyncSelection(false);
+                //pv.RPC("SyncSelection", RpcTarget.All, false);
+
+            }
+            else if (horizontalInput > keyThreshold)
+            {
+                SyncSelection(true);
+                //pv.RPC("SyncSelection", RpcTarget.All, true);
+            }
+        }
+        else
+        {
+            if (horizontalInput > -keyThreshold && horizontalInput < keyThreshold)
+            {
+                canCycle = true;
+            }
         }
     }
 }
