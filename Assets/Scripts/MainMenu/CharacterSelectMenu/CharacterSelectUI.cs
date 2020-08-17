@@ -690,6 +690,8 @@ public class CharacterSelectUI : MonoBehaviour
 
     public void SwitchCharacterMul(float side)
     {
+        if (!pv.IsMine) return;
+
         float horizontalInput = side;
         float keyThreshold = 0.8f;
 
