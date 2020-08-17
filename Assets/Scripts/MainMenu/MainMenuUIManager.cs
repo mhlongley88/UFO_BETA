@@ -201,19 +201,23 @@ public class MainMenuUIManager : MonoBehaviour
         mainTitleStars.SetActive(mainTitle.activeInHierarchy);
 
         levelInt = ShowLevelTitle.levelStaticInt;
-        if (isPC)
+        //This wasdupl
+        if (isPC) 
         {
+            //If isPC = true,
             // Debug.Log("PC_______");
             //PC_Controls();
             ConsoleControls();
         }
-        else if(isConsole)
+        else if (isConsole)
         {
+            //If isPC = false, There's no difference at all! Both conditions are calling consolecontrols. 
+            //You can leave it as it is :)
             ConsoleControls();
         }
         // if (inCharSelect && CharacterSelect.instance)
         // CharacterSelect.instance.BeginCharacterSelect();
-        
+
     }
 
     void PC_Controls()

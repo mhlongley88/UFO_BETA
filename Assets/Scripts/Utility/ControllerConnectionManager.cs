@@ -1,12 +1,12 @@
 ﻿/// <summary>
 /// Created 03/10/19 by Spectralle from Fiverr.
-/// 
+///
 /// This script checks for changes in the list of connected control devices every UpdateFrequencyInSeconds seconds.
-/// 
+///
 /// NOTE:
 /// If you set Time.timescale to ZERO when a controller change is detected, it WILL stop checking, making the script non-functional in game.
 /// So you'll have to work out an alternative if you need that capability.
-/// 
+///
 /// ADDITIONAL NOTE:
 /// I have limited experience working with controllers in Unity's input manager, so it is likely this script could be much better.
 /// Given the requirements you asked of me, I would recommend upgrading to a more complete input system when possible,
@@ -15,11 +15,10 @@
 /// 1 Unity's new Input System, coming out soon.
 /// 2 InControl, by Gallant Games (Paid asset).
 /// 3 Rewired, by Guavaman Enterprises (More expensive paid asset).
-/// 
+///
 /// This script may suit you for now, but I wouldn't recommend it as a long-term solution.
-/// 
-/// </summary> 
-
+///
+/// </summary>
 
 using System.Collections;
 using System.Collections.Generic;
@@ -45,9 +44,9 @@ public class ControllerConnectionManager : MonoBehaviour
 
     public void Awake()
     {
-       // instance = this;
- 
-      //  DontDestroyOnLoad(this);
+        // instance = this;
+
+        // DontDestroyOnLoad(this);
     }
 
     private void Start()
@@ -78,38 +77,33 @@ public class ControllerConnectionManager : MonoBehaviour
 
     public void AssignAllJoySticksToPlayers()
     {
-        
-        
-            foreach (Rewired.Player player in ReInput.players.AllPlayers)
-            {
-                player.controllers.ClearControllersOfType(ControllerType.Joystick);//.ClearAllControllers();
-            }
+
+        foreach (Rewired.Player player in ReInput.players.AllPlayers)
+        {
+            player.controllers.ClearControllersOfType(ControllerType.Joystick);//.ClearAllControllers();
+        }
         int playerIndex = 0;
-        Debug.Log("Length Joytick Array" + ReInput.controllers.Joysticks.Count);
-            foreach (Joystick j in ReInput.controllers.Joysticks)
-            {
-                //if (ReInput.controllers.IsJoystickAssigned(j)) continue; // Joystick is already assigned
+        foreach (Joystick j in ReInput.controllers.Joysticks)
+        {
+            //if (ReInput.controllers.IsJoystickAssigned(j)) continue; // Joystick is already assigned
 
             // Assign Joystick to first Player that doesn't have any assigned
             //ReInput.players.AllPlayers[3].controllers.hasKeyboard = false;
             //ReInput.players.AllPlayers[3].controllers.hasMouse = false;
             //AssignJoystickToNextOpenPlayer(j);
-            if(playerIndex < ReInput.players.allPlayerCount - 1)
+            if (playerIndex < ReInput.players.allPlayerCount - 1)
             {
                 Debug.Log("Controller Testing" + j + "" + playerIndex);
                 ReInput.players.GetPlayer(playerIndex).controllers.AddController(j, true);
-                Debug.Log("Controller test?????????????????????????????" + j);
             }
             else
             {
                 break;
             }
-            }
-
+        }
 
         //ReInput.players.AllPlayers[3].controllers.hasKeyboard = true;
         //ReInput.players.AllPlayers[3].controllers.hasMouse = true;
-
 
     }
     // This will be called when a controller is connected
@@ -118,10 +112,9 @@ public class ControllerConnectionManager : MonoBehaviour
         if (args.controllerType != ControllerType.Joystick) return; // skip if this isn't a Joystick
 
         // Assign Joystick to first Player that doesn't have any assigned
-        
-            AssignJoystickToNextOpenPlayer(ReInput.controllers.GetJoystick(args.controllerId));
 
-        
+        AssignJoystickToNextOpenPlayer(ReInput.controllers.GetJoystick(args.controllerId));
+
     }
 
     void AssignJoystickToNextOpenPlayer(Joystick j)
@@ -130,7 +123,7 @@ public class ControllerConnectionManager : MonoBehaviour
         {
             Rewired.Player rewirePlayer;
             rewirePlayer = ReInput.players.GetPlayer(3);
-            rewirePlayer.controllers.AddController(j, true);Debug.Log("Adding Mul");
+            rewirePlayer.controllers.AddController(j, true); Debug.Log("Adding Mul");
         }
         else
         {
@@ -143,7 +136,7 @@ public class ControllerConnectionManager : MonoBehaviour
                 return;
             }
         }
-        
+
     }
 
     private IEnumerator CheckConnections()
@@ -167,16 +160,12 @@ public class ControllerConnectionManager : MonoBehaviour
                     index.Add(i);
                 }
             }
-            
+
             // If a change occured, run the ControllerChangeDetected function to do something depending on the change type
             if (changed)
                 ControllerChangeDetected(index);
 
             oldnames = names;
-
-
-
-
 
             // Wait for UpdateFrequencyInSeconds seconds before running CheckConnections() again
             yield return new WaitForSeconds(UpdateFrequencyInSeconds);
@@ -252,9 +241,6 @@ public class ControllerConnectionManager : MonoBehaviour
         // Place code for any controller changes (regardless of connect or disconnect) here:
         // ...
     }
-
-
-
 
     // PUBLIC METHODS THAT CAN BE CALLED FROM OTHER SCRIPTS IF NEEDED DURING RUNTIME
     public void StartChecking()

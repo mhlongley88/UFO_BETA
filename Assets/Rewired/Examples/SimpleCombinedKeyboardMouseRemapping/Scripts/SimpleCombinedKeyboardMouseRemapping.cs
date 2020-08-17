@@ -43,7 +43,7 @@ namespace Rewired.Demos {
         private List<Row> rows = new List<Row>();
         private TargetMapping _replaceTargetMapping;
 
-        private Player player { get { return ReInput.players.GetPlayer(3); } }
+        private Player player { get { return ReInput.players.GetPlayer(0); } }
 
         private void OnEnable() {
             if(!ReInput.isReady) return; // don't run if Rewired hasn't been initialized

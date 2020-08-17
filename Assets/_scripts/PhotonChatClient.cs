@@ -18,6 +18,7 @@ public class PhotonChatClient : MonoBehaviour, IChatClientListener
     }
     void Update()
     {
+        if(chatClient != null)
         chatClient.Service();
     }
     public void Connect(string chatAppId, string chatAppVersion, string userID)
