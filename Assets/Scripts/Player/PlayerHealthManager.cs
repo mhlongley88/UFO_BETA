@@ -167,9 +167,9 @@ public class PlayerHealthManager : MonoBehaviour
                 if (i >= lives)
                     healthCounterImages[i].color = Color.clear;
             }
+        healthMeter.value = currHealth / maxHealth;
         }
 
-        healthMeter.value = currHealth / maxHealth;
     }
 
     public void ChangeHealth(float healAmount)
