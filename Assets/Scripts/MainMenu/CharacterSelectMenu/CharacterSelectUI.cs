@@ -287,10 +287,9 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
 
-        if((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0) ||
-            CharacterUnlockFromProgression.IsUnlocked(selectedCharacterIndex))
+        if((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0))
         {
-            if(UnlockSystem.instance.recentlyUnlockedCharacters.Contains(GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold))
+            if(UnlockSystem.instance.recentlyUnlockedCharacters.Contains(selectedCharacterIndex))
                 newVfx.SetActive(true);
             else
                 newVfx.SetActive(false);

@@ -36,7 +36,7 @@ public class CharacterUnlockFromProgression : MonoBehaviour
             if (lastSelected >= 0 && lastSelected < GameManager.Instance.Characters.Length)
             {
                 UserPrefs.instance.SetInt(keyCharacterUnlock + lastSelected, 1);
-                UnlockSystem.instance.SetUnlockCharacterFromProgression(GameManager.Instance.Characters[lastSelected].matchThreshold);
+                UnlockSystem.instance.SetUnlockCharacterFromProgression(lastSelected);
             }
             else
             {

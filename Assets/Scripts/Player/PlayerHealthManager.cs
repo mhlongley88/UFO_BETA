@@ -174,7 +174,7 @@ public class PlayerHealthManager : MonoBehaviour
 
     public void ChangeHealth(float healAmount)
     {
-        if (!invincible && !LevelUIManager.Instance.allInvincible)
+        if (!invincible && !LevelUIManager.Instance.allInvincible && !playerController.pawn)
         {
             if (healAmount < 0f)
             {

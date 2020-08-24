@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -34,6 +36,8 @@ public class UnlockSystem : MonoBehaviour
     int onlineMatchesCompleted = 0;
     public int OnlineMatchesCompleted => onlineMatchesCompleted;
 
+    Dictionary<int, List<int>> allLevelNums = new Dictionary<int, List<int>>();
+
     private void Awake()
     {
         if(instance)
@@ -57,13 +61,21 @@ public class UnlockSystem : MonoBehaviour
     {
         for(int i = 0; i < GameManager.Instance.Characters.Length; i++)
         {
-            if(GameManager.Instance.Characters[i].matchThreshold > matchesCompleted)
-                allMatchesThresholdForCharacters.Add(GameManager.Instance.Characters[i].matchThreshold);
+            if (GameManager.Instance.Characters[i].matchThreshold > matchesCompleted)
+            {
+                if(!CharacterUnlockFromProgression.IsUnlocked(i))
+                    allMatchesThresholdForCharacters.Add(GameManager.Instance.Characters[i].matchThreshold);
+            }
         }
 
         for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
         {
-            if(LevelUnlockCheck.All[i].matchThreshold > matchesCompleted)
+            if(!allLevelNums.ContainsKey(LevelUnlockCheck.All[i].matchThreshold))
+                allLevelNums.Add(LevelUnlockCheck.All[i].matchThreshold, new List<int>() { LevelUnlockCheck.All[i].levelTitle.levelNum });
+            else
+                allLevelNums[LevelUnlockCheck.All[i].matchThreshold].Add(LevelUnlockCheck.All[i].levelTitle.levelNum);
+
+            if (LevelUnlockCheck.All[i].matchThreshold > matchesCompleted && !LevelUnlockFromProgression.IsUnlocked(LevelUnlockCheck.All[i].levelTitle.levelNum))
                 allMatchesThresholdForLevels.Add(LevelUnlockCheck.All[i].matchThreshold);
         }
 
@@ -168,18 +180,39 @@ public class UnlockSystem : MonoBehaviour
 
         if (HasThresholdForCharacter())
         {
-            unlockedCharacterNotification.Add(matchesCompleted);
-            unlockedCharacterNotificationMM.Add(matchesCompleted);
+            var allUnlockedOnes = Array.FindAll(GameManager.Instance.Characters, it => it.matchThreshold <= matchesCompleted);
+            for (int i = 0; i < allUnlockedOnes.Length; i++)
+            {
+                var characterIndex = Array.FindIndex(GameManager.Instance.Characters, it => it == allUnlockedOnes[i]);
+                if (characterIndex >= 0 && !CharacterUnlockFromProgression.IsUnlocked(characterIndex))
+                {
+                    recentlyUnlockedCharacters.Add(characterIndex);
+                }
+            }
 
-            recentlyUnlockedCharacters.Add(MatchesCompleted);
-
+            if (recentlyUnlockedCharacters.Count > 0)
+            {
+                unlockedCharacterNotification.Add(matchesCompleted);
+                unlockedCharacterNotificationMM.Add(matchesCompleted);
+            }
         }
         if (HasThresholdForLevels())
         {
-            unlockedLevelNotification.Add(matchesCompleted);
-            unlockedLevelNotificationMM.Add(matchesCompleted);
+            if(allLevelNums.ContainsKey(matchesCompleted))
+            {
+                var allNums = allLevelNums[matchesCompleted];
+                for (int i = 0; i < allNums.Count; i++)
+                {
+                    if(!LevelUnlockFromProgression.IsUnlocked(i))
+                    {
+                        unlockedLevelNotification.Add(matchesCompleted);
+                        unlockedLevelNotificationMM.Add(matchesCompleted);
+                    }
+                }
+            }
 
-            recentlyUnlockedLevels.Add(matchesCompleted);
+            if(unlockedLevelNotification.Count > 0)
+                recentlyUnlockedLevels.Add(matchesCompleted);
         }
         //Debug.Log("One more match completed!");
         //Debug.Log("Matches Completed: " + matchesCompleted);
@@ -189,6 +222,8 @@ public class UnlockSystem : MonoBehaviour
     {
         unlockedLevelNotification.Add(0);
         unlockedLevelNotificationMM.Add(0);
+
+       // allMatchesThresholdForLevels.Remove(matches);
     }
 
     public void SetUnlockCharacterFromProgression(int matches)
@@ -202,7 +237,7 @@ public class UnlockSystem : MonoBehaviour
     public bool HasThresholdForCharacter()
     {
         if (allMatchesThresholdForCharacters.FindIndex(it => it == matchesCompleted) >= 0)
-        {
+        { 
             allMatchesThresholdForCharacters.Remove(matchesCompleted);
             return true;
         }

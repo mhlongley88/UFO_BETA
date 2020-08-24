@@ -35,7 +35,7 @@ public class LevelUnlockFromProgression : MonoBehaviour
 
             UserPrefs.instance.SetInt(keyLevelUnlock + lastSelected, 1);
             //UnlockNotification.instance?.SignalUnlockLevel();
-            
+
             UnlockSystem.instance.SetUnlockLevelFromProgression();
         }
     }
