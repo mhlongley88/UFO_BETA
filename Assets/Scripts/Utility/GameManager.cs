@@ -215,28 +215,47 @@ public class GameManager : MonoBehaviour
         bool isRestartBtnDownY = false;
         bool isGotoPlayerLevelSelectBtnDown = false;
 
-        var activePlayers = GameManager.Instance.GetActivePlayers();
-        foreach (Player i in activePlayers)
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            int playerIndex = 0;
-            switch (i)
+            var activePlayers = GameManager.Instance.GetActivePlayers();
+            foreach (Player i in activePlayers)
             {
-                case Player.One: playerIndex = 0; break;
-                case Player.Two: playerIndex = 1; break;
-                case Player.Three: playerIndex = 2; break;
-                case Player.Four: playerIndex = 3; break;
+                int playerIndex = 0;
+                switch (i)
+                {
+                    case Player.One: playerIndex = 0; break;
+                    case Player.Two: playerIndex = 1; break;
+                    case Player.Three: playerIndex = 2; break;
+                    case Player.Four: playerIndex = 3; break;
+                }
+
+                var playerInput = ReInput.players.GetPlayer(playerIndex);
+
+                if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
+                if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
+                if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
+                if (!isFromPauseToMenuDown)
+                    isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
+
+                if (!isRestartBtnDownY) isRestartBtnDownY = playerInput.GetButton("RetryY");
+                if (!isGotoPlayerLevelSelectBtnDown) isGotoPlayerLevelSelectBtnDown = playerInput.GetButton("RetryN");
             }
+        }
+        else
+        {
+            //for(int i = 0; i < 4; i++)//Iterate over all connected joysticks - Iterating over all possible joystick inputs for now!
+            {
+                var playerInput = ReInput.players.GetPlayer(3);
 
-            var playerInput = ReInput.players.GetPlayer(playerIndex);
+                if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
+                if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
+                if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
+                if (!isFromPauseToMenuDown)
+                    isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
 
-            if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
-            if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
-            if (!isPauseBtnDown) isPauseBtnDown = playerInput.GetButtonDown("Pause");
-            if (!isFromPauseToMenuDown)
-                isFromPauseToMenuDown = playerInput.GetButtonDown("FromPauseToMenu");
-
-            if (!isRestartBtnDownY) isRestartBtnDownY = playerInput.GetButton("RetryY");
-            if (!isGotoPlayerLevelSelectBtnDown) isGotoPlayerLevelSelectBtnDown = playerInput.GetButton("RetryN");
+                if (!isRestartBtnDownY) isRestartBtnDownY = playerInput.GetButton("RetryY");
+                if (!isGotoPlayerLevelSelectBtnDown) isGotoPlayerLevelSelectBtnDown = playerInput.GetButton("RetryN");
+            }
         }
 
         if (LevelUIManager.Instance && LevelUIManager.Instance.lostToBots.activeInHierarchy)
@@ -274,7 +293,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                if (isPauseBtnDown && !LobbyConnectionHandler.instance.IsMultiplayerMode)
+                if (isPauseBtnDown/* && !LobbyConnectionHandler.instance.IsMultiplayerMode*/)
                 {
                     if (TutorialManager.instance == null)// && !HasCutsceneObjectsActive)
                         TogglePause();
@@ -714,7 +733,7 @@ public class GameManager : MonoBehaviour
 
         paused = !paused;
         //DOTween.TogglePauseAll();
-
+        
         if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
             PauseMenu.instance.menuCanvasObj.SetActive(paused);
 

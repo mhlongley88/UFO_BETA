@@ -41,8 +41,7 @@ public class SimpleMenuSelection : MonoBehaviour
         if (currentFocused != this)
         {
             previousFocused = currentFocused;
-            if (previousFocused != null && previousFocused.gameObject.activeInHierarchy) previousFocused.gameObject.SetActive(false);
-
+            //if (previousFocused != null && previousFocused.gameObject.activeInHierarchy) previousFocused.gameObject.SetActive(false);
              currentFocused = this;
         }
     }

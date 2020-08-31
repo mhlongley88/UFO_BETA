@@ -135,7 +135,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public override void OnLeftRoom()
     {
-
+        if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
+            PauseMenu.instance.menuCanvasObj.SetActive(false);
     }
 
     void IInRoomCallbacks.OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
