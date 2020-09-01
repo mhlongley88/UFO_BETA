@@ -21,7 +21,13 @@ public class ReturnToMainMenu : MonoBehaviour
     {
         if (GameManager.Instance.paused)
             GameManager.Instance.TogglePause();
-
-        Application.LoadLevel(0);
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        { 
+            Application.LoadLevel(0);
+        }
+        else
+        {
+            GameManager.Instance.EndGameAndGoToMenu();
+        }
     }
 }
