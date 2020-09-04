@@ -52,7 +52,7 @@ public class RankingPostGame : MonoBehaviour
             Transform rank = ranks[rankNumber];
             ranksContainers[rankNumber].SetActive(true);
 
-            Debug.Log(rankNumber);
+            //Debug.Log(rankNumber);
 
             t.gameObject.isStatic = false;
 

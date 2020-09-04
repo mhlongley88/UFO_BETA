@@ -662,7 +662,7 @@ public class GameManager : MonoBehaviour
         {
             playerSelectionDict[p] = choice;
             
-            Debug.Log(choice);
+           // Debug.Log(choice);
         }
         else
         {
@@ -673,7 +673,7 @@ public class GameManager : MonoBehaviour
         {
             LobbyConnectionHandler.instance.playerSelectionDict[p] = choice;
 
-            Debug.Log(choice);
+           // Debug.Log(choice);
         }
         else
         {
@@ -686,7 +686,7 @@ public class GameManager : MonoBehaviour
 
     public int GetPlayerCharacterChoice(Player p)
     {
-        Debug.Log(p.ToString());
+       // Debug.Log(p.ToString());
         try
         {
             return /*LobbyConnectionHandler.instance.*/playerSelectionDict[p];

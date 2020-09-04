@@ -272,6 +272,38 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public Player GetLastAlivePlayer_Offline()
+    {
+        Player p = Player.None;
+        foreach (Player i in GameManager.Instance.GetActivePlayers())
+        {
+            if (players[i].lives > 0)
+            {
+                p = i;
+                break;
+            }
+        }
+
+        //if(p)//all yours! 
+
+        return p;
+    }
+    public Player GetLastAlivePlayer_Online()
+    {
+        Player p = Player.None;
+
+        foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+        {
+            //Debug.Log("GetPlayerLeft" + players[i].lives + "---" + i.ToString());
+            if (players[i].lives > 0)
+            {
+                p = i;
+                break;
+            }
+        }
+
+        return p;
+    }
     public int GetPlayersLeft()
     {
         int playersLeft = 0;
@@ -419,6 +451,10 @@ public class PlayerManager : MonoBehaviour
         return false;
     }
 
+    private void Update()
+    {
+        Debug.Log(spawnedPlayerDictionary.Count + "*************************");
+    }
     public void PlayerDied(Player player, Transform playerModel)
     {
         if (GameManager.Instance.gameOver) return;
@@ -435,28 +471,32 @@ public class PlayerManager : MonoBehaviour
 
        // Debug.Log(players[player].lives + "???????");
         LevelUIManager.Instance.ChangeLifeCount(player, players[player].lives);
-        Debug.Log("Lifes Left = " + players[player].lives);
+        //Debug.Log("Lifes Left = " + players[player].lives);
 
         int playersLeft = GetPlayersLeft();
-        Debug.Log("Players Left = " + playersLeft);
+        // Debug.Log("Players Left = " + playersLeft);
 
         players[player].rank = playersLeft;
+        
         spawnedPlayerDictionary.Remove(player);
-
+        
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             if (playersLeft > 0 && playersLeft < 2)
             {
                 if (spawnedPlayerDictionary.Count > 0)
                 {
-                    var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+                    Player lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+                    
                     players[lastPlayerAlive].rank = 0;
+                    Debug.Log(spawnedPlayerDictionary.Keys.ToList()[0] + "########");
                 }
             }
         }
-        else if (playersLeft < 2 && spawnedPlayerDictionary.Count == 1)
+        else if (playersLeft < 2 /*&& spawnedPlayerDictionary.Count == 1*/)
         {
-            var lastPlayerAlive = spawnedPlayerDictionary.Keys.ToList()[0];
+            
+            var lastPlayerAlive = GetLastAlivePlayer_Online();//spawnedPlayerDictionary.Keys.ToList()[0];
             players[lastPlayerAlive].rank = 0;
         }
 
@@ -475,8 +515,9 @@ public class PlayerManager : MonoBehaviour
         {
             foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
             {
+                //Debug.Log("Final Rank of " + i + " is: " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
-                Debug.Log("Rank of " + i + " :  " + players[i].rank);
+                //Debug.Log("Rank of " + i + " :  " + players[i].rank);
             }
 
             UnlockSystem.instance.SaveOnlineMatchesCompleted();
@@ -547,13 +588,25 @@ public class PlayerManager : MonoBehaviour
                     if (nonBotPlayer.Count <= 0)
                     {
                         // Dont change the player rank, let it where he died and dont change the winner bot rank
-                        if (players[i] != onlyNonBotPlayer)
+                        //if (players[i] != onlyNonBotPlayer)
+                        //{
+                        //    if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;//1
+
+                        //    if (rankIndex >= ranks.Length) break;
+
+                        //    //players[i].rank = ranks[rankIndex++];//2
+                        //}
+
+                        if (spawnedPlayerDictionary.ContainsKey(i) &&
+                            spawnedPlayerDictionary[i].GetComponent<PlayerController>() &&
+                            spawnedPlayerDictionary[i].GetComponent<PlayerBot>())
                         {
-                            if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
+                            //if (ranks[rankIndex] == onlyNonBotPlayer.rank) rankIndex++;
 
                             if (rankIndex >= ranks.Length) break;
 
                             players[i].rank = ranks[rankIndex++];
+                            Debug.Log(i + " rank is " + players[i].rank);
                         }
                     }
      
@@ -607,7 +660,7 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
 
-                Debug.Log("Rank of " + i + " :  " + players[i].rank);
+               // Debug.Log("Rank of " + i + " :  " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
@@ -621,7 +674,8 @@ public class PlayerManager : MonoBehaviour
             //if(allTheActivePlayersAreBots)
             {
                 LevelUIManager.Instance.lostToBots.SetActive(true);
-
+                // I tested the game yesterday. 1 and 2 worked all good. Game really never came into this if block. I oommented update to ranks just in case(3 and 4)
+                //You can test now!
                 int rank = 0;
                 foreach (Player i in activePlayers)
                 {
@@ -630,10 +684,10 @@ public class PlayerManager : MonoBehaviour
                     //if (players[i].rank < 0)
                     if(PlayerBot.chosenPlayer.Contains(i))
                     {
-                        players[i].rank = rank++;
+                       // players[i].rank = rank++; //3
                     }
 
-                    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
+                    //RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));//4
                 }
 
                 // Make sure tthat if the boss was defeated by the player and the player lost to the bots, dont unlock the level for local/online

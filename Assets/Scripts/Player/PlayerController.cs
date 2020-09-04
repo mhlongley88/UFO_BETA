@@ -634,7 +634,7 @@ public class PlayerController : MonoBehaviour
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Beam, player) && energyMeter.fillAmount != 1f)
         if ((rewirePlayer.GetButtonDown("Abduct")) && energyMeter.fillAmount != 1f)
         {
-            Debug.Log("Beam Input");
+         //   Debug.Log("Beam Input");
             ActivateBeam();
         }
         //else if (InputManager.Instance.GetButtonUp(ButtonEnum.Beam, player))
@@ -737,12 +737,12 @@ public class PlayerController : MonoBehaviour
             superWeapon.gameObject.SetActive(true);
             superWeapon.ActivateWeapon();
             currentWeapon = superWeapon;
-            Debug.Log(currentWeapon.name);
+        //    Debug.Log(currentWeapon.name);
             StartCoroutine(DeactivateSpecialCamera());
         }
         else
         {
-            Debug.Log("Deactivating");
+           // Debug.Log("Deactivating");
            // PlayerSpecialvCam.SetActive(false);
             normalWeapon.gameObject.SetActive(true);
             superWeapon.gameObject.SetActive(false);
@@ -752,7 +752,7 @@ public class PlayerController : MonoBehaviour
 
             currentWeapon.canFire = true;
             //superWeapon.DeactivateWeapon();
-            Debug.Log(currentWeapon.name);
+          //  Debug.Log(currentWeapon.name);
             //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
             energyMeter.fillAmount = 0f;
             scaleDelta = 0f;
@@ -1069,15 +1069,17 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
-
+        
         //Debug.Log(gameObject.name + ": The gameobject I Hit was " + other.gameObject.name + " - " + other.collider.tag);
-        if (other.collider.CompareTag("Bullet"))
+        if (other.collider.CompareTag("Bullet") || other.collider.CompareTag("BulletFist"))//added this bulletfist condition
         {
             float healthDamage = 0.0f;
+            //for real bullets
             Bullet b;
             if (other.gameObject.TryGetComponent(out b))
                 healthDamage = b.HealthDamage;
 
+            //Here is the damage dealing for melee bullet! It's different for Melee bullets.
             if(b == null)
             {
                 MeleeBullet mb;
@@ -1096,14 +1098,18 @@ public class PlayerController : MonoBehaviour
             //     scaleToMinusInterval = 1;
         }
 
-        if (other.collider.CompareTag("BulletFist"))
+        if (other.collider.CompareTag("BulletFist"))// Nothing is being done in here. No takedamage is called in this condition
         {
+            // Handle bullet fist damages here. Remove " || other.collider.CompareTag("BulletFist")" from upper If condition.
+
+
+
             //ChangeHealth (other.gameObject.GetComponent<Bullet>().healthDamage);
             //ChangeScale(other.gameObject.GetComponent<Bullet>().scaleDamage);
 
-           // myRigidbody.AddExplosionForce(140.0f, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), 100.0f);
+            // myRigidbody.AddExplosionForce(140.0f, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), 100.0f);
 
-           // healthManager.ChangeHealth(other.gameObject.GetComponent<Bullet>().HealthDamage);
+            // healthManager.ChangeHealth(other.gameObject.GetComponent<Bullet>().HealthDamage);
             //ChangeScale(defaultScaleDamage);
             DropAbductedObject(1);
             // if (scaleCount > 0)
