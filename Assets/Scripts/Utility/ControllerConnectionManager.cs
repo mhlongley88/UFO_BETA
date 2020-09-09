@@ -94,7 +94,7 @@ public class ControllerConnectionManager : MonoBehaviour
             if (playerIndex < ReInput.players.allPlayerCount - 1)
             {
                 Debug.Log("Controller Testing" + j + "" + playerIndex);
-                ReInput.players.GetPlayer(playerIndex).controllers.AddController(j, true);
+                ReInput.players.GetPlayer(playerIndex++).controllers.AddController(j, true);
             }
             else
             {
