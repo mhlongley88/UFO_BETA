@@ -130,7 +130,7 @@ public class CharacterSelectUI : MonoBehaviour
         }
     }
 
-    private CharacterSelectState selectState = CharacterSelectState.WaitingForPlayer;
+    public CharacterSelectState selectState = CharacterSelectState.WaitingForPlayer;
 
     private bool canCycle = true;
     private bool canCycleRight = true;

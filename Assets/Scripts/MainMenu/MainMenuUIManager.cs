@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using static InputManager;
 using Rewired;
 using Cinemachine;
-
+using  TMPro;
 public class MainMenuUIManager : MonoBehaviour
 {
 
@@ -18,6 +18,9 @@ public class MainMenuUIManager : MonoBehaviour
         LevelSelect,
         CharacterSelect
     }
+    public GameObject HostNameLevelSelect;
+    public TextMeshPro HostNameLevelSelect_text;
+
     public GameObject PV_GameObj;
     public Button OnlineButton;
     public GameObject MainPanel;
@@ -350,7 +353,7 @@ public class MainMenuUIManager : MonoBehaviour
         //vCam1.SetActive(true);
 
         SetCameraView(vCam3CharacterSelect);
-
+        HostNameLevelSelect.SetActive(false);
         currentMenu = Menu.CharacterSelect;
         levelSelectCharacters.RemoveAllPlayers();
         levelSelect.SetActive(false);
@@ -361,6 +364,12 @@ public class MainMenuUIManager : MonoBehaviour
         //}
 
         LobbyConnectionHandler.instance.myPlayerInGame.GetComponent<CharacterSelectUI>().ReturnFromLevelSelect();
+        CharacterSelectUI[] AllMenus = FindObjectsOfType<CharacterSelectUI>();
+        foreach (CharacterSelectUI character in AllMenus)
+        {
+            character.selectState = CharacterSelectUI.CharacterSelectState.SelectingCharacter;
+            character.readyObject.SetActive(true);
+        }
 
         if (levelSelectCharacters.myLevelPlayerMul)
         {
@@ -615,18 +624,25 @@ public class MainMenuUIManager : MonoBehaviour
                             currentMenu = Menu.LevelSelect;
                             Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
                             LobbyUI.instance.FriendsListButton.SetActive(false);
+
+                            if(Photon.Pun.PhotonNetwork.IsMasterClient){
+                                LobbyConnectionHandler.instance.pv.RPC("SyncHostName_LevelSelect", Photon.Pun.RpcTarget.All, LobbyConnectionHandler.instance.myDisplayName);
+                            }
+                            
                             Debug.Log("shouldnt be here");
                             // }
                         }
                         break;
                     case Menu.LevelSelect:
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
-                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back") 
+                        && Photon.Pun.PhotonNetwork.IsMasterClient)
                         {
                             //vCam2.SetActive(false);
                             //vCam1.SetActive(true);
                             //currentMenu = Menu.CharacterSelect;
-                            levelSelectCharacters.RemoveAllPlayers();
+                            //levelSelectCharacters.RemoveAllPlayers();
+                            LobbyConnectionHandler.instance.pv.RPC("SwitchBackToCharacterSelect", Photon.Pun.RpcTarget.All);
                             //levelSelect.SetActive(false);
                             //characterSelect.SetActive(true);
                             //foreach (var c in characterSelectMenus)

@@ -60,6 +60,18 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
 
     [PunRPC]
+    public void SwitchBackToCharacterSelect()
+    {
+        MainMenuUIManager.Instance.SwitchBackToCharacterSelectMul();
+    }
+
+    [PunRPC]
+    void SyncHostName_LevelSelect(string hostName)
+    {
+        MainMenuUIManager.Instance.HostNameLevelSelect_text.text =hostName;
+        MainMenuUIManager.Instance.HostNameLevelSelect.SetActive(true);
+    }
+    [PunRPC]
     void RPC_ChangeScene(string sceneName)
     {
         GameManager.Instance.gameOver = false;
@@ -381,7 +393,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             //    destro
             //}
             LobbyUI.instance.AuthPanel.SetActive(false);
-
+            MainMenuUIManager.Instance.HostNameLevelSelect.SetActive(false);
             //
             if (MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.LevelSelect && shouldBounceBackToMenu)
             {
