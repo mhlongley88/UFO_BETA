@@ -60,6 +60,20 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     }
 
     [PunRPC]
+    public void SyncVisibleLevels_LevelSelect(string levelName, bool enable)
+    {
+        for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
+        {
+            if (LevelUnlockCheck.All[i].gameObject.name == levelName)
+            {
+                LevelUnlockCheck.All[i].gameObject.SetActive(enable);
+                Debug.Log(LevelUnlockCheck.All[i].gameObject.name + " is " + enable);
+                break;
+            }
+        }
+    }
+
+    [PunRPC]
     public void SwitchBackToCharacterSelect()
     {
         MainMenuUIManager.Instance.SwitchBackToCharacterSelectMul();
@@ -299,7 +313,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
         myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
     }
-
+    public bool showPlayersLeftText;
     void IInRoomCallbacks.OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
 
@@ -330,7 +344,16 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         else
         {
             //direct to splash screen
-            SceneManager.LoadScene("MainMenu");
+            //if (!GameManager.Instance.gameOver)
+            {
+                showPlayersLeftText = true;
+            }
+            
+            if (GameManager.Instance)
+            {
+                GameManager.Instance.EndGameAndGoToMenu();//New Fix
+            }
+            //SceneManager.LoadScene("MainMenu");
 
         }
 
@@ -394,6 +417,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             //}
             LobbyUI.instance.AuthPanel.SetActive(false);
             MainMenuUIManager.Instance.HostNameLevelSelect.SetActive(false);
+            MainMenuUIManager.Instance.ReEnableAllUnlockedLevels();
             //
             if (MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.LevelSelect && shouldBounceBackToMenu)
             {

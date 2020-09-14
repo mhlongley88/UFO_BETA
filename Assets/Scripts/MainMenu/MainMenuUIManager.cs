@@ -18,6 +18,9 @@ public class MainMenuUIManager : MonoBehaviour
         LevelSelect,
         CharacterSelect
     }
+
+    public Transform LevelsContainer;
+
     public GameObject HostNameLevelSelect;
     public TextMeshPro HostNameLevelSelect_text;
 
@@ -30,6 +33,7 @@ public class MainMenuUIManager : MonoBehaviour
     public GameObject characterSelectMul;
     public GameObject levelSelect;
     public GameObject mainTitle;
+    public GameObject NotEnoughPlayersTextObj;
 
     public GameObject mainTitleAlienCharacters;
     public GameObject mainTitleDust, mainTitleStars;
@@ -82,7 +86,12 @@ public class MainMenuUIManager : MonoBehaviour
             instance = this;
         }
     }
+    void DisablePlayersLeftTextObj()
+    {
+        NotEnoughPlayersTextObj.SetActive(false);//here
+    }
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -101,11 +110,17 @@ public class MainMenuUIManager : MonoBehaviour
         }
 
         SetCameraView(vCam1SplashMenu);
+        if (LobbyConnectionHandler.instance.showPlayersLeftText)
+        {
+            LobbyConnectionHandler.instance.showPlayersLeftText = false;
+            NotEnoughPlayersTextObj.SetActive(true);
+            Invoke("DisablePlayersLeftTextObj", 4f);//Here
+        }
         //vCam1.SetActive(true);;
         //vCam2.SetActive(false);
 
 
-       // MainPanel.SetActive(false);
+        // MainPanel.SetActive(false);
 
         characterSelect.SetActive(false);
 
@@ -518,8 +533,12 @@ public class MainMenuUIManager : MonoBehaviour
                         }
                         break;
                     case Menu.LevelSelect:
-                        
+
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        if (HostNameLevelSelect.activeSelf)
+                        {
+                            HostNameLevelSelect.SetActive(false);
+                        }
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
                             //vCam2.SetActive(false);
@@ -568,7 +587,14 @@ public class MainMenuUIManager : MonoBehaviour
             }
         }
     }
-
+    public void ReEnableAllUnlockedLevels()
+    {
+        for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
+        {
+            LevelUnlockCheck.All[i].gameObject.SetActive(true);
+            LevelUnlockCheck.All[i].Init();
+        }
+    }
 
     void MulMode()
     {
@@ -622,6 +648,16 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelectCharacters.AddActivePlayers();
                             characterSelect.SetActive(false);
                             currentMenu = Menu.LevelSelect;
+
+                            if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                            {
+                                for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
+                                {
+                                    Debug.Log(LevelUnlockCheck.All[i].gameObject.name + " is " + LevelUnlockCheck.All[i].gameObject.activeSelf);
+                                    LobbyConnectionHandler.instance.pv.RPC("SyncVisibleLevels_LevelSelect", Photon.Pun.RpcTarget.Others, LevelUnlockCheck.All[i].gameObject.name, LevelUnlockCheck.All[i].gameObject.activeSelf);
+                                }
+                            }
+
                             Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
                             LobbyUI.instance.FriendsListButton.SetActive(false);
 

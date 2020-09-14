@@ -34,6 +34,12 @@ public class LevelUnlockCheck : MonoBehaviour
     void Start()
     {
 
+        Init();
+
+    }
+
+    public void Init()
+    {
         int matchesComplete = UnlockSystem.instance.GetMatchesCompleted();
 
         //Debug.Log(gameObject.name + " - Threshold " + matchThreshold + " and Matches Now " + matchesComplete + " - " + (matchesComplete >= matchThreshold).ToString());
@@ -48,12 +54,11 @@ public class LevelUnlockCheck : MonoBehaviour
             if (prefs == 1)
                 newVfx.SetActive(false);
         }
-        
-        if(LevelUnlockFromProgression.IsUnlocked(levelTitle.levelNum))
+
+        if (LevelUnlockFromProgression.IsUnlocked(levelTitle.levelNum))
         {
             gameObject.SetActive(true);
         }
-
     }
 
     void Update()
