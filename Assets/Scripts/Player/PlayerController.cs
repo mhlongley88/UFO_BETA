@@ -231,6 +231,8 @@ public class PlayerController : MonoBehaviour
             playerModel.transform.localRotation = Quaternion.identity;
             playerModel.transform.localPosition = Vector3.zero;
 
+            normalWeapon.bulletSpawnPoints = modelContainer.transform.GetComponentsInChildren<BulletSpawnPoint>();
+
             // Mark that you played with this model
             if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
             {
