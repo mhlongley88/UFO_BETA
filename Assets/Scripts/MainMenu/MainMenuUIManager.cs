@@ -9,6 +9,7 @@ using static InputManager;
 using Rewired;
 using Cinemachine;
 using  TMPro;
+using OneClickLocalization;
 public class MainMenuUIManager : MonoBehaviour
 {
 
@@ -61,6 +62,8 @@ public class MainMenuUIManager : MonoBehaviour
     public CharacterSelectUI[] characterSelectMenusMulPrefabs;
     public LevelSelectCharacters levelSelectCharacters;
 
+    public TMP_Dropdown languageDropdown;
+
     public static bool goDirectlyToLevelSelect;
 
     private Player playerSelectFlags = Player.None;
@@ -85,6 +88,7 @@ public class MainMenuUIManager : MonoBehaviour
         {
             instance = this;
         }
+        PopulateLanguageSelectDropdown();
     }
     void DisablePlayersLeftTextObj()
     {
@@ -505,7 +509,7 @@ public class MainMenuUIManager : MonoBehaviour
 
                             }
 
-                            //currentMenu = Menu.Splash;
+                            currentMenu = Menu.Splash;
                            
                             characterSelect.SetActive(false);
 
@@ -717,4 +721,27 @@ public class MainMenuUIManager : MonoBehaviour
     {
         Photon.Pun.PhotonNetwork.LeaveRoom();
     }
+    //1
+    public void PopulateLanguageSelectDropdown()
+    {
+        languageDropdown.ClearOptions();
+        List<string> languagesStrings = new List<string>();
+        languagesStrings.Add("English");
+        // Add supported languages
+        Debug.Log(OCL.GetLanguages().Count + " Total languages");
+        foreach (SystemLanguage supportedLanguage in OCL.GetLanguages())
+        {
+            if(!languagesStrings.Contains(supportedLanguage.ToString()))
+                languagesStrings.Add(supportedLanguage.ToString());
+        }
+        languageDropdown.AddOptions(languagesStrings);
+    }
+    //2
+    public void OnLanguageDropdown_ValueChange(int value)
+    {
+        Debug.Log(value + "-" + languageDropdown.options[languageDropdown.value].text);
+        string selectedLanguage = languageDropdown.options[languageDropdown.value].text;
+        OCL.SetLanguage((SystemLanguage)Enum.Parse(typeof(SystemLanguage), selectedLanguage));
+    }
+
 }
