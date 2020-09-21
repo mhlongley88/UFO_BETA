@@ -19,7 +19,7 @@ public class MainMenuUIManager : MonoBehaviour
         LevelSelect,
         CharacterSelect
     }
-
+    public GameObject OptionsCanvas;
     public Transform LevelsContainer;
 
     public GameObject HostNameLevelSelect;
@@ -461,6 +461,26 @@ public class MainMenuUIManager : MonoBehaviour
         else
             OfflineMode();
     }
+    public bool menuOpen;
+    public void ButtonToggleOptionsMenu()
+    {
+        if (!menuOpen)
+        {
+            //  previousTimescale = Time.timeScale;//getting the current timescale
+            //   Time.timeScale = 0;//Pausing time
+            OptionsCanvas.SetActive(true);
+
+            menuOpen = true;
+        }
+        else
+        {
+            //  Time.timeScale = previousTimescale;//unpausing time
+
+            menuOpen = false;
+        }
+    }
+
+
     public bool selectingCharacters = false;
     void OfflineMode()
     {
@@ -480,8 +500,14 @@ public class MainMenuUIManager : MonoBehaviour
                 }
 
                 rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
+
+                if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
+                {
+                    ButtonToggleOptionsMenu();
+                }
+
                 //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
-               // Debug.Log("Rewired" + rewirePlayerId);
+                // Debug.Log("Rewired" + rewirePlayerId);
                 //rewirePlayer = ReInput.players.GetPlayer(3);
                 switch (currentMenu)
                 {

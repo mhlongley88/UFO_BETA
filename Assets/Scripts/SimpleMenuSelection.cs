@@ -14,7 +14,8 @@ public class SimpleMenuSelection : MonoBehaviour
     public SimpleMenuSelection goToMenuWhenBack;
 
     public string submitBtnName = "Submit";
-
+    public bool isOptionsMenu, isSubOptionsMenu, closeOptionsMenu;
+    public SimpleMenuSelection BackFromOptionsMenu;
     Vector3[] originalScales;
     int index = 0;
     float changeRate = 0.0f;
@@ -40,9 +41,13 @@ public class SimpleMenuSelection : MonoBehaviour
     {
         if (currentFocused != this)
         {
+            if(isOptionsMenu && !currentFocused.isSubOptionsMenu)
+                BackFromOptionsMenu = currentFocused;
             previousFocused = currentFocused;
-            //if (previousFocused != null && previousFocused.gameObject.activeInHierarchy) previousFocused.gameObject.SetActive(false);
+            
+            if (previousFocused != null && previousFocused.gameObject.activeInHierarchy) previousFocused.gameObject.SetActive(false);
              currentFocused = this;
+            //Debug.Log(currentFocused.name);
         }
     }
 
@@ -50,13 +55,33 @@ public class SimpleMenuSelection : MonoBehaviour
     {
         if (currentFocused == this)
         {
-            currentFocused = previousFocused;
 
+            if (isOptionsMenu && closeOptionsMenu)
+            {
+                closeOptionsMenu = true;
+                BackFromOptionsMenu.gameObject.SetActive(true);
+                currentFocused = BackFromOptionsMenu;
+                Debug.Log(currentFocused.name);
+            }
+            else
+            {
+                currentFocused = previousFocused;
+                Debug.Log(currentFocused.name + "?");
+            }
+            
+            
             if(currentFocused == null)
             {
                
             }
         }
+    }
+
+    public void CloseOptionsMenu()
+    {
+        closeOptionsMenu = true;
+        MainMenuUIManager.Instance.menuOpen = false;
+        MainMenuUIManager.Instance.OptionsCanvas.SetActive(false);
     }
 
     // Update is called once per frame
@@ -90,9 +115,17 @@ public class SimpleMenuSelection : MonoBehaviour
 
                 if (goToMenuWhenBack != null && rewirePlayer.GetButtonDown("Back"))
                 {
-                    gameObject.SetActive(false);
-                    goToMenuWhenBack.gameObject.SetActive(true);
-                    FocusMenu(goToMenuWhenBack);
+                    if (isOptionsMenu)
+                    {
+                        CloseOptionsMenu();
+                    }
+                    else
+                    {
+                        gameObject.SetActive(false);
+                        goToMenuWhenBack.gameObject.SetActive(true);
+                        FocusMenu(goToMenuWhenBack);
+                    }
+                    
                 }
             }
         }
@@ -115,6 +148,7 @@ public class SimpleMenuSelection : MonoBehaviour
         {
             previousFocused = this;
             currentFocused = menu;
+            //Debug.Log(currentFocused.name + "?");
         }
     }
 }
