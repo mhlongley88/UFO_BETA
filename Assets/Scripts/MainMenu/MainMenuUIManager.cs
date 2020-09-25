@@ -19,6 +19,10 @@ public class MainMenuUIManager : MonoBehaviour
         LevelSelect,
         CharacterSelect
     }
+
+    public TMP_FontAsset NotoSans_Font, youngfrankconditalSDF_Font;
+    public List<FontSwap> FontSwapTexts;
+
     public GameObject OptionsCanvas;
     public Transform LevelsContainer;
 
@@ -501,7 +505,7 @@ public class MainMenuUIManager : MonoBehaviour
 
                 rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
 
-                if (Input.GetKeyDown(KeyCode.Escape) && !menuOpen)
+                if (/*Input.GetKeyDown(KeyCode.Escape)*/ rewirePlayer.GetButtonDown("Pause") && !menuOpen)
                 {
                     ButtonToggleOptionsMenu();
                 }
@@ -768,6 +772,13 @@ public class MainMenuUIManager : MonoBehaviour
         Debug.Log(value + "-" + languageDropdown.options[languageDropdown.value].text);
         string selectedLanguage = languageDropdown.options[languageDropdown.value].text;
         OCL.SetLanguage((SystemLanguage)Enum.Parse(typeof(SystemLanguage), selectedLanguage));
+
+        foreach (FontSwap obj in FontSwapTexts)
+        {
+            obj.GetComponent<TextMeshProUGUI>().font = languageDropdown.options[languageDropdown.value].text == "Russian" ? NotoSans_Font : youngfrankconditalSDF_Font;
+            //obj.swapFont(languageDropdown.options[languageDropdown.value].text == "Russian" ? NotoSans_Font : youngfrankconditalSDF_Font);
+        }
+
     }
 
 }
