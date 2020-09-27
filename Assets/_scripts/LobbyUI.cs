@@ -100,6 +100,7 @@ public class LobbyUI : MonoBehaviour
     public void EnterMultiplayerMode()
     {
         LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+        GameManager.Instance.isLocalSPMode = GameManager.Instance.IsLocalPvPMode = false;
     }
 
     public void LeaveMultiplayerMode()

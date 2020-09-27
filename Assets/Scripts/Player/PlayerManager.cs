@@ -135,6 +135,7 @@ public class PlayerManager : MonoBehaviour
                 //}
             }
         }
+        UserPrefs.instance.SetInt("UFOPlayedLevel" + GameManager.Instance.selectedLevelIndex, 1);
     }
 
     public void SpawnPlayer(Player p)

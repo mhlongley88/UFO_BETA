@@ -57,6 +57,7 @@ public class ShowLevelTitle : MonoBehaviour
             levelTitle.SetActive(true);
             Debug.Log("hit!");
             levelStaticInt = levelNum;
+            GameManager.Instance.selectedLevelIndex = levelNum;
             myAudioSource.PlayOneShot(levelHoverSFX);
         }
     }

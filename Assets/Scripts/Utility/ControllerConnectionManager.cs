@@ -72,7 +72,7 @@ public class ControllerConnectionManager : MonoBehaviour
         ReInput.ControllerConnectedEvent += OnControllerConnected;
 
         // Assign each Joystick to a Player initially
-        AssignAllJoySticksToPlayers();
+        //AssignAllJoySticksToPlayers();
     }
 
     public void AssignAllJoySticksToPlayers()
@@ -117,6 +117,49 @@ public class ControllerConnectionManager : MonoBehaviour
 
     }
 
+    public void AssignAllSurplusJoysticksToP4()
+    {
+
+        Rewired.Player player4 = ReInput.players.GetPlayer(3);
+        List<Joystick> surplusJoySticks = new List<Joystick>();
+        foreach (Rewired.Player player in ReInput.players.AllPlayers)
+        {
+
+            Player gamePlayer = Player.None;
+            switch (player.id)
+            {
+                case 0:
+                    gamePlayer = Player.One;
+                    break;
+                case 1:
+                    gamePlayer = Player.Two;
+                    break;
+                case 2:
+                    gamePlayer = Player.Three;
+                    break;
+                case 3:
+                    gamePlayer = Player.Four;
+                    break;
+
+            }
+
+            if (!GameManager.Instance.IsPlayerInGame(gamePlayer) && player.controllers.joystickCount > 0)
+            {
+                foreach (Joystick j in player.controllers.Joysticks)
+                {
+                    surplusJoySticks.Add(j);
+                }
+                player.controllers.ClearControllersOfType(ControllerType.Joystick);
+            }
+        }
+
+        foreach (Joystick j in surplusJoySticks)
+        {
+            player4.controllers.AddController(j, true);
+        }
+
+    }
+
     void AssignJoystickToNextOpenPlayer(Joystick j)
     {
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -127,14 +170,70 @@ public class ControllerConnectionManager : MonoBehaviour
         }
         else
         {
-            foreach (Rewired.Player p in ReInput.players.Players)
+
+            if (GameManager.Instance.isLocalSPMode && MainMenuUIManager.Instance == null ||
+                (MainMenuUIManager.Instance &&
+                MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.Splash &&
+                MainMenuUIManager.Instance.currentMenu != MainMenuUIManager.Menu.CharacterSelect))
             {
-                Debug.Log("Adding Off?????????????");
-                if (p.controllers.joystickCount > 0) continue; // player already has a joystick
-                p.controllers.AddController(j, true); // assign joystick to player
-                Debug.Log("Adding Off");
-                return;
+                Rewired.Player p4 = ReInput.players.GetPlayer(3);
+                bool isJoyStickAssigned = false;
+
+                foreach (Rewired.Player player in ReInput.players.AllPlayers)
+                {
+
+                    Player gamePlayer = Player.None;
+                    switch (player.id)
+                    {
+                        case 0:
+                            gamePlayer = Player.One;
+                            break;
+                        case 1:
+                            gamePlayer = Player.Two;
+                            break;
+                        case 2:
+                            gamePlayer = Player.Three;
+                            break;
+                        case 3:
+                            gamePlayer = Player.Four;
+                            break;
+
+                    }
+
+
+                    if (gamePlayer == Player.None)
+                        continue;
+                    Debug.Log(GameManager.Instance.IsPlayerInGame(gamePlayer));
+                    if (GameManager.Instance.IsPlayerInGame(gamePlayer) && player.controllers.joystickCount == 0 &&
+                        PlayerManager.Instance == null ||
+                        (PlayerManager.Instance != null &&
+                        PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(gamePlayer) &&
+                        PlayerManager.Instance.spawnedPlayerDictionary[gamePlayer].GetComponent<PlayerController>() &&
+                        !PlayerManager.Instance.spawnedPlayerDictionary[gamePlayer].GetComponent<PlayerBot>()))
+                    {
+                        Debug.Log(gamePlayer);
+                        player.controllers.AddController(j, true);
+                        isJoyStickAssigned = true;
+                        break;
+                    }
+                }
+                if (!isJoyStickAssigned)
+                {
+                    p4.controllers.AddController(j, true);
+                }
+
             }
+            else
+            {
+                foreach (Rewired.Player p in ReInput.players.Players)
+                {
+                    if (p.controllers.joystickCount > 0) continue; // player already has a joystick
+                    p.controllers.AddController(j, true); // assign joystick to player
+                    Debug.Log("Adding Off");
+                    return;
+                }
+            }
+
         }
 
     }

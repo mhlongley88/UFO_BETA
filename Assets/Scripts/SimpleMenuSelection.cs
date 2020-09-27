@@ -66,7 +66,7 @@ public class SimpleMenuSelection : MonoBehaviour
             else
             {
                 currentFocused = previousFocused;
-                Debug.Log(currentFocused.name + "?");
+                //Debug.Log(currentFocused.name + "?");
             }
             
             

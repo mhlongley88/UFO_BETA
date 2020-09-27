@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
 
     public List<CharacterSelectUI> PlayerObjsMul;
     public bool goesNextLevelInsteadOfRetry;
+
+    public int selectedLevelIndex;
+    public bool isLocalSPMode, IsLocalPvPMode;
     //public GameObject conquered_go;
     //private Transform conquered_t;
 

@@ -59,7 +59,20 @@ public class TutorialManager : MonoBehaviour
             p.input = ReInput.players.GetPlayer(rewirePlayerId);
         }
     }
-
+    bool isGoToMenuTimerStarted;
+    IEnumerator DelayAndGoToMainMenu(float t)
+    {
+        yield return new WaitForSeconds(0.5f);
+        t -= 0.5f;
+        if (t <= 0)
+        {
+            GoToLA();
+        }
+        else
+        {
+            StartCoroutine(DelayAndGoToMainMenu(t));
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -101,7 +114,11 @@ public class TutorialManager : MonoBehaviour
         if (canGoToMenu)
         {
             skipPanel.SetActive(true);
-
+            if (!isGoToMenuTimerStarted)
+            {
+                isGoToMenuTimerStarted = true;
+                StartCoroutine(DelayAndGoToMainMenu(5));
+            }
             int rewirePlayerId = 1;
             var activePlayers = GameManager.Instance.GetActivePlayers();
             foreach (Player i in activePlayers)

@@ -148,7 +148,7 @@ public class MainMenuUIManager : MonoBehaviour
             currentMenu = Menu.LevelSelect;
             goDirectlyToLevelSelect = false;
         }
-
+        ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
     }
 
     public void OnlineButtonDisabledListener()
@@ -159,7 +159,19 @@ public class MainMenuUIManager : MonoBehaviour
         }
     }
 
-    
+    public int CountPlayersEnteringMatch()
+    {
+        int i = 0;
+        foreach (var c in characterSelectMenus)
+        {
+            if (c.GetCurSelectState() == CharacterSelectUI.CharacterSelectState.ReadyToStart)
+            {
+                i++;
+            }
+        }
+
+        return i;
+    }
 
     private bool CharacterSelectPlayersReady()
     {
@@ -337,9 +349,11 @@ public class MainMenuUIManager : MonoBehaviour
         }
     }
 
-    public void OfflineButtonListener()
+    public void OfflineButtonListener(int i)
     {
         LobbyConnectionHandler.instance.IsMultiplayerMode = false;
+        GameManager.Instance.isLocalSPMode = i == 0 ? true : false;
+        GameManager.Instance.IsLocalPvPMode = i == 1 ? true : false;
     }
 
     public void SwitchToCharacterSelect()
@@ -420,7 +434,8 @@ public class MainMenuUIManager : MonoBehaviour
     {
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
         LobbyConnectionHandler.instance.IsMultiplayerMode = true;
-       // LobbyUI.instance.FriendsListButton.SetActive(true);
+        GameManager.Instance.isLocalSPMode = GameManager.Instance.IsLocalPvPMode = false;
+        // LobbyUI.instance.FriendsListButton.SetActive(true);
         GameManager.Instance.RemoveAllPlayersFromGame();
         //  LobbyConnectionHandler.instance.gameObject.AddComponent<Photon.Pun.PhotonView>();
 
@@ -561,7 +576,14 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelect.SetActive(true);
                             levelSelectCharacters.AddActivePlayers();
                             characterSelect.SetActive(false);
-                            
+
+                            if (GameManager.Instance.isLocalSPMode && CountPlayersEnteringMatch() == 1)
+                            {
+                                //Allocate all joysticks to P4
+                                //Debug.Log("Allocate all joysticks to P4");
+                                ControllerConnectionManager.instance.AssignAllSurplusJoysticksToP4();
+                            }
+
                             currentMenu = Menu.LevelSelect;
                             // }
                         }
@@ -603,7 +625,12 @@ public class MainMenuUIManager : MonoBehaviour
 
                                 c.ReturnFromLevelSelect();
                             }
-
+                            if (GameManager.Instance.isLocalSPMode)
+                            {
+                                //Allocate all joysticks to Players
+                                Debug.Log("Allocate all joysticks to Players");
+                                ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
+                            }
                             OnlineCharacterSelectionPanel.SetActive(false);
                             OfflineCharacterSelectionPanel.SetActive(true);
                         }
