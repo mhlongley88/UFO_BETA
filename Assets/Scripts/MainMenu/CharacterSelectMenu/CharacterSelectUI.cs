@@ -554,7 +554,8 @@ public class CharacterSelectUI : MonoBehaviour
     private void Update()
     {
         //pStatsInfo.SetActive(charSelect.activeInHierarchy);
-
+        if (GameManager.Instance.paused)
+            return;
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
         {
             switch (selectState)

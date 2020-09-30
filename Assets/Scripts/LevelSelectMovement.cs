@@ -69,6 +69,8 @@ public class LevelSelectMovement : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.paused)
+            return;
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
         {
             direction = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle));

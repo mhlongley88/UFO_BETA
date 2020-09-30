@@ -41,7 +41,7 @@ public class SimpleMenuSelection : MonoBehaviour
     {
         if (currentFocused != this)
         {
-            if(isOptionsMenu && !currentFocused.isSubOptionsMenu)
+            if(isOptionsMenu && currentFocused && !currentFocused.isSubOptionsMenu)
                 BackFromOptionsMenu = currentFocused;
             previousFocused = currentFocused;
             
@@ -56,7 +56,7 @@ public class SimpleMenuSelection : MonoBehaviour
         if (currentFocused == this)
         {
 
-            if (isOptionsMenu && closeOptionsMenu)
+            if (isOptionsMenu && closeOptionsMenu && BackFromOptionsMenu && MainMenuUIManager.Instance.currentMenu == MainMenuUIManager.Menu.Splash)
             {
                 closeOptionsMenu = true;
                 BackFromOptionsMenu.gameObject.SetActive(true);
@@ -80,6 +80,7 @@ public class SimpleMenuSelection : MonoBehaviour
     public void CloseOptionsMenu()
     {
         closeOptionsMenu = true;
+        GameManager.Instance.paused = false;
         MainMenuUIManager.Instance.menuOpen = false;
         MainMenuUIManager.Instance.OptionsCanvas.SetActive(false);
     }
@@ -138,8 +139,8 @@ public class SimpleMenuSelection : MonoBehaviour
             if(i != index)
                 items[i].transform.localScale = Vector3.Lerp(items[i].transform.localScale, originalScales[i], Time.deltaTime * 4.0f);
         }
-
-        items[index].transform.localScale = Vector3.Lerp(items[index].transform.localScale, originalScales[index] + Vector3.one * 0.2f, Time.deltaTime * 4.0f);
+        if (items.Length > 0)
+            items[index].transform.localScale = Vector3.Lerp(items[index].transform.localScale, originalScales[index] + Vector3.one * 0.2f, Time.deltaTime * 4.0f);
     }
 
     public void FocusMenu(SimpleMenuSelection menu)

@@ -44,7 +44,7 @@ public class ControllerConnectionManager : MonoBehaviour
 
     public void Awake()
     {
-        // instance = this;
+         instance = this;
 
         // DontDestroyOnLoad(this);
     }
@@ -66,11 +66,11 @@ public class ControllerConnectionManager : MonoBehaviour
         if (StartCheckingAutomatically)
         {
             // Start the coroutine so that it runs every UpdateFrequencyInSeconds seconds
-            StartCoroutine("CheckConnections");
+            //StartCoroutine("CheckConnections");
         }
         // Listen for controller connection events
         ReInput.ControllerConnectedEvent += OnControllerConnected;
-
+        ReInput.ControllerDisconnectedEvent += OnControllerDisconnected;
         // Assign each Joystick to a Player initially
         //AssignAllJoySticksToPlayers();
     }
@@ -115,6 +115,21 @@ public class ControllerConnectionManager : MonoBehaviour
 
         AssignJoystickToNextOpenPlayer(ReInput.controllers.GetJoystick(args.controllerId));
 
+    }
+
+    void OnControllerDisconnected(ControllerStatusChangedEventArgs args)
+    {
+        if (args.controllerType != ControllerType.Joystick) return; // skip if this isn't a Joystick
+
+        // Assign Joystick to first Player that doesn't have any assigned
+
+        //AssignJoystickToNextOpenPlayer(ReInput.controllers.GetJoystick(args.controllerId));
+        if (PlayerManager.Instance)
+        {
+            GM.paused = true;
+            if (PauseMenu.instance != null && PauseMenu.instance.menuCanvasObj != null)
+                PauseMenu.instance.menuCanvasObj.SetActive(true);
+        }
     }
 
     public void AssignAllSurplusJoysticksToP4()

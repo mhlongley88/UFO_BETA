@@ -485,17 +485,22 @@ public class MainMenuUIManager : MonoBehaviour
     {
         if (!menuOpen)
         {
-            //  previousTimescale = Time.timeScale;//getting the current timescale
-            //   Time.timeScale = 0;//Pausing time
+            // previousTimescale = Time.timeScale;//getting the current timescale
+            // Time.timeScale = 0;//Pausing time
             OptionsCanvas.SetActive(true);
-
+            GameManager.Instance.paused = true;
             menuOpen = true;
         }
         else
         {
-            //  Time.timeScale = previousTimescale;//unpausing time
-
-            menuOpen = false;
+            // Time.timeScale = previousTimescale;//unpausing time
+            if (SimpleMenuSelection.currentFocused && SimpleMenuSelection.currentFocused.isOptionsMenu)
+            {
+                SimpleMenuSelection.currentFocused.CloseOptionsMenu();
+                //OptionsCanvas.SetActive(false);
+                //GameManager.Instance.paused = false;
+                //menuOpen = false;
+            }
         }
     }
 
@@ -503,6 +508,8 @@ public class MainMenuUIManager : MonoBehaviour
     public bool selectingCharacters = false;
     void OfflineMode()
     {
+        //if (GameManager.Instance.paused)//Temporary!!! Remove this
+        //    return;
         foreach (Player p in Enum.GetValues(typeof(Player)))
         {
             if (p != Player.None)
@@ -520,11 +527,13 @@ public class MainMenuUIManager : MonoBehaviour
 
                 rewirePlayer = ReInput.players.GetPlayer(rewirePlayerId);
 
-                if (/*Input.GetKeyDown(KeyCode.Escape)*/ rewirePlayer.GetButtonDown("Pause") && !menuOpen)
+                if (/*Input.GetKeyDown(KeyCode.Escape)*/ rewirePlayer.GetButtonDown("Pause") /*&& !menuOpen*/)
                 {
+                    Debug.Log("Pause pressed");
                     ButtonToggleOptionsMenu();
                 }
-
+                //Debug.Log(GameManager.Instance.paused);
+                
                 //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
                 // Debug.Log("Rewired" + rewirePlayerId);
                 //rewirePlayer = ReInput.players.GetPlayer(3);
@@ -544,7 +553,7 @@ public class MainMenuUIManager : MonoBehaviour
                     //    break;
                     case Menu.CharacterSelect:
                         //if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
-                        if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && rewirePlayer.GetButtonDown("Back"))
+                        if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && rewirePlayer.GetButtonDown("Back") && !GameManager.Instance.paused)
                         {
                           //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
 
@@ -595,7 +604,7 @@ public class MainMenuUIManager : MonoBehaviour
                         {
                             HostNameLevelSelect.SetActive(false);
                         }
-                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back") && !GameManager.Instance.paused)
                         {
                             //vCam2.SetActive(false);
                             //vCam1.SetActive(true);
@@ -636,7 +645,7 @@ public class MainMenuUIManager : MonoBehaviour
                         }
 
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
-                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0 && !GameManager.Instance.paused)
                         {
                             if (UnlockSystem.instance.MatchesCompleted <= 0)
                                 tryTutorialScreen.SetActive(true);
