@@ -161,10 +161,22 @@ public class UnlockSystem : MonoBehaviour
             SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_10);
     }
 
-    public void SaveMatchesCompleted()
+    public void SaveMatchesCompleted(bool gameWon = false)
     {
-        if(matchesCompleted == 0)
+        //if(matchesCompleted == 0)
+        //    SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_0);
+        if (gameWon && !UserPrefs.instance.GetBool("firstMatchWon"))
+        {
+            Debug.Log("Achievement Unlocked - First Game Won");
+            UserPrefs.instance.SetBool("firstMatchWon", true);
             SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_0);
+        }
+        if (gameWon && !UserPrefs.instance.GetBool("firstDoubleMatchWon") && SceneManager.GetActiveScene().name == "MXC")
+        {
+            Debug.Log("Achievement Unlocked - First Double Match Won");
+            UserPrefs.instance.SetBool("firstDoubleMatchWon", true);
+            SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_1);
+        }
 
         matchesCompleted++;
         UserPrefs.instance.SetInt(BattlesCompletedPrefsKey, matchesCompleted);

@@ -444,7 +444,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void GameEnds()
+    public void GameEnds(bool gameWon = false)
     {
 
         // winnerPlayer = winner;
@@ -464,7 +464,7 @@ public class GameManager : MonoBehaviour
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
 
-        UnlockSystem.instance.SaveMatchesCompleted();
+        UnlockSystem.instance.SaveMatchesCompleted(gameWon);
 
         //StartCoroutine(ReturnMainMenu());
     }

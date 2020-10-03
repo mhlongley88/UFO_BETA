@@ -668,7 +668,16 @@ public class PlayerManager : MonoBehaviour
             if(!PlayerBot.active && activePlayers.Count == 4) //Full 4 player local multiplayer match
                 SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_5);
 
-            GameManager.Instance.GameEnds();      
+            if (GameManager.Instance.isLocalSPMode)
+            {
+                bool gameWon = allTheActivePlayersAreBots ? false : true;
+                
+                GameManager.Instance.GameEnds(gameWon);
+            }
+            else
+            {
+                GameManager.Instance.GameEnds();
+            }
         }
         else if (!LobbyConnectionHandler.instance.IsMultiplayerMode && PlayerBot.active && allTheActivePlayersAreBots)
         {
