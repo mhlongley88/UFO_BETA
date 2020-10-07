@@ -192,16 +192,29 @@ namespace OneClickLocalization.Editor
             EditorGUILayout.LabelField("Only scenes from the build settings 'Scenes in build' list are available.",
                 EditorStyles.helpBox);
 
-            EditorBuildSettingsScene[] allScenes = EditorBuildSettings.scenes;
-            String[] scenesNames = new String[allScenes.Length];
-            for (int i = 0; i < allScenes.Length; i++)
+            var allScenes = EditorBuildSettings.scenes;
+            var scenesNames = new List<string>();
+            if (allScenes.Length > 0)
             {
-                EditorBuildSettingsScene scene = allScenes[i];
-                scenesNames[i] = scene.path.Substring(scene.path.LastIndexOf("/") + 1);
+                foreach (var scene in allScenes)
+                {
+                    if (!scene.enabled)
+                        continue;
+                    scenesNames.Add(scene.path.Substring(scene.path.LastIndexOf("/") + 1));
+                }
             }
 
-            DataManager.selectedScenes =
-                EditorGUILayout.MaskField("Selected scenes", DataManager.selectedScenes, scenesNames);
+            if (scenesNames.Count > 0)
+            {
+                DataManager.selectedScenes =
+                    EditorGUILayout.MaskField("Selected scenes", DataManager.selectedScenes, scenesNames.ToArray());
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    "There are no scene configured to be parsed (or the scenes are disabled). Go to 'Build Settings' and add the scenes you want to parse in 'Scenes In Build'",
+                    MessageType.Warning);
+            }
 
             GUIContent inactiveGUIContent = new GUIContent("Parse inactives",
                 "If checked, inactive objects in scenes will be used for the setup process");
@@ -237,22 +250,26 @@ namespace OneClickLocalization.Editor
             EditorGUILayout.EndToggleGroup();
 
             EditorGUILayout.Separator();
-            
+
             // ScriptableObjects 
             DataManager.parseScriptableObjects = EditorGUILayout.BeginToggleGroup(
-                new GUIContent("Parse ScriptableObject assets", "If checked, scriptableObjects fields and properties will be parsed for extraction only during process."),
+                new GUIContent("Parse ScriptableObject assets",
+                    "If checked, scriptableObjects fields and properties will be parsed for extraction only during process."),
                 DataManager.parseScriptableObjects);
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.LabelField("ScriptableObjects are only parsed for data extraction from their fields and properties.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField(
+                "ScriptableObjects are only parsed for data extraction from their fields and properties.",
+                EditorStyles.helpBox);
 
-            DataManager.scriptableObjectPath = EditorGUILayout.TextField("Assets subpath : ", DataManager.scriptableObjectPath);
+            DataManager.scriptableObjectPath =
+                EditorGUILayout.TextField("Assets subpath : ", DataManager.scriptableObjectPath);
             bool scriptableObjectPathExist = Directory.Exists(Application.dataPath + DataManager.scriptableObjectPath);
             if (!scriptableObjectPathExist)
             {
                 EditorGUILayout.LabelField("WARNING : The path does not exist.", EditorStyles.helpBox);
             }
-            
+
             EditorGUI.indentLevel--;
             EditorGUILayout.EndToggleGroup();
 
@@ -402,7 +419,7 @@ namespace OneClickLocalization.Editor
             GUI.backgroundColor = DataManager.mainColor;
 
             GUI.enabled = ((DataManager.addAdapters || DataManager.extractLocalizationData) &&
-                          (DataManager.parsePrefabs || DataManager.parseScenes)) 
+                           (DataManager.parsePrefabs || DataManager.parseScenes))
                           || (DataManager.extractLocalizationData && DataManager.parseScriptableObjects);
 
             GUIContent setupGUIContent = new GUIContent();
@@ -414,7 +431,8 @@ namespace OneClickLocalization.Editor
             if (GUILayout.Button(setupGUIContent, mainButtonStyle, GUILayout.Height(50), GUILayout.Width(300),
                 GUILayout.MinWidth(100)))
             {
-                ParseResult res = Parse(DataManager.parseScenes, DataManager.parsePrefabs, DataManager.parseScriptableObjects,
+                ParseResult res = Parse(DataManager.parseScenes, DataManager.parsePrefabs,
+                    DataManager.parseScriptableObjects,
                     DataManager.extractLocalizationData, DataManager.addAdapters, false);
                 if (res != null)
                 {
@@ -431,7 +449,7 @@ namespace OneClickLocalization.Editor
                                         res.componentsAlreadyExist + " already present)";
                     EditorUtility.DisplayDialog("Setup Project Result",
                         res.scenesParsed + " scenes parsed\n" + res.prefabsParsed + " prefabs parsed" + "\n"
-                        + res.scriptableObjectsParsed + " ScriptableObject parsed\n" + "\n" + 
+                        + res.scriptableObjectsParsed + " ScriptableObject parsed\n" + "\n" +
                         comps + "\n\n" + extractedStr + "\n" + extractedSprites + "\n" + extractedTextures + "\n" +
                         extractedAudioClips + "\n\n" + setupComps, "OK");
                 }
@@ -450,6 +468,13 @@ namespace OneClickLocalization.Editor
             GUILayout.EndHorizontal();
 
             EditorGUILayout.Separator();
+
+            if (EditorBuildSettings.scenes.Length == 0 && DataManager.parseScenes)
+            {
+                EditorGUILayout.HelpBox(
+                    "There are no scene configured to be parsed. Go to 'Build Settings' and add the scenes you want to parse in 'Scenes In Build'",
+                    MessageType.Warning);
+            }
 
             showSetupSettings = GUIUtils.Foldout(showSetupSettings, "Setup Settings", true, EditorStyles.foldout);
             if (showSetupSettings)
@@ -674,8 +699,9 @@ namespace OneClickLocalization.Editor
                 if (parseScriptableObjects && extractData && !reset)
                 {
                     // Get all scriptable objects filtering with the path
-                    foreach (var so in 
-                        DataUtils.GetAllInstances<ScriptableObject>(Application.dataPath + DataManager.scriptableObjectPath))
+                    foreach (var so in
+                        DataUtils.GetAllInstances<ScriptableObject>(Application.dataPath +
+                                                                    DataManager.scriptableObjectPath))
                     {
                         if (so == null)
                             continue;
@@ -900,42 +926,44 @@ namespace OneClickLocalization.Editor
         {
             if (so == null)
                 return;
-            
+
             var objectType = so.GetType();
 
             Debug.Log("Parsing ScriptableObject : " + objectType);
 
             // Parse fields of the type
             RecursiveParseFields(so, parseResult);
-            
+
             // Parse properties, but only the final type properties, ignore parents as we are getting 
             // many scriptableObject properties we don't want
             var properties = objectType.GetProperties(System.Reflection.BindingFlags.Public
                                                       | System.Reflection.BindingFlags.Instance
                                                       | System.Reflection.BindingFlags.DeclaredOnly);
-            foreach(var prop in properties)
+            foreach (var prop in properties)
             {
                 if (prop.PropertyType != typeof(string)) continue;
-                var newId =  (string)prop.GetValue(so);
+                var newId = (string) prop.GetValue(so);
                 // Debug.Log("Property : " + prop.Name + " = " + newId);
                 AddIdToDataManager(newId, parseResult);
             }
         }
 
-        [SerializeField] private HashSet<Type> nonRecursiveTypes = new HashSet<Type> { typeof(int), typeof(float), typeof(bool) };
+        [SerializeField]
+        private HashSet<Type> nonRecursiveTypes = new HashSet<Type> {typeof(int), typeof(float), typeof(bool)};
+
         private void RecursiveParseFields<T>(T obj, ParseResult parseResult)
         {
             foreach (var field in obj.GetType().GetFields())
             {
                 if (nonRecursiveTypes.Contains(field.FieldType)) continue;
-                
+
                 if (field.FieldType == typeof(string))
                 {
-                    AddIdToDataManager((string)field.GetValue(obj), parseResult);
+                    AddIdToDataManager((string) field.GetValue(obj), parseResult);
                 }
                 else if (typeof(IList).IsAssignableFrom(field.FieldType))
                 {
-                    foreach (var item in (IList)field.GetValue(obj))
+                    foreach (var item in (IList) field.GetValue(obj))
                     {
                         RecursiveParseFields(item, parseResult);
                     }
@@ -946,7 +974,7 @@ namespace OneClickLocalization.Editor
                 }
             }
         }
-        
+
         private void ExtractCompData(Component comp, ParseResult parseResult)
         {
             object newId = null;
@@ -987,7 +1015,7 @@ namespace OneClickLocalization.Editor
         private void AddIdToDataManager(object newId, ParseResult parseResult)
         {
             if (newId == null || newId.Equals("")) return;
-            
+
             if (!DataManager.editorSetup.HasId(newId))
             {
                 switch (newId)
@@ -1028,7 +1056,7 @@ namespace OneClickLocalization.Editor
                 }
             }
         }
-        
+
         private void UpdateTranslatedStats()
         {
             idsTranslatedCount.Clear();

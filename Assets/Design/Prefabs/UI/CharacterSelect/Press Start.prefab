@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2424868097857039720}
   - component: {fileID: 6078548884543996033}
   - component: {fileID: 5927703753157546341}
+  - component: {fileID: -6263543037227014503}
   m_Layer: 0
   m_Name: TextMeshPro (3)
   m_TagString: Untagged
@@ -72,6 +73,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -110,8 +112,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: PRESS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4f7d41628ec0d9d47a863add87736398, type: 2}
@@ -149,7 +149,6 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 257
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -176,6 +175,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -190,12 +190,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 2424868097857039720}
   m_subTextObjects:
@@ -208,6 +205,22 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
+--- !u!114 &-6263543037227014503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142042187535992859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2453b5f2b50351e4cae4c8b7d4a31cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localizeStringEnabled: 1
+  localizeTextureEnabled: 1
+  localizeSpriteEnabled: 1
+  localizeAudioClipEnabled: 1
 --- !u!1 &3127716137835081471
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,6 +266,7 @@ GameObject:
   - component: {fileID: 8298487728044342634}
   - component: {fileID: 8022944845180079050}
   - component: {fileID: 8015917211558911131}
+  - component: {fileID: 2227322960128374982}
   m_Layer: 0
   m_Name: TextMeshPro (4)
   m_TagString: Untagged
@@ -312,6 +326,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -350,8 +365,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: '[START]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4f7d41628ec0d9d47a863add87736398, type: 2}
@@ -389,7 +402,6 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 257
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -416,6 +428,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -430,12 +443,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 8298487728044342634}
   m_subTextObjects:
@@ -448,3 +458,19 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
+--- !u!114 &2227322960128374982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3612271329913061615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2453b5f2b50351e4cae4c8b7d4a31cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localizeStringEnabled: 1
+  localizeTextureEnabled: 1
+  localizeSpriteEnabled: 1
+  localizeAudioClipEnabled: 1

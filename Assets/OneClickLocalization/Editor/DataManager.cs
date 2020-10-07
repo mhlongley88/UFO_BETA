@@ -581,6 +581,7 @@ namespace OneClickLocalization.Editor
             if (formatedStr == null)
                 return null;
             formatedStr = formatedStr.Replace("\\n", "\n");
+            formatedStr = formatedStr.Replace("\"\"", "\"");
             return formatedStr;
         }
 
@@ -589,6 +590,7 @@ namespace OneClickLocalization.Editor
             if (str == null)
                 return null;
             str = str.Replace("\n", "\\n");
+            str = str.Replace("\"", "\"\"");;
             return str;
         }
 

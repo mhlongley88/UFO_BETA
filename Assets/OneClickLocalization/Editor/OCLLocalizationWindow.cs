@@ -348,7 +348,8 @@ namespace OneClickLocalization.Editor
 
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Translate all", mainButtonStyle, GUILayout.ExpandWidth(false)))
+            GUI.backgroundColor = DataManager.mainColor;
+            if (GUILayout.Button(new GUIContent("Translate all", "Translate all active strings from current filter"), mainButtonStyle, GUILayout.ExpandWidth(false)))
             {
                 if (EditorUtility.DisplayDialog("Translate all strings", "This will translate all strings of the table, based on the filter. It will erase current values. Are you sure you want to continue?", "Oh yeah!", "Hum... let me check... stop here."))
                 {
@@ -388,7 +389,8 @@ namespace OneClickLocalization.Editor
                     }
                 }
             }
-            
+            GUI.backgroundColor = defaultBgColor;
+
             if (GUILayout.Button("Remove all strings", GUILayout.ExpandWidth(false)))
             {
                 if (EditorUtility.DisplayDialog("Remove all strings", "Are you sure you want delete all strings?\nYou'll lose all localizations of all languages (everything in other words...).", "Delete all YES !", "Of course NOT! Go back!"))

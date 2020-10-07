@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using OneClickLocalization.Core;
+using Object = UnityEngine.Object;
 
 namespace OneClickLocalization.Editor.Utils
 {
@@ -265,44 +267,34 @@ namespace OneClickLocalization.Editor.Utils
         /// <returns></returns>
         public static string[] SplitCsvLine(string line, bool useSemiColonSeparator = false)
         {
-            string pattern = null;
+            string pattern;
             if (useSemiColonSeparator)
             {
-                pattern = @"
-     # Match one value in valid CSV string.
-     (?!\s*$)                                      # Don't match empty last value.
-     \s*                                           # Strip whitespace before value.
-     (?:                                           # Group for value alternatives.
-       '(?<val>[^'\\]*(?:\\[\S\s][^'\\]*)*)'       # Either $1: Single quoted string,
-     | ""(?<val>[^""\\]*(?:\\[\S\s][^""\\]*)*)""   # or $2: Double quoted string,
-     | (?<val>[^;'""\s\\]*(?:\s+[^;'""\s\\]+)*)    # or $3: Non-comma, non-quote stuff.
-     )                                             # End group of value alternatives.
-     \s*                                           # Strip whitespace after value.
-     (?:;|$)                                       # Field ends on comma or EOS.
-     ";
+                pattern = @"(?:^""|;"")(""""|[\w\W]*?)(?="";|""$)|(?:^(?!"")|;(?!""))([^;]*?)(?=$|;)|(\r\n|\n)";
             }
             else
             {
-                pattern = @"
-     # Match one value in valid CSV string.
-     (?!\s*$)                                      # Don't match empty last value.
-     \s*                                           # Strip whitespace before value.
-     (?:                                           # Group for value alternatives.
-       '(?<val>[^'\\]*(?:\\[\S\s][^'\\]*)*)'       # Either $1: Single quoted string,
-     | ""(?<val>[^""\\]*(?:\\[\S\s][^""\\]*)*)""   # or $2: Double quoted string,
-     | (?<val>[^,'""\s\\]*(?:\s+[^,'""\s\\]+)*)    # or $3: Non-comma, non-quote stuff.
-     )                                             # End group of value alternatives.
-     \s*                                           # Strip whitespace after value.
-     (?:,|$)                                       # Field ends on comma or EOS.
-     ";
+                pattern = @"(?:^""|,"")(""""|[\w\W]*?)(?="",|""$)|(?:^(?!"")|,(?!""))([^,]*?)(?=$|,)|(\r\n|\n)";
             }
 
+            // MatchCollection matches = pattern.Matches(line);
             MatchCollection matches = Regex.Matches(line, pattern,
-                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
-            string[] values =
-                (from Match m in matches
-                    select m.Groups[1].Value).ToArray();
-            return values;
+                RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+            List<string> values = new List<string>();
+            for (var i=0; i<matches.Count; i++)
+            {
+                var m = matches[i];
+                var selectedValue = "";
+                for (var j = 0; j < m.Groups.Count; j++)
+                {
+                    if (m.Groups[j].Value != "")
+                    {
+                        selectedValue = m.Groups[j].Value;
+                    }
+                }
+                values.Add(selectedValue);
+            }
+            return values.ToArray();
         }
     }
 }
