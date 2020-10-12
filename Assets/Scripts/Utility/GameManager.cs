@@ -80,7 +80,8 @@ public class GameManager : MonoBehaviour
 
     const string PlayedWithCharacterKey = "UFO_PlayedWithCharacter";
     public UnlockSteamAchievement playedWithAllCharactersAchievement;
-
+    public string selectedLanguage;
+    public Texture[] ConqueredMaterialTextures;
     public void Awake()
     {
         Cursor.visible = true;
@@ -112,7 +113,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Cursor.visible = false;
+        Cursor.visible = true;
         GamesCompletedTally.gameWasCompleted = false;
 
         bool playedWithAllCharacters = true;

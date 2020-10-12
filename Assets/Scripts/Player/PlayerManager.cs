@@ -52,8 +52,9 @@ public class PlayerManager : MonoBehaviour
     public bool debugP4join;
     public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
 
+    public Texture[] ConqueredMaterialTextures;
+    public Material conqueredMaterial;
 
-    
 
     public bool gameHasEnded = false;
 
@@ -103,6 +104,8 @@ public class PlayerManager : MonoBehaviour
     public void Start()
     {
         useDoubleMatch = DoubleMatch.useDoubleMatch;
+        ConqueredMaterialTextures = GameManager.Instance.ConqueredMaterialTextures;
+        SetConqueredMaterialTexture();
 
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
@@ -736,4 +739,44 @@ public class PlayerManager : MonoBehaviour
 
     }
 
+    void SetConqueredMaterialTexture()
+    {
+        conqueredMaterial = Resources.Load("Boom MAT Text RY", typeof(Material)) as Material;
+        switch (GameManager.Instance.selectedLanguage)
+        {
+            case "English":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[0];
+                break;
+            case "ChineseSimplified":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[1];
+                break;
+            case "French":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[2];
+                break;
+            case "German":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[3];
+                break;
+            case "Italian":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[4];
+                break;
+            case "Portugese":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[5];
+                break;
+            case "Russian":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[6];
+                break;
+            case "Spanish":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
+                break;
+
+            case "Polish":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
+                break;
+            case "Dutch":
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
+                break;
+
+
+        }
+    }
 }

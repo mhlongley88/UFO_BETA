@@ -41,12 +41,13 @@ public class SimpleMenuSelection : MonoBehaviour
     {
         if (currentFocused != this)
         {
-            if(isOptionsMenu && currentFocused && !currentFocused.isSubOptionsMenu)
+            if (isOptionsMenu && currentFocused && !currentFocused.isSubOptionsMenu)
                 BackFromOptionsMenu = currentFocused;
             previousFocused = currentFocused;
-            
+
             if (previousFocused != null && previousFocused.gameObject.activeInHierarchy) previousFocused.gameObject.SetActive(false);
-             currentFocused = this;
+            currentFocused = this;
+            index = 0;
             //Debug.Log(currentFocused.name);
         }
     }
@@ -61,25 +62,25 @@ public class SimpleMenuSelection : MonoBehaviour
                 closeOptionsMenu = true;
                 BackFromOptionsMenu.gameObject.SetActive(true);
                 currentFocused = BackFromOptionsMenu;
-                Debug.Log(currentFocused.name);
+                //Debug.Log(currentFocused.name);
             }
             else
             {
                 currentFocused = previousFocused;
-                //Debug.Log(currentFocused.name + "?");
+                //Debug.Log(currentFocused.name + "?" + previousFocused.name);
             }
-            
-            
-            if(currentFocused == null)
+
+
+            if (currentFocused == null)
             {
-               
+
             }
         }
     }
 
     public void CloseOptionsMenu()
     {
-        closeOptionsMenu = true;
+        closeOptionsMenu = true; Debug.Log("WTF?");
         GameManager.Instance.paused = false;
         MainMenuUIManager.Instance.menuOpen = false;
         MainMenuUIManager.Instance.OptionsCanvas.SetActive(false);
@@ -88,6 +89,8 @@ public class SimpleMenuSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         if (currentFocused == this && !PlayVideoWhileIdle.playingIdleVideo)
         {
             for (int i = 0; i < 4; i++)
@@ -110,8 +113,12 @@ public class SimpleMenuSelection : MonoBehaviour
 
                 }
 
-                if (rewirePlayer.GetButtonDown(submitBtnName) && items[index].interactable)
+                if (rewirePlayer.GetButtonDown(submitBtnName) && items.Length != 0 && items[index].interactable)
+                {
+                    Debug.Log("ItemLength: " + items.Length + "---" + this.name);
                     items[index].onClick.Invoke();
+                }
+
 
 
                 if (goToMenuWhenBack != null && rewirePlayer.GetButtonDown("Back"))
@@ -126,21 +133,26 @@ public class SimpleMenuSelection : MonoBehaviour
                         goToMenuWhenBack.gameObject.SetActive(true);
                         FocusMenu(goToMenuWhenBack);
                     }
-                    
+
                 }
             }
         }
 
-        if (index < 0) index = items.Length - 1;
-        else if (index >= items.Length) index = 0;
 
-        for (int i = 0; i < items.Length; i++)
+        if (items.Length != 0)
         {
-            if(i != index)
-                items[i].transform.localScale = Vector3.Lerp(items[i].transform.localScale, originalScales[i], Time.deltaTime * 4.0f);
+            if (index < 0) index = items.Length - 1;
+            else if (index >= items.Length) index = 0;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                if (i != index)
+                    items[i].transform.localScale = Vector3.Lerp(items[i].transform.localScale, originalScales[i], Time.deltaTime * 4.0f);
+            }
+            if (items.Length > 0)
+                items[index].transform.localScale = Vector3.Lerp(items[index].transform.localScale, originalScales[index] + Vector3.one * 0.2f, Time.deltaTime * 4.0f);
         }
-        if (items.Length > 0)
-            items[index].transform.localScale = Vector3.Lerp(items[index].transform.localScale, originalScales[index] + Vector3.one * 0.2f, Time.deltaTime * 4.0f);
+
     }
 
     public void FocusMenu(SimpleMenuSelection menu)

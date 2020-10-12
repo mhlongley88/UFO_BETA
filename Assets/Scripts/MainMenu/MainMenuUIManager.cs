@@ -65,7 +65,8 @@ public class MainMenuUIManager : MonoBehaviour
     public CharacterSelectUI[] characterSelectMenusMul;
     public CharacterSelectUI[] characterSelectMenusMulPrefabs;
     public LevelSelectCharacters levelSelectCharacters;
-
+    public Sprite[] CountryFlags;
+    public Texture[] ConqueredMaterialTextures;
     public TMP_Dropdown languageDropdown;
 
     public static bool goDirectlyToLevelSelect;
@@ -148,6 +149,7 @@ public class MainMenuUIManager : MonoBehaviour
             currentMenu = Menu.LevelSelect;
             goDirectlyToLevelSelect = false;
         }
+        GameManager.Instance.ConqueredMaterialTextures = ConqueredMaterialTextures;
         ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
     }
 
@@ -794,19 +796,69 @@ public class MainMenuUIManager : MonoBehaviour
         List<string> languagesStrings = new List<string>();
         languagesStrings.Add("English");
         // Add supported languages
-        Debug.Log(OCL.GetLanguages().Count + " Total languages");
+        //Debug.Log(OCL.GetLanguages().Count + " Total languages");
+
         foreach (SystemLanguage supportedLanguage in OCL.GetLanguages())
         {
-            if(!languagesStrings.Contains(supportedLanguage.ToString()))
+            if (!languagesStrings.Contains(supportedLanguage.ToString()))
                 languagesStrings.Add(supportedLanguage.ToString());
         }
         languageDropdown.AddOptions(languagesStrings);
+        GameManager.Instance.selectedLanguage = languageDropdown.options[languageDropdown.value].text;
+        foreach (TMP_Dropdown.OptionData item in languageDropdown.options)
+        {
+            //item.image = CountryFlags[i++];
+            // 0th item - English Flag
+            // 1st item - Chinese 
+            // 2- french
+            // 3- German
+            // 4 Italian
+            // 5 Portugese
+            // 6 Russian
+            // 7 Spanish
+            // 8 Polish
+            // 9 Dutch
+            switch (item.text)
+            {
+                case "English":
+                    item.image = CountryFlags[0];
+                    break;
+                case "ChineseSimplified":
+                    item.image = CountryFlags[1];
+                    break;
+                case "French":
+                    item.image = CountryFlags[2];
+                    break;
+                case "German":
+                    item.image = CountryFlags[3];
+                    break;
+                case "Italian":
+                    item.image = CountryFlags[4];
+                    break;
+                case "Portuguese":
+                    item.image = CountryFlags[5];
+                    break;
+                case "Russian":
+                    item.image = CountryFlags[6];
+                    break;
+                case "Spanish":
+                    item.image = CountryFlags[7];
+                    break;
+                case "Polish":
+                    item.image = CountryFlags[8];
+                    break;
+                case "Dutch":
+                    item.image = CountryFlags[9];
+                    break;
+            }
+        }
     }
     //2
     public void OnLanguageDropdown_ValueChange(int value)
     {
         Debug.Log(value + "-" + languageDropdown.options[languageDropdown.value].text);
         string selectedLanguage = languageDropdown.options[languageDropdown.value].text;
+        GameManager.Instance.selectedLanguage = selectedLanguage;
         OCL.SetLanguage((SystemLanguage)Enum.Parse(typeof(SystemLanguage), selectedLanguage));
 
         foreach (FontSwap obj in FontSwapTexts)
