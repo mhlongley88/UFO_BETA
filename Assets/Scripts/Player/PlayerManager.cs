@@ -53,8 +53,9 @@ public class PlayerManager : MonoBehaviour
     public Dictionary<Player,GameObject> spawnedPlayerDictionary = new Dictionary<Player,GameObject>();
 
     public Texture[] ConqueredMaterialTextures;
+    public Sprite[] ConqueredMaterialSprites;
     public Material conqueredMaterial;
-
+    public SpriteRenderer ConqueredTextSprite;
 
     public bool gameHasEnded = false;
 
@@ -105,6 +106,8 @@ public class PlayerManager : MonoBehaviour
     {
         useDoubleMatch = DoubleMatch.useDoubleMatch;
         ConqueredMaterialTextures = GameManager.Instance.ConqueredMaterialTextures;
+        ConqueredMaterialSprites = GameManager.Instance.ConqueredMaterialSprites;
+        //ConqueredTextSprite = GameObject.Find("Conquered_text_Sprite").GetComponent<SpriteRenderer>();
         SetConqueredMaterialTexture();
 
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -779,4 +782,44 @@ public class PlayerManager : MonoBehaviour
 
         }
     }
+    public void SetConqueredSpriteText(SpriteRenderer sr)
+    {
+        switch (GameManager.Instance.selectedLanguage)
+        {
+            case "English":
+                sr.sprite = ConqueredMaterialSprites[0];
+                break;
+            case "ChineseSimplified":
+                sr.sprite = ConqueredMaterialSprites[1];
+                break;
+            case "French":
+                sr.sprite = ConqueredMaterialSprites[2];
+                break;
+            case "German":
+                sr.sprite = ConqueredMaterialSprites[3];
+                break;
+            case "Italian":
+                sr.sprite = ConqueredMaterialSprites[4];
+                break;
+            case "Portugese":
+                sr.sprite = ConqueredMaterialSprites[5];
+                break;
+            case "Russian":
+                sr.sprite = ConqueredMaterialSprites[6];
+                break;
+            case "Spanish":
+                sr.sprite = ConqueredMaterialSprites[7];
+                break;
+
+            case "Polish":
+                sr.sprite = ConqueredMaterialSprites[7];
+                break;
+            case "Dutch":
+                sr.sprite = ConqueredMaterialSprites[7];
+                break;
+
+
+        }
+    }
+
 }

@@ -82,6 +82,7 @@ public class GameManager : MonoBehaviour
     public UnlockSteamAchievement playedWithAllCharactersAchievement;
     public string selectedLanguage;
     public Texture[] ConqueredMaterialTextures;
+    public Sprite[] ConqueredMaterialSprites;
     public void Awake()
     {
         Cursor.visible = true;

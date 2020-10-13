@@ -67,6 +67,7 @@ public class MainMenuUIManager : MonoBehaviour
     public LevelSelectCharacters levelSelectCharacters;
     public Sprite[] CountryFlags;
     public Texture[] ConqueredMaterialTextures;
+    public Sprite[] ConqueredMaterialSprites;
     public TMP_Dropdown languageDropdown;
 
     public static bool goDirectlyToLevelSelect;
@@ -150,6 +151,7 @@ public class MainMenuUIManager : MonoBehaviour
             goDirectlyToLevelSelect = false;
         }
         GameManager.Instance.ConqueredMaterialTextures = ConqueredMaterialTextures;
+        GameManager.Instance.ConqueredMaterialSprites = ConqueredMaterialSprites;
         ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
     }
 
