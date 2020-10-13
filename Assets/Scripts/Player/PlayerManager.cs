@@ -773,10 +773,10 @@ public class PlayerManager : MonoBehaviour
                 break;
 
             case "Polish":
-                conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[8];
                 break;
             case "Dutch":
-                conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
+                conqueredMaterial.mainTexture = ConqueredMaterialTextures[9];
                 break;
 
 
@@ -812,10 +812,10 @@ public class PlayerManager : MonoBehaviour
                 break;
 
             case "Polish":
-                sr.sprite = ConqueredMaterialSprites[7];
+                sr.sprite = ConqueredMaterialSprites[8];
                 break;
             case "Dutch":
-                sr.sprite = ConqueredMaterialSprites[7];
+                sr.sprite = ConqueredMaterialSprites[9];
                 break;
 
 
