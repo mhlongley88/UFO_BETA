@@ -806,6 +806,7 @@ public class MainMenuUIManager : MonoBehaviour
                 languagesStrings.Add(supportedLanguage.ToString());
         }
         languageDropdown.AddOptions(languagesStrings);
+        Debug.Log(languageDropdown.value + "" + languageDropdown.options.Count);
         GameManager.Instance.selectedLanguage = languageDropdown.options[languageDropdown.value].text;
         foreach (TMP_Dropdown.OptionData item in languageDropdown.options)
         {
