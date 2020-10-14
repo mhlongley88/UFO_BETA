@@ -791,8 +791,90 @@ public class MainMenuUIManager : MonoBehaviour
     {
         Photon.Pun.PhotonNetwork.LeaveRoom();
     }
-    //1
-    public void PopulateLanguageSelectDropdown()
+   
+    public string GetLocalLanguageRepresentation(string lang)//#1
+    {
+        string s = "";
+
+        switch (lang)// This one? Order doesn't matter in this one!
+        {
+            case "English":
+                s = "English";
+                break;
+            case "German":
+                s = "Deutsche";
+                break;
+            case "ChineseSimplified":
+                s = "中文";//Update to chinese --
+                break;
+            case "French":
+                s = "Français";//Update to French
+                break;
+            case "Italian":
+                s = "Italiano";
+                break;
+            case "Portuguese":
+                s = "Português";
+                break;
+            case "Russian":
+                s = "Pусский";
+                break;
+            case "Spanish":
+                s = "Español";
+                break;
+            case "Polish":
+                s = "Polski";
+                break;
+            case "Dutch":
+                s = "Nederlands";
+                break;
+        }
+
+        return s;
+    }
+
+    public string GetEnglishRepresentation(string lang)//#2
+    {
+        string s = "";
+
+        switch (lang)// This one? Order doesn't matter in this one!
+        {
+            case "English":
+                s = "English";
+                break;
+            case "Deutsche":
+                s = "German";
+                break;
+            case "中文"://Update to chinese
+                s = "ChineseSimplified";
+                break;
+            case "Français"://Update to French
+                s = "French";
+                break;
+            case "Italiano":
+                s = "Italian";
+                break;
+            case "Português":
+                s = "Portuguese";
+                break;
+            case "Pусский":
+                s = "Russian";
+                break;
+            case "Español":
+                s = "Spanish";
+                break;
+            case "Polski":
+                s = "Polish";
+                break;
+            case "Nederlands":
+                s = "Dutch";
+                break;
+        }
+
+        return s;
+    }
+
+    public void PopulateLanguageSelectDropdown()//#3
     {
         languageDropdown.ClearOptions();
         List<string> languagesStrings = new List<string>();
@@ -803,7 +885,7 @@ public class MainMenuUIManager : MonoBehaviour
         foreach (SystemLanguage supportedLanguage in OCL.GetLanguages())
         {
             if (!languagesStrings.Contains(supportedLanguage.ToString()))
-                languagesStrings.Add(supportedLanguage.ToString());
+                languagesStrings.Add(GetLocalLanguageRepresentation(supportedLanguage.ToString()));
         }
         languageDropdown.AddOptions(languagesStrings);
         Debug.Log(languageDropdown.value + "" + languageDropdown.options.Count);
@@ -821,36 +903,37 @@ public class MainMenuUIManager : MonoBehaviour
             // 7 Spanish
             // 8 Polish
             // 9 Dutch
+            // Update language names in native language
             switch (item.text)
             {
                 case "English":
                     item.image = CountryFlags[0];
                     break;
-                case "ChineseSimplified":
+                case "中文"://Update to chinese
                     item.image = CountryFlags[1];
                     break;
-                case "French":
+                case "Français"://Update to French
                     item.image = CountryFlags[2];
                     break;
-                case "German":
+                case "Deutsche"://Update to Deutsche
                     item.image = CountryFlags[3];
                     break;
-                case "Italian":
+                case "Italiano":
                     item.image = CountryFlags[4];
                     break;
-                case "Portuguese":
+                case "Português":
                     item.image = CountryFlags[5];
                     break;
-                case "Russian":
+                case "Pусский":
                     item.image = CountryFlags[6];
                     break;
-                case "Spanish":
+                case "Español":
                     item.image = CountryFlags[7];
                     break;
-                case "Polish":
+                case "Polski":
                     item.image = CountryFlags[8];
                     break;
-                case "Dutch":
+                case "Nederlands":
                     item.image = CountryFlags[9];
                     break;
             }
@@ -862,7 +945,7 @@ public class MainMenuUIManager : MonoBehaviour
         Debug.Log(value + "-" + languageDropdown.options[languageDropdown.value].text);
         string selectedLanguage = languageDropdown.options[languageDropdown.value].text;
         GameManager.Instance.selectedLanguage = selectedLanguage;
-        OCL.SetLanguage((SystemLanguage)Enum.Parse(typeof(SystemLanguage), selectedLanguage));
+        OCL.SetLanguage((SystemLanguage)Enum.Parse(typeof(SystemLanguage), GetEnglishRepresentation(selectedLanguage)));
 
         foreach (FontSwap obj in FontSwapTexts)
         {

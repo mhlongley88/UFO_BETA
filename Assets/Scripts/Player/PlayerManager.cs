@@ -742,79 +742,81 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    void SetConqueredMaterialTexture()
+    void SetConqueredMaterialTexture()//#1
     {
         conqueredMaterial = Resources.Load("Boom MAT Text RY", typeof(Material)) as Material;
+        //This will set Boom mat texture. Just update language names in these two functions- you will be good. 2 functions in this script!
         switch (GameManager.Instance.selectedLanguage)
         {
             case "English":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[0];
                 break;
-            case "ChineseSimplified":
+            case "中文":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[1];
                 break;
-            case "French":
+            case "Français":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[2];
                 break;
-            case "German":
+            case "Deutsche":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[3];
                 break;
-            case "Italian":
+            case "Italiano":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[4];
                 break;
-            case "Portugese":
+            case "Português":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[5];
                 break;
-            case "Russian":
+            case "Pусский":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[6];
                 break;
-            case "Spanish":
+            case "Español":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[7];
                 break;
 
-            case "Polish":
+            case "Polski":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[8];
                 break;
-            case "Dutch":
+            case "Nederlands":
                 conqueredMaterial.mainTexture = ConqueredMaterialTextures[9];
                 break;
 
 
         }
     }
-    public void SetConqueredSpriteText(SpriteRenderer sr)
+    public void SetConqueredSpriteText(SpriteRenderer sr)//#2
     {
+        // Update language names in native language - This will set Conquered sprites
         switch (GameManager.Instance.selectedLanguage)
         {
             case "English":
                 sr.sprite = ConqueredMaterialSprites[0];
                 break;
-            case "ChineseSimplified":
+            case "中文":
                 sr.sprite = ConqueredMaterialSprites[1];
                 break;
-            case "French":
+            case "Français":
                 sr.sprite = ConqueredMaterialSprites[2];
                 break;
-            case "German":
+            case "Deutsche":// Update this to Deutsche
                 sr.sprite = ConqueredMaterialSprites[3];
                 break;
-            case "Italian":
+            case "Italiano":
                 sr.sprite = ConqueredMaterialSprites[4];
                 break;
-            case "Portugese":
+            case "Português":
                 sr.sprite = ConqueredMaterialSprites[5];
                 break;
-            case "Russian":
+            case "Pусский":
                 sr.sprite = ConqueredMaterialSprites[6];
                 break;
-            case "Spanish":
+            case "Español":
                 sr.sprite = ConqueredMaterialSprites[7];
                 break;
 
-            case "Polish":
+            case "Polski":
                 sr.sprite = ConqueredMaterialSprites[8];
                 break;
-            case "Dutch":
+            case "Nederlands":
                 sr.sprite = ConqueredMaterialSprites[9];
                 break;
 
