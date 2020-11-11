@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     public bool HasCutsceneObjectsActive { get; private set; }
 
     const string PlayedWithCharacterKey = "UFO_PlayedWithCharacter";
-    public UnlockSteamAchievement playedWithAllCharactersAchievement;
+    //public UnlockSteamAchievement playedWithAllCharactersAchievement;
     public string selectedLanguage;
     public Texture[] ConqueredMaterialTextures;
     public Sprite[] ConqueredMaterialSprites;
@@ -128,10 +128,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if(playedWithAllCharacters)
+       /* if(playedWithAllCharacters)
         {
             playedWithAllCharactersAchievement.Unlock();
-        }
+        }*/
     }
 
     IEnumerator delayCheck()
@@ -354,11 +354,11 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
+           /* if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
             {
-                SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
-                UnlockAchievementPostLevel.chosen = false;
-            }
+                //SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
+                //UnlockAchievementPostLevel.chosen = false;
+            }*/
         }
         else
         {
@@ -385,11 +385,11 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
+     /*   if (DoubleMatch.useDoubleMatch && UnlockAchievementPostLevel.chosen)
         {
-            SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
+           // SteamGameAchievements.instance.UnlockAchievement(UnlockAchievementPostLevel.achievementSelected);
             UnlockAchievementPostLevel.chosen = false;
-        }
+        }*/
 
         PlayerBot.active = false;
         DoubleMatch.useDoubleMatch = false;

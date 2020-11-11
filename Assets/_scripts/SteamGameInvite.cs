@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Steamworks;
+//using Steamworks;
 using Photon.Pun;
 public class SteamGameInvite : MonoBehaviour
 {
-    public static SteamGameInvite instance;
+ /*   public static SteamGameInvite instance;
     protected Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
     // Start is called before the first frame update
@@ -44,5 +44,5 @@ public class SteamGameInvite : MonoBehaviour
     void JoinGame(string connStr)
     {
         PhotonNetwork.JoinRoom(connStr);
-    }
+    }*/
 }

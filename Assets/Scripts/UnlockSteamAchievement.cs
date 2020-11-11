@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnlockSteamAchievement : MonoBehaviour
 {
-    public SteamGameAchievements.Achievement achievement;
+   /* public SteamGameAchievements.Achievement achievement;
     public bool unlockOnEnable = false;
 
     private void OnEnable()
@@ -16,5 +16,5 @@ public class UnlockSteamAchievement : MonoBehaviour
     public void Unlock()
     {
         SteamGameAchievements.instance.UnlockAchievement(achievement);
-    }
+    }*/
 }

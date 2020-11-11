@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Steamworks;
+//using Steamworks;
 
 public class SteamScript : MonoBehaviour
 {
     
-    public GameObject FriendPrefab, FriendsListParent, FriendsListPanel, InvitationsParent, InvitationsPrefab;
+ /*   public GameObject FriendPrefab, FriendsListParent, FriendsListPanel, InvitationsParent, InvitationsPrefab;
 
 
     // Start is called before the first frame update
@@ -194,5 +194,5 @@ public class SteamScript : MonoBehaviour
         string name = SteamFriends.GetPersonaName();
         LobbyConnectionHandler.instance.myDisplayName = name;
         Debug.Log(name);
-    }
+    }*/
 }

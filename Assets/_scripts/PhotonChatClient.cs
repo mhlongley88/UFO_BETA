@@ -74,7 +74,7 @@ public class PhotonChatClient : MonoBehaviour, IChatClientListener
         if (sender != myUserId)
         {
             
-            SteamScript.instance.InviteRecieved(sender, message.ToString());
+           // SteamScript.instance.InviteRecieved(sender, message.ToString());
         }
         //throw new System.NotImplementedException();
     }

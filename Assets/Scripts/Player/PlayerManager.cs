@@ -671,8 +671,8 @@ public class PlayerManager : MonoBehaviour
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
             }
 
-            if(!PlayerBot.active && activePlayers.Count == 4) //Full 4 player local multiplayer match
-                SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_5);
+           // if(!PlayerBot.active && activePlayers.Count == 4) //Full 4 player local multiplayer match
+              //  SteamGameAchievements.instance.UnlockAchievement(SteamGameAchievements.Achievement.UFO_ACHIEVEMENT_1_5);
 
             if (GameManager.Instance.isLocalSPMode)
             {

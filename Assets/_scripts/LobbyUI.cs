@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-using Steamworks;
+//using Steamworks;
 public class LobbyUI : MonoBehaviour
 {
     public static LobbyUI instance;
@@ -45,7 +45,7 @@ public class LobbyUI : MonoBehaviour
     
     public void InviteRecieved(string id, string roomId)
     {
-        CSteamID Id = new CSteamID();
+       // CSteamID Id = new CSteamID();
 
         InvitedFriendName.text = id;    //SteamFriends.GetFriendPersonaName(id);
         InvitationPanel.SetActive(true);

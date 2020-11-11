@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnlockAchievementPostLevel : MonoBehaviour
 {
-    public SteamGameAchievements.Achievement achievement;
+   /* public SteamGameAchievements.Achievement achievement;
     public static SteamGameAchievements.Achievement achievementSelected;
     public static bool chosen;
 
@@ -17,5 +17,5 @@ public class UnlockAchievementPostLevel : MonoBehaviour
     public void Unset()
     {
         chosen = false;
-    }
+    }*/
 }

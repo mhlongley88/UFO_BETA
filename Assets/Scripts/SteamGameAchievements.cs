@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.ComponentModel;
-using Steamworks;
+//using Steamworks;
 using System.Linq;
 
 public class SteamGameAchievements : MonoBehaviour
 {
-	public static SteamGameAchievements instance;
+	/*public static SteamGameAchievements instance;
 
 	public enum Achievement : int
 	{
@@ -293,5 +293,5 @@ public class SteamGameAchievements : MonoBehaviour
 			m_strDescription = desc;
 			m_bAchieved = false;
 		}
-	}
+	}*/
 }

@@ -94,7 +94,7 @@ public class MainMenuUIManager : MonoBehaviour
         {
             instance = this;
         }
-        PopulateLanguageSelectDropdown();
+        //PopulateLanguageSelectDropdown();//Before-
     }
     void DisablePlayersLeftTextObj()
     {
@@ -153,6 +153,7 @@ public class MainMenuUIManager : MonoBehaviour
         GameManager.Instance.ConqueredMaterialTextures = ConqueredMaterialTextures;
         GameManager.Instance.ConqueredMaterialSprites = ConqueredMaterialSprites;
         ControllerConnectionManager.instance.AssignAllJoySticksToPlayers();
+        PopulateLanguageSelectDropdown();//After-
     }
 
     public void OnlineButtonDisabledListener()
