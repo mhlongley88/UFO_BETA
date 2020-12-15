@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using static InputManager;
 using Rewired;
 using Cinemachine;
-using  TMPro;
+using TMPro;
 using OneClickLocalization;
 public class MainMenuUIManager : MonoBehaviour
 {
@@ -101,7 +101,7 @@ public class MainMenuUIManager : MonoBehaviour
         NotEnoughPlayersTextObj.SetActive(false);//here
     }
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -112,7 +112,7 @@ public class MainMenuUIManager : MonoBehaviour
             isConsole = false;
             isPC = true;
         }
-        else if(Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
+        else if (Application.platform == RuntimePlatform.PS4 || Application.platform == RuntimePlatform.XboxOne)
         {
             Debug.Log("Console");
             isPC = false;
@@ -183,7 +183,7 @@ public class MainMenuUIManager : MonoBehaviour
         bool ready = false;
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-           // bool ready = false;
+            // bool ready = false;
             foreach (var c in characterSelectMenus)
             {
                 if (c.GetCurSelectState() == CharacterSelectUI.CharacterSelectState.ReadyToStart)
@@ -228,13 +228,16 @@ public class MainMenuUIManager : MonoBehaviour
 
 
     bool isConsole = false, isPC = false;
+
     // Update is called once per frame
     void Update()
     {
-        if(vCam1SplashMenu.activeInHierarchy)
+
+        if (vCam1SplashMenu.activeInHierarchy)
         {
             cinemachineBrain.m_DefaultBlend.m_Time = blendTimeTransitionToCharacterSelect;
-        }else
+        }
+        else
             cinemachineBrain.m_DefaultBlend.m_Time = blendTimeDefault;
 
         mainTitle.SetActive(!levelSelect.activeInHierarchy);
@@ -244,20 +247,21 @@ public class MainMenuUIManager : MonoBehaviour
         mainTitleStars.SetActive(mainTitle.activeInHierarchy);
 
         levelInt = ShowLevelTitle.levelStaticInt;
+        ConsoleControls();
         //This wasdupl
-        if (isPC) 
-        {
-            //If isPC = true,
-            // Debug.Log("PC_______");
-            //PC_Controls();
-            ConsoleControls();
-        }
-        else if (isConsole)
-        {
-            //If isPC = false, There's no difference at all! Both conditions are calling consolecontrols. 
-            //You can leave it as it is :)
-            ConsoleControls();
-        }
+        //if (isPC) 
+        //{
+        //    //If isPC = true,
+        //    // Debug.Log("PC_______");
+        //    //PC_Controls();
+        //    ConsoleControls();
+        //}
+        //else if (isConsole)
+        //{
+        //    //If isPC = false, There's no difference at all! Both conditions are calling consolecontrols. 
+        //    //You can leave it as it is :)
+        //    ConsoleControls();
+        //}
         // if (inCharSelect && CharacterSelect.instance)
         // CharacterSelect.instance.BeginCharacterSelect();
 
@@ -289,10 +293,10 @@ public class MainMenuUIManager : MonoBehaviour
                         if (rewirePlayer.GetButtonDown("Submit"))
                         {
 
-                           // cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
+                            // cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
                             //SetCameraView(vCam1)
 
-                          //  characterSelect.SetActive(true);
+                            //  characterSelect.SetActive(true);
                             myAudioSource.PlayOneShot(StartGameSFX);
                             currentMenu = Menu.CharacterSelect;
                         }
@@ -301,7 +305,7 @@ public class MainMenuUIManager : MonoBehaviour
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDownKB(ButtonEnum.Back, p))
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back"))
                         {
-                            
+
 
 
                             currentMenu = Menu.Splash;
@@ -388,7 +392,7 @@ public class MainMenuUIManager : MonoBehaviour
     public void SwitchBackToCharacterSelectMul()
     {
         //cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
-        if(LobbyConnectionHandler.instance.isPrivateMatch)
+        if (LobbyConnectionHandler.instance.isPrivateMatch)
             LobbyUI.instance.FriendsListButton.SetActive(true);
         Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = true;
         //vCam2.SetActive(false);
@@ -450,7 +454,7 @@ public class MainMenuUIManager : MonoBehaviour
         //p.controllers.ClearAllControllers();
         //rewirePlayer = ReInput.players.GetPlayer(3);
 
-        
+
 
         SetCameraView(vCam3CharacterSelect);
 
@@ -471,7 +475,7 @@ public class MainMenuUIManager : MonoBehaviour
         //myPlayerMul = p;
         foreach (var c in characterSelectMenusMul)
         {
-            if(c.player == p)
+            if (c.player == p)
             {
                 c.PlayerEnterGame();
             }
@@ -480,6 +484,7 @@ public class MainMenuUIManager : MonoBehaviour
 
     void ConsoleControls()
     {
+
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
             MulMode();
         else
@@ -515,6 +520,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         //if (GameManager.Instance.paused)//Temporary!!! Remove this
         //    return;
+
         foreach (Player p in Enum.GetValues(typeof(Player)))
         {
             if (p != Player.None)
@@ -538,10 +544,11 @@ public class MainMenuUIManager : MonoBehaviour
                     ButtonToggleOptionsMenu();
                 }
                 //Debug.Log(GameManager.Instance.paused);
-                
+
                 //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
                 // Debug.Log("Rewired" + rewirePlayerId);
                 //rewirePlayer = ReInput.players.GetPlayer(3);
+
                 switch (currentMenu)
                 {
                     //case Menu.Splash:
@@ -552,24 +559,25 @@ public class MainMenuUIManager : MonoBehaviour
                     //        cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("moveToChar");
                     //        characterSelect.SetActive(true);
                     //        myAudioSource.PlayOneShot(StartGameSFX);
-                            
+
                     //        currentMenu = Menu.CharacterSelect;
                     //    }
                     //    break;
                     case Menu.CharacterSelect:
                         //if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        //debugText3.text = CharacterSelectPlayersReady().ToString();
                         if (/*GameManager.Instance.IsPlayerInGame(p) && */!selectingCharacters && rewirePlayer.GetButtonDown("Back") && !GameManager.Instance.paused)
                         {
-                          //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
+                            //  cameraMoveObject.GetComponent<DOTweenAnimation>().DOPlayById("movetoMainMenu");
 
-                            foreach(CharacterSelectUI characterSelect in characterSelectMenus)
+                            foreach (CharacterSelectUI characterSelect in characterSelectMenus)
                             {
                                 characterSelect.EnableCharacterSelectSplashScreen();
 
                             }
 
                             currentMenu = Menu.Splash;
-                           
+
                             characterSelect.SetActive(false);
 
                             //cameraMoveObject.transform.position = new Vector3(cameraMoveObject.transform.position.x, cameraMoveObject.transform.position.y, 
@@ -578,6 +586,7 @@ public class MainMenuUIManager : MonoBehaviour
 
                             MainPanel.SetActive(true);
                         }
+
                         if (CharacterSelectPlayersReady())
                         {
                             // if (CharacterSelectPlayersReady())
@@ -605,6 +614,7 @@ public class MainMenuUIManager : MonoBehaviour
                     case Menu.LevelSelect:
 
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
+                        //debugText3.text = "Entering Level Select";
                         if (HostNameLevelSelect.activeSelf)
                         {
                             HostNameLevelSelect.SetActive(false);
@@ -622,7 +632,7 @@ public class MainMenuUIManager : MonoBehaviour
 
                             if (PlayerBot.active)
                             {
-                               // SetCameraView(vCam3CharacterSelect);
+                                // SetCameraView(vCam3CharacterSelect);
 
                                 foreach (var bot in PlayerBot.chosenPlayer)
                                 {
@@ -736,17 +746,18 @@ public class MainMenuUIManager : MonoBehaviour
                             Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
                             LobbyUI.instance.FriendsListButton.SetActive(false);
 
-                            if(Photon.Pun.PhotonNetwork.IsMasterClient){
+                            if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                            {
                                 LobbyConnectionHandler.instance.pv.RPC("SyncHostName_LevelSelect", Photon.Pun.RpcTarget.All, LobbyConnectionHandler.instance.myDisplayName);
                             }
-                            
+
                             Debug.Log("shouldnt be here");
                             // }
                         }
                         break;
                     case Menu.LevelSelect:
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Back, p))
-                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back") 
+                        if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Back")
                         && Photon.Pun.PhotonNetwork.IsMasterClient)
                         {
                             //vCam2.SetActive(false);
@@ -792,7 +803,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         Photon.Pun.PhotonNetwork.LeaveRoom();
     }
-   
+
     public string GetLocalLanguageRepresentation(string lang)//#1
     {
         string s = "";
