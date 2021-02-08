@@ -50,8 +50,11 @@ public class MenuDynamicController : MonoBehaviour
             {
                 MenuItem item = items[i];
 
-                item.transform = item.selectable.gameObject.transform;
-                item.originalScale = item.transform.localScale;
+                if(item != null)
+                {
+                    item.transform = item.selectable.gameObject.transform;
+                    item.originalScale = item.transform.localScale;
+                }
             }
         }
     }
@@ -248,7 +251,7 @@ public class MenuDynamicController : MonoBehaviour
             for (int i = 0; i < items.Length; i++)
             {
                 MenuItem item = items[i];
-                if (i != index)
+                if (i != index && item != null)
                     item.transform.localScale = Vector3.Lerp(item.transform.localScale, item.originalScale, Time.deltaTime * scalingSpeed);
             }
 

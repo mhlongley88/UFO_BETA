@@ -20,6 +20,8 @@ public class MainMenuUIManager : MonoBehaviour
         CharacterSelect
     }
 
+    public TouchMenuUI touchMenuUI;
+
     public TMP_FontAsset NotoSans_Font, youngfrankconditalSDF_Font;
     public List<FontSwap> FontSwapTexts;
 
@@ -358,6 +360,13 @@ public class MainMenuUIManager : MonoBehaviour
         }
     }
 
+    public void LoadScene_LoadingRoon()
+    {
+        ShowLevelTitle.levelStaticInt = 1;
+        GameManager.Instance.SetPlayerCharacterChoice(tempPlayerChoice, tempAlienChoice);
+        SceneManager.LoadScene("LoadingRoom");
+    }
+
     public void OfflineButtonListener(int i)
     {
         LobbyConnectionHandler.instance.IsMultiplayerMode = false;
@@ -387,6 +396,16 @@ public class MainMenuUIManager : MonoBehaviour
         }
         OnlineCharacterSelectionPanel.SetActive(false);
         OfflineCharacterSelectionPanel.SetActive(true);
+    }
+
+    public void SwitchToCharacterSelect_WithoutStick()
+    {
+        currentMenu = Menu.CharacterSelect;
+    }
+
+    public void SwitchToSplash()
+    {
+        currentMenu = Menu.Splash;
     }
 
     public void SwitchBackToCharacterSelectMul()
@@ -967,4 +986,11 @@ public class MainMenuUIManager : MonoBehaviour
 
     }
 
+
+    Player tempPlayerChoice; int tempAlienChoice;
+    public void HoldCharacterChoiceTemporarily(Player p, int choice)
+    {
+        tempPlayerChoice = p;
+        tempAlienChoice = choice;
+    }
 }

@@ -46,7 +46,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         IsMultiplayerMode = false;
         isPrivateMatch = false;
 
-        //Init();
+        Init();
     }
 
     private void Start()

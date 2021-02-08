@@ -82,4 +82,10 @@ public class ShowLevelTitle : MonoBehaviour
         if (MainMenuUIManager.Instance.tryTutorialScreen.activeInHierarchy)
             MainMenuUIManager.Instance.tryTutorialScreen.SetActive(false);
     }
+
+    public void EnforceThisStageSettings()
+    {
+        OnLevelIsHovered.Invoke(transform);
+        OnGetHovered.Invoke();
+    }
 }

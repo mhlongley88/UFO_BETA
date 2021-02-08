@@ -460,7 +460,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(spawnedPlayerDictionary.Count + "*************************");
+        //Debug.Log(spawnedPlayerDictionary.Count + "*************************");
     }
     public void PlayerDied(Player player, Transform playerModel)
     {

@@ -9,7 +9,7 @@ using static InputManager;
 using Photon.Pun;
 using Rewired;
 using UnityEngine.Events;
-
+using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
@@ -168,13 +168,15 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public delegate void TakeDamage(float d);
     public TakeDamage OnTakeDamage;
-
+    public GameObject AimDirection;
     public float mouseRotationDamp = 16.0f;
     // For Bots
     //[HideInInspector]
     //public bool inputAbduction;
     //bool oldInputAbduction;
 
+    Vector2 swipeDirection;
+    
     Plane castPlane;
     Vector3 rayShootPoint;
 
@@ -206,6 +208,7 @@ public class PlayerController : MonoBehaviour
         }
 
         castPlane = new Plane(Vector3.up, transform.position);
+        
     }
 
     IEnumerator Start()
@@ -475,7 +478,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) + "1");
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) + "2");
-            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
+            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1")/* && rewirePlayer.GetButton("ActivateSuperWeapon2")*/)
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
                 pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
@@ -570,7 +573,7 @@ public class PlayerController : MonoBehaviour
 
     //float horizontalInputKB, verticalInputKB;
     //Vector3 moveInputVectorKB;
-
+    bool aimStarted = false;
     private void ProcessInput()
     {
         //if (!isControllerDecided)
@@ -643,7 +646,11 @@ public class PlayerController : MonoBehaviour
         else if (rewirePlayer.GetButtonUp("Abduct"))
         {
             DeactivateBeam();
-
+            Debug.Log("Up!!!!!!!!");
+            if (IsSuperWeaponReady())
+            {
+                abductSwitchedToSuperWeapon = true;
+            }
            /* GameObject beamInstance = PlayerManager.Instance.beamOffCache.GetInstance();
             beamInstance.transform.position = gameObject.transform.position;
             beamInstance.transform.rotation = gameObject.transform.rotation;
@@ -659,8 +666,20 @@ public class PlayerController : MonoBehaviour
                 if (rightStickDirection != Vector2.zero)
                 {
                     this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                    aimStarted = true;
+                    AimDirection.SetActive(true);
+                    aimFlagObject.SetActive(false);
+                }
+                else if(aimStarted)
+                {
+                    aimStarted = false;
+                    AimDirection.SetActive(false);
+                    aimFlagObject.SetActive(true);
+                    currentWeapon.UpdateShootDirection(transform.forward);
+                    currentWeapon.Fire();
                 }
                 //Debug.Log("console");
+                
             }
 
             if ((player == Player.Four || LobbyConnectionHandler.instance.IsMultiplayerMode) && rightStickDirection == Vector2.zero)
@@ -692,15 +711,81 @@ public class PlayerController : MonoBehaviour
         }
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && InputManager.Instance.GetButton(ButtonEnum.Fire, player)) || InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player)) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
-        if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && rewirePlayer.GetButtonDown("Shoot")) || rewirePlayer.GetButtonDown("Shoot")) && gunReady && !rewirePlayer.GetButton("Abduct"))
+
+        if (rewirePlayer.GetButtonDown("Shoot"))
         {
+            AimDirection.SetActive(true);
+            aimFlagObject.SetActive(false);
+        }
+        if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && rewirePlayer.GetButtonUp("Shoot")) || rewirePlayer.GetButtonUp("Shoot")) && gunReady && !rewirePlayer.GetButton("Abduct"))
+        {
+            AimDirection.SetActive(false);
+            aimFlagObject.SetActive(true);
             currentWeapon.Fire();
         }
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
-        if (rewirePlayer.GetButtonDown("Dash") && boostReady)
+        //Debug.Log("Swipe Disabled" + useSwipeForDash);
+        if (useSwipeForDash)
         {
-            tryToBoost();
+            Vector2 direction;
+            float speed;
+
+
+            //Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.down, Color.blue, 5);
+            foreach(Touch touch in Input.touches)
+            {
+
+            }
+            if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Moved /*Input.GetMouseButton(0)*/)//Check if Touch has moved.
+            {
+                //Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+                //if (Physics.Raycast(ray))
+                //{
+
+                //}
+
+                bool isCollisionWithUI = EventSystem.current.IsPointerOverGameObject() || 
+                    EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId);
+                //Debug.Log(isCollisionWithUI);
+                //int id = touch.fingerId;
+                //if (EventSystem.current.IsPointerOverGameObject(id))
+                //{
+                //    isCollisionWithUI = true;
+
+                //}
+                //RaycastHit hit;
+
+                //if (Physics.Raycast(Camera.main.ScreenToWorldPoint(/*Input.touches[0].position*/ Input.mousePosition), Vector3.down, out hit, Mathf.Infinity))
+                //{
+                //    Debug.Log("???" + hit.collider.name);
+                //    if(hit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
+                //    {
+                //        isCollisionWithUI = true;
+                //    }
+                //}
+
+                if (!isCollisionWithUI)
+                {
+                    direction = Input.touches[0].deltaPosition.normalized;  //Unit Vector of change in position
+                    speed = Input.touches[0].deltaPosition.magnitude / Input.touches[0].deltaTime; //distance traveled divided by time elapsed
+                    swipeDirection = direction;
+                    if (boostReady)//Temporary --- To test swipe functionality
+                    {
+                        tryToBoost();
+                    }
+                }
+            }
         }
+        else
+        {
+            
+            if (rewirePlayer.GetButtonDown("Dash") && boostReady)
+            {
+                tryToBoost();
+            }
+        }
+
+
 
         //if (isConsole)
         //{
@@ -712,13 +797,16 @@ public class PlayerController : MonoBehaviour
         //}
         //else
         {
-            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2"))
+            if (IsSuperWeaponReady() && rewirePlayer.GetButton("Abduct") && abductSwitchedToSuperWeapon/*rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2")*/)
             {
+                abductSwitchedToSuperWeapon = false;
                 ToggleSuperWeapon(true);
             }
         }
 
     }
+
+    bool abductSwitchedToSuperWeapon = false;
 
     IEnumerator DeactivateSpecialCamera()
     {
@@ -729,6 +817,7 @@ public class PlayerController : MonoBehaviour
     public void ToggleSuperWeapon(bool activate)
     {
         superWeaponActive = activate;
+        TouchGameUI.instance.ToggleSuperWeaponButtonSprite(activate);
         if (activate)
         {
            // superWeaponActive = activate;
@@ -766,9 +855,21 @@ public class PlayerController : MonoBehaviour
     {
         //if (isConsole)
         {
-            if (horizontalInput != 0f || verticalInput != 0f)
+            if (useSwipeForDash)
             {
                 StartCoroutine(BoostCoroutine());
+            }
+            else
+            {
+
+                if (horizontalInput != 0f || verticalInput != 0f)
+                {
+                    StartCoroutine(BoostCoroutine());
+                }
+                else
+                {
+                    Debug.Log("Move stick zero");
+                }
             }
         }
         //else if(isPC)
@@ -779,15 +880,19 @@ public class PlayerController : MonoBehaviour
         //    }
         //}
     }
-
+    public bool useSwipeForDash = false; // For Mobile
     private IEnumerator BoostCoroutine()
     {
         boostReady = false;
         isBoosting = true;
         Vector3 boostDirection;// = new Vector3(horizontalInput, 0.0f, verticalInput);
-        //if (isConsole)
+        if (!useSwipeForDash)
         {
             boostDirection = new Vector3(horizontalInput, 0.0f, verticalInput);
+        }
+        else
+        {
+            boostDirection = new Vector3(swipeDirection.x, 0.0f, swipeDirection.y);
         }
         //else
         //{

@@ -65,8 +65,13 @@ public class RankingPostGame : MonoBehaviour
             t.rotation = rank.rotation;
             t.localScale = rank.localScale;
 
-            if (rankNumber == 0) 
+            if (rankNumber == 0)
+            {
                 t.SetParent(firstPlaceTransform);
+                TouchGameUI.instance.LevelScreenControls.SetActive(false);
+                TouchGameUI.instance.ResultScreenControls.SetActive(true);
+            }
+                
 
             rank.gameObject.SetActive(false);
             t.gameObject.SetActive(true);

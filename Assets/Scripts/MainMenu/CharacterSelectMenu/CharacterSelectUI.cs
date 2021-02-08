@@ -48,6 +48,9 @@ public class CharacterSelectUI : MonoBehaviour
 
     public GameObject newVfx;
 
+    public Image DamageFG, RateOfFireFG, AccuracyFG;
+    public bool UseWithoutStick = false;
+
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
         set 
@@ -149,7 +152,8 @@ public class CharacterSelectUI : MonoBehaviour
     void Start()
     {
         // pressStart.SetActive(true);
-        characterModelContainer = this.transform.GetChild(0).GetChild(3);
+        if(!UseWithoutStick)
+            characterModelContainer = this.transform.GetChild(0).GetChild(3);
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             playerNameText.text = playerName;
@@ -214,6 +218,12 @@ public class CharacterSelectUI : MonoBehaviour
             }
             //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
             //SpawnMultiplayer();
+        }
+        if (UseWithoutStick)
+        {
+            GameManager.Instance.RemoveAllPlayersFromGame();
+            SelectingCharacter_WithoutStick();
+            MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel);
         }
     }
 
@@ -306,7 +316,123 @@ public class CharacterSelectUI : MonoBehaviour
         accuracySlider.value = info.Accuracy;
     }
 
-   // [PunRPC]
+    public void SetCharacter(int characterId)
+    {
+        selectedCharacterIndex = characterId;
+        if (selectedCharacterIndex < 0) selectedCharacterIndex = GameManager.Instance.Characters.Length - 1;
+        else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
+
+        //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
+
+        Destroy(currentCharacterModel);
+        currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+        currentCharacterModel.transform.localPosition = Vector3.zero;
+        currentCharacterModel.transform.localScale = Vector3.one;
+        currentCharacterModel.transform.localEulerAngles = Vector3.zero;
+        
+        if ((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0))
+        {
+            if (UnlockSystem.instance.recentlyUnlockedCharacters.Contains(selectedCharacterIndex))
+                newVfx.SetActive(true);
+            else
+                newVfx.SetActive(false);
+            //UnlockSystem.instance.recentlyUnlockedCharacters.RemoveAt(0);
+        }
+
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        //characterLabel.text = info.Name;
+        //weaponTypeImage.sprite = info.WeaponType;
+        //specialWeaponImage.sprite = info.SpecialWeapon;
+        //damageSlider.value = info.Damage;
+        //rateOfFireSlider.value = info.RateOfFire;
+        //accuracySlider.value = info.Accuracy;
+        DamageFG.fillAmount = info.Damage;
+        RateOfFireFG.fillAmount = info.RateOfFire;
+        AccuracyFG.fillAmount = info.Accuracy;
+        MainMenuUIManager.Instance.HoldCharacterChoiceTemporarily(player, selectedCharacterIndex);
+    }
+
+    public void DisplayCharacterInfo_LoadOutScreen()
+    {
+        //selectedCharacterIndex = characterId;
+        if (selectedCharacterIndex < 0) selectedCharacterIndex = GameManager.Instance.Characters.Length - 1;
+        else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
+
+        //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
+
+        Destroy(currentCharacterModel);
+        currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+        currentCharacterModel.transform.localPosition = Vector3.zero;
+        currentCharacterModel.transform.localScale = Vector3.one;
+        currentCharacterModel.transform.localEulerAngles = Vector3.zero;
+
+        if ((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0))
+        {
+            if (UnlockSystem.instance.recentlyUnlockedCharacters.Contains(selectedCharacterIndex))
+                newVfx.SetActive(true);
+            else
+                newVfx.SetActive(false);
+            //UnlockSystem.instance.recentlyUnlockedCharacters.RemoveAt(0);
+        }
+
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        //characterLabel.text = info.Name;
+        //weaponTypeImage.sprite = info.WeaponType;
+        //specialWeaponImage.sprite = info.SpecialWeapon;
+        //damageSlider.value = info.Damage;
+        //rateOfFireSlider.value = info.RateOfFire;
+        //accuracySlider.value = info.Accuracy;
+        DamageFG.fillAmount = info.Damage;
+        RateOfFireFG.fillAmount = info.RateOfFire;
+        AccuracyFG.fillAmount = info.Accuracy;
+        //MainMenuUIManager.Instance.HoldCharacterChoiceTemporarily(player, selectedCharacterIndex);
+    }
+
+    public void SetCharacter()
+    {
+        
+        if (selectedCharacterIndex < 0) selectedCharacterIndex = GameManager.Instance.Characters.Length - 1;
+        else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
+
+        //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
+
+        //Destroy(currentCharacterModel);
+        //currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+        //currentCharacterModel.transform.localPosition = Vector3.zero;
+        //currentCharacterModel.transform.localScale = Vector3.one;
+        //currentCharacterModel.transform.localEulerAngles = Vector3.zero;
+
+        //if ((GameManager.Instance.Characters[selectedCharacterIndex].matchThreshold <= UnlockSystem.instance.MatchesCompleted && UnlockSystem.instance.recentlyUnlockedCharacters.Count > 0))
+        //{
+        //    if (UnlockSystem.instance.recentlyUnlockedCharacters.Contains(selectedCharacterIndex))
+        //        newVfx.SetActive(true);
+        //    else
+        //        newVfx.SetActive(false);
+        //    //UnlockSystem.instance.recentlyUnlockedCharacters.RemoveAt(0);
+        //}
+
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        //characterLabel.text = info.Name;
+        //weaponTypeImage.sprite = info.WeaponType;
+        //specialWeaponImage.sprite = info.SpecialWeapon;
+        //damageSlider.value = info.Damage;
+        //rateOfFireSlider.value = info.RateOfFire;
+        //accuracySlider.value = info.Accuracy;
+        //DamageFG.fillAmount = info.Damage;
+        //RateOfFireFG.fillAmount = info.RateOfFire;
+        //AccuracyFG.fillAmount = info.Accuracy;
+        MainMenuUIManager.Instance.HoldCharacterChoiceTemporarily(player, selectedCharacterIndex);
+    }
+
+    public void SpawnCharacterMainHub()
+    {
+        MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel);
+    }
+
+    // [PunRPC]
     void SyncSelection(bool forward)
     {
         if (forward)
@@ -440,6 +566,31 @@ public class CharacterSelectUI : MonoBehaviour
         //    }
         //}
 
+    }
+
+    public void SelectingCharacter_WithoutStick()
+    {
+        if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            //pressStart.SetActive(false);
+            //charSelect.SetActive(true);
+            GameManager.Instance.AddPlayerToGame(player);
+            selectState = CharacterSelectState.SelectingCharacter;
+        }
+        else
+        {
+            int ready = 0;
+            if (CharacterSelectState.ReadyToStart == selectState)
+            {
+                ready = 1;
+            }
+            else
+            {
+                ready = 0;
+            }
+            pv.RPC("PlayerEnterSync", RpcTarget.AllBuffered, LobbyConnectionHandler.instance.myDisplayName, ready);//hunz
+            pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
+        }
     }
 
     public void PlayerEnterGame()
