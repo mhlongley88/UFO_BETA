@@ -14,7 +14,7 @@ public class PlayerStats
     public GameObject prefab;
     public Transform spawnPoint;
     public GameObject instance;
-
+    public bool isBot = false;
     public int rank;
     //public LifeManager lifeManager;
 
@@ -99,8 +99,9 @@ public class PlayerManager : MonoBehaviour
             instance = this;
         }
 
-        Cursor.lockState = CursorLockMode.Confined;
-      //  Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.None;
+        //  Cursor.visible = false;
     }
     public void Start()
     {
@@ -134,6 +135,11 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 SpawnMulPlayer();
+                if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                {
+                    FillPlayerVoids();
+                }
+                    
                 //foreach (Player i in GameManager.Instance.GetActivePlayers())
                 //{
                 //    LevelUIManager.Instance.EnableUI(i);
@@ -144,6 +150,27 @@ public class PlayerManager : MonoBehaviour
         UserPrefs.instance.SetInt("UFOPlayedLevel" + GameManager.Instance.selectedLevelIndex, 1);
     }
 
+    void FillPlayerVoids()
+    {
+        int realPlayersCount = Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount;
+
+        for (int i = realPlayersCount; i < 4; i++)
+        {
+            switch (i)
+            {
+                case 1:
+                    SpawnOnlineBots(Player.Two);
+                    break;
+                case 2:
+                    SpawnOnlineBots(Player.Three);
+                    break;
+                case 3:
+                    SpawnOnlineBots(Player.Four);
+                    break;
+            }
+        }
+    }
+
     public void SpawnPlayer(Player p)
     {
         LevelUIManager.Instance.EnableUI(p);
@@ -151,6 +178,42 @@ public class PlayerManager : MonoBehaviour
         players[p].instance = Instantiate(players[p].prefab, players[p].spawnPoint);
         players[p].rank = -1;
         spawnedPlayerDictionary.Add(p, players[p].instance);
+    }
+
+    void SpawnOnlineBots(Player botPlayer)
+    {
+        PlayerBot.chosenPlayer.Clear();
+        PlayerBot.aiPresets.Clear();
+        PlayerBot.aiSlots.Clear();
+        //Player botPlayer = Player.One;
+        int playerIndex = (int)botPlayer;
+        //if (BotConfigurator.instance.bot1.enableBot)
+        //    AddBotP(BotConfigurator.instance.bot1.preset, BotConfigurator.instance.bot1.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot1.characterIndex, PlayerBotSlot.One);
+
+        //if (BotConfigurator.instance.bot2.enableBot)
+        //    AddBotP(BotConfigurator.instance.bot2.preset, BotConfigurator.instance.bot2.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot2.characterIndex, PlayerBotSlot.Two);
+
+        BotConfigurator.instance.bot3.enableBot = true;
+        if (BotConfigurator.instance.bot3.enableBot)
+            AddBotP_Online(BotConfigurator.instance.bot3.preset, BotConfigurator.instance.bot3.isRandomCharacter ? UnityEngine.Random.Range(0, 6) : BotConfigurator.instance.bot3.characterIndex, PlayerBotSlot.Three);
+
+        void AddBotP_Online(AIPreset preset, int characterIndex, PlayerBotSlot slot)
+        {
+            //int index = UnityEngine.Random.Range(0, possiblePlayers.Count);
+            
+
+            //GameManager.Instance.AddPlayerToGame(botPlayer);
+            //GameManager.Instance.SetPlayerCharacterChoice(botPlayer, characterIndex);
+
+            
+            //players[botPlayer].instance = Instantiate(players[botPlayer].prefab, players[botPlayer].spawnPoint);
+
+            players[botPlayer].instance = Photon.Pun.PhotonNetwork.Instantiate(players[botPlayer].prefab.name, 
+                players[botPlayer].prefab.transform.position, players[botPlayer].prefab.transform.rotation);
+            players[botPlayer].instance.gameObject.GetComponent<PlayerController>().SyncBotComponents();
+
+
+        }
     }
 
     void SpawnLocalPlayers()
@@ -256,21 +319,24 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void SpawnMulPlayer()
+    void SpawnMulPlayer(bool isBot = false)
     {
         //Debug.Log("Spawning:  " + GameManager.Instance.GetActivePlayersMul(true)[0]);
-        foreach (Player i in GameManager.Instance.GetActivePlayersMul(true))
+        //foreach (Player i in GameManager.Instance.GetActivePlayersMul(true))
         {
-            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(players[i].prefab.name, players[i].spawnPoint.position, Quaternion.identity);
+            GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(players[GameManager.Instance.GetMyPlayerIndexMul()].prefab.name, 
+                players[GameManager.Instance.GetMyPlayerIndexMul()].spawnPoint.position, Quaternion.identity);
+            temp.GetComponent<PlayerController>().isControlledLocally = true;
             // temp.tag = "Player";
             //temp.GetComponent<PlayerController>().enabled = true;
-            temp.transform.SetParent(players[i].spawnPoint);
 
-            players[i].instance = temp;
-            if (spawnedPlayerDictionary.ContainsKey(i))
-                spawnedPlayerDictionary[i] = players[i].instance;
-            else
-                spawnedPlayerDictionary.Add(i, players[i].instance);
+            //temp.transform.SetParent(players[GameManager.Instance.GetMyPlayerIndexMul()].spawnPoint);
+
+            //players[i].instance = temp;
+            //if (spawnedPlayerDictionary.ContainsKey(i))
+            //    spawnedPlayerDictionary[i] = players[i].instance;
+            //else
+            //    spawnedPlayerDictionary.Add(i, players[i].instance);
 
             //spawnedPlayerDictionary.Add(i, players[i].instance);
 
@@ -299,7 +365,8 @@ public class PlayerManager : MonoBehaviour
     {
         Player p = Player.None;
 
-        foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+        //foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+        foreach (Player i in GameManager.Instance.GetActivePlayers())
         {
             //Debug.Log("GetPlayerLeft" + players[i].lives + "---" + i.ToString());
             if (players[i].lives > 0)
@@ -314,22 +381,22 @@ public class PlayerManager : MonoBehaviour
     public int GetPlayersLeft()
     {
         int playersLeft = 0;
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
-        {
-            //PlayerController[] temp = FindObjectsOfType<PlayerController>();
-            //playersLeft = temp.Length;
-            foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
-            {
-                Debug.Log("GetPlayerLeft" + players[i].lives + "---" + i.ToString());
-                if (players[i].lives > 0)
-                {
-                    Debug.Log("Alive player spotted" + players[i].lives + "---" + i.ToString());
-                    playersLeft++;
-                }
-            }
+        //if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        //{
+        //    //PlayerController[] temp = FindObjectsOfType<PlayerController>();
+        //    //playersLeft = temp.Length;
+        //    foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+        //    {
+        //        Debug.Log("GetPlayerLeft" + players[i].lives + "---" + i.ToString());
+        //        if (players[i].lives > 0)
+        //        {
+        //            Debug.Log("Alive player spotted" + players[i].lives + "---" + i.ToString());
+        //            playersLeft++;
+        //        }
+        //    }
 
-        }
-        else
+        //}
+        //else
         {
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
@@ -339,7 +406,7 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
-      //  Debug.Log("GetPlayerLeft" + playersLeft);
+        //Debug.Log("GetPlayerLeft" + playersLeft);
         return playersLeft;
     }
 
@@ -504,23 +571,28 @@ public class PlayerManager : MonoBehaviour
         {
             
             var lastPlayerAlive = GetLastAlivePlayer_Online();//spawnedPlayerDictionary.Keys.ToList()[0];
+            Debug.Log(lastPlayerAlive+" - last player");
             players[lastPlayerAlive].rank = 0;
         }
 
         //Debug.Log(playerModel.gameObject.name);
 
         // Online handling
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode && playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine && canRespawn)
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode &&
+            playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().IsMine &&
+            //Photon.Pun.PhotonNetwork.IsMasterClient && 
+            canRespawn)
         {
             //Photon.Pun.PhotonNetwork.Destroy(playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().gameObject);
             //playerModel.gameObject.GetComponentInParent<Photon.Pun.PhotonView>().RPC("Death", Photon.Pun.RpcTarget.All);
-            StartCoroutine(SpawnCoroutine(player));
+            StartCoroutine(SpawnCoroutine(player, playerModel.gameObject.GetComponentInParent<PlayerBot>() != null));
+
         }
         else
 
         if (LobbyConnectionHandler.instance.IsMultiplayerMode && playersLeft < 2)
         {
-            foreach (Player i in GameManager.Instance.GetActivePlayersMul(false))
+            foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
                 //Debug.Log("Final Rank of " + i + " is: " + players[i].rank);
                 RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
@@ -717,12 +789,38 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnCoroutine(Player player)
+    public void StartSpawnCoroutine(Player p, bool isBot)
+    {
+        StartCoroutine(SpawnCoroutine(p, isBot));
+    }
+
+
+    private IEnumerator SpawnCoroutine(Player player, bool isBot = false)
     {
         yield return new WaitForSeconds(spawnTimer);
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            SpawnMulPlayer();Debug.Log("MulRespawn");
+            if (isBot)
+            {
+                SpawnOnlineBots(player);
+            }
+            else
+            {
+                SpawnMulPlayer(isBot);
+            }
+
+            // bots addition to online game
+            //players[player].instance = Instantiate(players[player].prefab, players[player].spawnPoint); Debug.Log("OfflineRespawn");
+            //if (PlayerBot.chosenPlayer.Contains(player) && PlayerBot.active)
+            //{
+            //    var bot = players[player].instance.AddComponent<PlayerBot>();
+            //    bot.preset = PlayerBot.aiPresets[PlayerBot.chosenPlayer.IndexOf(player)];
+            //}
+
+            if (spawnedPlayerDictionary.ContainsKey(player))
+                spawnedPlayerDictionary[player] = players[player].instance;
+            else
+                spawnedPlayerDictionary.Add(player, players[player].instance);
         }
         else
         {

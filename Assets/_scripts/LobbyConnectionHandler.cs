@@ -45,7 +45,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
         IsMultiplayerMode = false;
         isPrivateMatch = false;
-
+        Application.quitting += SendQuitEvent;
         Init();
     }
 
@@ -131,7 +131,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     private void OnGUI()
     {
         if(showGUI)
-            GUI.Label(new Rect(10, 10, 200, 40), PhotonNetwork.NetworkClientState.ToString());
+            GUI.Label(new Rect(10, 10, 500, 100), PhotonNetwork.NetworkClientState.ToString());
     }
 
     public void StartMatchMaking()
@@ -167,7 +167,19 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     void IInRoomCallbacks.OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
-
+        Debug.Log("OnMasterClientSwitched");
+        if (PlayerManager.Instance)
+        {
+            foreach (Player p in GameManager.Instance.GetAlivePlayers())
+            {
+                if (PlayerManager.Instance.players[p].isBot && !PlayerManager.Instance.players[p].instance)
+                {
+                    Debug.Log("Recovering lost bot" + p);
+                    PlayerManager.Instance.players[p].lives--;
+                    PlayerManager.Instance.StartSpawnCoroutine(p, true);
+                }
+            }
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -204,12 +216,19 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //    SceneManager.LoadScene("LoadingRoom");
         //}
         // SteamGameInvite.instance.SyncRoomIdAccrossSteam(PhotonNetwork.CurrentRoom.Name);
-       
-            MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
+
+        //MainMenuUIManager.Instance.SwitchToCharacterSelectMul();
 
         //if(isPrivateMatch)
-            LobbyUI.instance.FriendsListButton.SetActive(true);
+        //LobbyUI.instance.FriendsListButton.SetActive(true);
+        MainMenuUIManager.Instance.touchMenuUI.EnableCancelMatchmakingButton();
         RefreshCharacterSelectMul();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            MainMenuUIManager.Instance.isWaitingTimePassed = false;
+            StartCoroutine(MainMenuUIManager.Instance.WaitForPlayers());
+        }
 
         //MainMenuUIManager.Instance.PlayerEnterMul(myPlayerMul);
 
@@ -234,6 +253,41 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
     }
 
+    public Player GetMyPlayerIndexMul_PreGame()
+    {
+        Player myPlayer;
+        int spawnIndex = 0;
+        int counter = 0;
+        foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+        {
+            if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+            {
+                spawnIndex = counter;
+                break;
+            }
+            counter++;
+        }
+        switch (spawnIndex)
+        {
+            case 0:
+                myPlayer = Player.One;
+                break;
+            case 1:
+                myPlayer = Player.Two;
+                break;
+            case 2:
+                myPlayer = Player.Three;
+                break;
+            case 3:
+                myPlayer = Player.Four;
+                break;
+            default:
+                myPlayer = Player.One;
+                break;
+        }
+        return myPlayer;
+    }
+
     public GameObject myPlayerInGame;
     void RefreshCharacterSelectMul()
     {
@@ -245,12 +299,14 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             PhotonNetwork.Destroy(myPlayerInGame);
         }
         //List<Player> playersMul = GameManager.Instance.GetActivePlayersMul(false);
-        List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
-        myPlayerMul = myplayerNumber[0];
+        //List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
+        myPlayerMul = GetMyPlayerIndexMul_PreGame();
+        GameManager.Instance.localPlayerIndex = myPlayerMul;
         GameObject temp;
         switch (myPlayerMul)
         {
             case Player.One:
+                //myPlayerMul = Player.One;
                 myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].name,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].transform.position,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[0].transform.rotation);
@@ -260,9 +316,11 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 //temp.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[0].gameObject.transform.localPosition;//new Vector3(-19.78f, 0f, 0.82f);
                 //temp.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localRotation;
                 //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localScale;
-                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                //myPlayerInGame.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.CharacterSelectContainerOnline);
+                //myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
                 break;
             case Player.Two:
+                //myPlayerMul = Player.Two;
                 myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].name,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.position,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.rotation);
@@ -271,9 +329,11 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 //temp.transform.position = tempPos1;
                 //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.rotation;
                 //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[1].transform.localScale;
-                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                //myPlayerInGame.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.CharacterSelectContainerOnline);
+                //myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
                 break;
             case Player.Three:
+                //myPlayerMul = Player.Three;
                 myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].name,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].transform.position,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[2].transform.rotation);
@@ -282,9 +342,11 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 //temp.transform.position = tempPos2;
                 //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation;
                 //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.localScale;
-                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                //myPlayerInGame.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.CharacterSelectContainerOnline);
+                //myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
                 break;
             case Player.Four:
+                //myPlayerMul = Player.Four;
                 myPlayerInGame = PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].name,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.position,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation);
@@ -293,11 +355,14 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 //temp.transform.position = tempPos3;
                 //temp.transform.rotation = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.rotation;
                 //temp.transform.localScale = MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[3].transform.localScale;
-                myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+                //myPlayerInGame.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.CharacterSelectContainerOnline);
+                //myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
                 break;
             case Player.None:
                 break;
         }
+        
+        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
     }
 
 
@@ -312,6 +377,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //RefreshCharacterSelectMul();
         //List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
         myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+        
     }
     public bool showPlayersLeftText;
     void IInRoomCallbacks.OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
@@ -348,10 +414,35 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             {
                 showPlayersLeftText = true;
             }
-            
-            if (GameManager.Instance)
+            // If not results screen
+            if (GameManager.Instance && !GameManager.Instance.canAdvance && PlayerManager.Instance)
             {
-                GameManager.Instance.EndGameAndGoToMenu();//New Fix
+                Player p = GameManager.Instance.GetPlayerByIndex((otherPlayer.ActorNumber - 1));
+                //PlayerManager.Instance.spawnedPlayerDictionary.Remove(p);
+                //GameManager.Instance.RemovePlayerFromGame(p);
+                if (PlayerManager.Instance.players[p].instance)
+                {
+                    PlayerManager.Instance.players[p].lives = 1;
+                    LevelUIManager.Instance.ChangeLifeCount(p, 1);
+                }
+                else
+                {
+                    if (PlayerManager.Instance.players[p].lives > 0)
+                    {
+                        PlayerManager.Instance.players[p].lives = 0;
+                        int playersLeft = PlayerManager.Instance.GetPlayersLeft();
+                        PlayerManager.Instance.players[p].rank = playersLeft;
+                    }
+                    LevelUIManager.Instance.ChangeLifeCount(p, 0);
+                    
+                }
+                if (otherPlayer.IsMasterClient)
+                {
+                    
+                    Debug.Log("Master client Removed: " + p);
+                }
+
+                //GameManager.Instance.EndGameAndGoToMenu();//New Fix
             }
             //SceneManager.LoadScene("MainMenu");
 
@@ -359,6 +450,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
         
     }
+
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
@@ -373,6 +465,8 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         roomOptions.PublishUserId = true;
         roomOptions.CustomRoomPropertiesForLobby = temp;
         roomOptions.CustomRoomProperties = hash;
+        roomOptions.CleanupCacheOnLeave = false;
+        roomOptions.PlayerTtl = -1;
         //if (LobbyUI.instance.isPrivateMatch)
         //{
         //    roomOptions.IsOpen = false;
@@ -400,9 +494,11 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         IsMultiplayerMode = false;
 
         isPrivateMatch = false;
-        LobbyUI.instance.FriendsListButton.SetActive(false);
+        
         if (LobbyUI.instance != null)
         {
+            MainMenuUIManager.Instance.touchMenuUI.EnableMatchmakingButton();
+            LobbyUI.instance.FriendsListButton.SetActive(false);
             Debug.Log(PhotonNetwork.LocalPlayer.UserId);
             LobbyUI.instance.isPrivateMatch = LobbyUI.instance.isPublicMatch = false;
             MainMenuUIManager.Instance.OnlineButton.interactable = true;
@@ -456,5 +552,70 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
     }
 
+    public bool IsNextMasterCandidate()
+    {
+        bool nextCandidate = false;
+        int lowestIndex = int.MaxValue;
+        foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+        {
+            if (lowestIndex > p.ActorNumber && !p.IsMasterClient)
+            {
+                lowestIndex = p.ActorNumber;
+            }
+        }
+        Debug.Log(lowestIndex + "--" + PhotonNetwork.LocalPlayer.ActorNumber);
+        if (lowestIndex == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            nextCandidate = true;
+        }
+        return nextCandidate;
+    }
 
+    // Client Abrupt Disconnection Handling
+
+    //void IConnectionCallbacks.OnDisconnected(DisconnectCause cause)
+    //{
+    //    this.SendQuitEvent();
+    //    Debug.Log("OnDisconnected");
+    //}
+
+    //void OnApplicationQuit()
+    //{
+
+    //    this.SendQuitEvent();
+    //}
+
+    //optional
+    //void OnApplicationPause(bool paused)
+    //{
+    //    if (paused)
+    //    {
+    //        this.SendQuitEvent();
+    //    }
+    //}
+
+    // optional
+    //void OnApplicationFocus(bool focused)
+    //{
+    //    if (!focused)
+    //    {
+    //        this.SendQuitEvent();
+    //    }
+    //}
+
+    void SendQuitEvent()
+    {
+        if (PhotonNetwork.CurrentRoom != null)
+        {
+            
+            // send event, add your code here
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.SendAllOutgoingCommands(); // send it right now
+
+            Debug.Log("Success!");
+
+            PhotonHandler.Instance.QuitApplication();
+        }
+        
+    }
 }

@@ -83,6 +83,9 @@ public class GameManager : MonoBehaviour
     public string selectedLanguage;
     public Texture[] ConqueredMaterialTextures;
     public Sprite[] ConqueredMaterialSprites;
+
+    public int selectedCharacterIndex;
+
     public void Awake()
     {
         Cursor.visible = true;
@@ -250,7 +253,7 @@ public class GameManager : MonoBehaviour
         {
             //for(int i = 0; i < 4; i++)//Iterate over all connected joysticks - Iterating over all possible joystick inputs for now!
             {
-                var playerInput = ReInput.players.GetPlayer(3);
+                var playerInput = ReInput.players.GetPlayer(0);
 
                 if (!isRestartBtnDown) isRestartBtnDown = playerInput.GetButtonDown("Restart");
                 if (!isGoToMenuBtnDown) isGoToMenuBtnDown = playerInput.GetButtonDown("GoToMainMenu");
@@ -278,11 +281,13 @@ public class GameManager : MonoBehaviour
         }
 
         // Only checks in game play
+        //Debug.Log("levelUI instance exists: " + (LevelUIManager.Instance == null));
         if (LevelUIManager.Instance != null)
         {
+            //Debug.Log(canAdvance + "---" + isGoToMenuBtnDown + "---" + gameOver);
             if (gameOver)
             {
-
+                
                 // else
                 {
                     if (canAdvance == true && (isRestartBtnDown || Input.GetKeyDown(KeyCode.R)))
@@ -483,6 +488,66 @@ public class GameManager : MonoBehaviour
         RemoveAllPlayersFromGame();
         SceneManager.LoadScene("MainMenu");
     }
+    public Player localPlayerIndex;
+    public Player GetMyPlayerIndexMul()
+    {
+        //Player myPlayer;
+        //int spawnIndex = 0;
+        //int counter = 0;
+        //foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+        //{
+        //    if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
+        //    {
+        //        spawnIndex = counter;
+        //        break;
+        //    }
+        //    counter++;
+        //}
+        //switch (spawnIndex)
+        //{
+        //    case 0:
+        //        myPlayer = Player.One;
+        //        break;
+        //    case 1:
+        //        myPlayer = Player.Two;
+        //        break;
+        //    case 2:
+        //        myPlayer = Player.Three;
+        //        break;
+        //    case 3:
+        //        myPlayer = Player.Four;
+        //        break;
+        //    default:
+        //        myPlayer = Player.One;
+        //        break;
+        //}
+        //return myPlayer;
+        return localPlayerIndex;
+    }
+
+    public Player GetPlayerByIndex(int id)
+    {
+        Player p = Player.None;
+        switch (id)
+        {
+            case 0:
+                p = Player.One;
+                break;
+            case 1:
+                p = Player.Two;
+                break;
+            case 2:
+                p = Player.Three;
+                break;
+            case 3:
+                p = Player.Four;
+                break;
+            default:
+                p = Player.None;
+                break;
+        }
+        return p;
+    }
 
     public List<Player> GetActivePlayersMul(bool onlyMine)
     {
@@ -493,40 +558,40 @@ public class GameManager : MonoBehaviour
         {
             int spawnIndex = 0;
             int counter = 0;
-            RemoveAllPlayersFromGame();
+            //RemoveAllPlayersFromGame();
             
-            foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
-            {
+            //foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
+            //{
                 
-                spawnIndex = counter;
-                counter++;
-              //  Debug.Log(spawnIndex);
-                switch (spawnIndex)
-                {
-                    case 0:
-                        AddPlayerToGame(Player.One);
-                       // players.Add(Player.One);
-                        break;
-                    case 1:
-                        AddPlayerToGame(Player.Two);
-                       // players.Add(Player.Two);
-                        break;
-                    case 2:
-                        AddPlayerToGame(Player.Three);
-                       // players.Add(Player.Three);
-                        break;
-                    case 3:
-                        AddPlayerToGame(Player.Four);
-                       // players.Add(Player.Four);
-                        break;
-                    default:
-                        AddPlayerToGame(Player.None);
-                      //  players.Add(Player.None);
-                        break;
-                }
-            }
-            spawnIndex = 0;
-            counter = 0;
+            //    spawnIndex = counter;
+            //    counter++;
+            //  //  Debug.Log(spawnIndex);
+            //    switch (spawnIndex)
+            //    {
+            //        case 0:
+            //            AddPlayerToGame(Player.One);
+            //           // players.Add(Player.One);
+            //            break;
+            //        case 1:
+            //            AddPlayerToGame(Player.Two);
+            //           // players.Add(Player.Two);
+            //            break;
+            //        case 2:
+            //            AddPlayerToGame(Player.Three);
+            //           // players.Add(Player.Three);
+            //            break;
+            //        case 3:
+            //            AddPlayerToGame(Player.Four);
+            //           // players.Add(Player.Four);
+            //            break;
+            //        default:
+            //            AddPlayerToGame(Player.None);
+            //          //  players.Add(Player.None);
+            //            break;
+            //    }
+            //}
+            //spawnIndex = 0;
+            //counter = 0;
             foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
             {
                 if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
@@ -556,41 +621,7 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
-        //else
-        //{
-        //    int spawnIndex = 0;
-        //    int counter = 0;
-        //    foreach (Photon.Realtime.Player p in Photon.Pun.PhotonNetwork.PlayerList)
-        //    {
-        //      //  if (p.UserId == Photon.Pun.PhotonNetwork.LocalPlayer.UserId)
-        //        {
-        //            spawnIndex = counter;
-        //        //    break;
-        //        }
-        //        counter++;
-        //        switch (spawnIndex)
-        //        {
-        //            case 0:
-        //                players.Add(Player.One);
-        //                break;
-        //            case 1:
-        //                players.Add(Player.Two);
-        //                break;
-        //            case 2:
-        //                players.Add(Player.Three);
-        //                break;
-        //            case 3:
-        //                players.Add(Player.Four);
-        //                break;
-        //            default:
-        //                players.Add(Player.One);
-        //                break;
-        //        }
-        //    }
-        //    Debug.Log("Spawn Number: " + spawnIndex);
-
-        //}
-        //List<Player> players = new List<Player>();
+        
         else
         {
             RemoveAllPlayersFromGame();
@@ -661,6 +692,19 @@ public class GameManager : MonoBehaviour
         return players;
     }
 
+    public List<Player> GetAlivePlayers()
+    {
+        List<Player> players = new List<Player>();
+        foreach (Player p in Player.GetValues(typeof(Player)))
+        {
+            if (IsPlayerInGame(p) && PlayerManager.Instance.players[p].lives > 0)
+            {
+                players.Add(p);
+            }
+        }
+        return players;
+    }
+
     public void SetPlayerCharacterChoice(Player p, int choice)
     {
         if (playerSelectionDict.ContainsKey(p))
@@ -706,7 +750,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject GetPlayerModel(Player player)
     {
-        Debug.Log(this.name);
+        //Debug.Log(this.name);
         return characters[GetPlayerCharacterChoice(player)].characterModel;
     }
 

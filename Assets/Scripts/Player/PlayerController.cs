@@ -13,7 +13,7 @@ using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour
 {
     public static Dictionary<GameObject, PlayerController> playerControllerByGameObject = new Dictionary<GameObject, PlayerController>();
-
+    public bool isControlledLocally = false;
     public bool pawn = false;
     [HideInInspector]
     public GameObject pawnModel;
@@ -203,14 +203,65 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            rewirePlayer = ReInput.players.GetPlayer(3);
-            rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
+            if(!isControlledByBot)
+                rewirePlayer = ReInput.players.GetPlayer(0);
+            else
+            {
+                rewirePlayer = ReInput.players.GetPlayer(3);
+            }
+            // No need of KB and Mouse in Mobile version
+            //rewirePlayer.controllers.Keyboard.enabled = false;
+            //rewirePlayer.controllers.Mouse.enabled = false;
+            //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
         }
 
         castPlane = new Plane(Vector3.up, transform.position);
         
     }
 
+    public void SetRewirePlayer(int id)
+    {
+        rewirePlayer = ReInput.players.GetPlayer(id);
+    }
+
+    public void SyncBotComponents()
+    {
+        pv.RPC("AddBotComponents", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    void AddBotComponents()
+    {
+        //PlayerBot pb = this.gameObject.AddComponent<PlayerBot>();
+        PlayerManager.Instance.players[player].rank = -1;
+        //PlayerManager.Instance.players[player].instance = this.gameObject;
+        //Debug.Log(PlayerManager.Instance.players[player].instance);
+        //possiblePlayers.RemoveAt(index);
+
+        PlayerBot.chosenPlayer.Add(player);
+        PlayerBot.aiPresets.Add(BotConfigurator.instance.medPreset);
+        PlayerBot.aiSlots.Add(PlayerBotSlot.Three);
+
+
+        LevelUIManager.Instance.EnableUI(player);
+        PlayerManager.Instance.players[player].instance = this.gameObject;
+        PlayerManager.Instance.players[player].isBot = true;
+        var bot = PlayerManager.Instance.players[player].instance.AddComponent<PlayerBot>();
+        if (!pv.IsMine)
+        {
+            PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().checkOwnerConnStatus = true;
+            PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().StartCheckingConnection();
+        }
+        //Debug.Log(bot + "???");
+        bot.preset = BotConfigurator.instance.medPreset;
+        //Debug.Log(bot.preset + "???");
+        bot.slot = PlayerBotSlot.Three;
+        rewirePlayer = ReInput.players.GetPlayer(3);
+        isControlledByBot = true;
+        
+        //PlayerManager.Instance.spawnedPlayerDictionary.Add(player, this.gameObject);
+    }
+    bool isControlledByBot = false;
     IEnumerator Start()
     {
         //if(TutorialManager.instance != null && player == Player.One && GameManager.Instance.GetActivePlayers().Count == 1)
@@ -243,8 +294,12 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if(pv.IsMine)
+                if (pv.IsMine)
+                {
                     GameManager.Instance.SetPlayerPlayedWithThisModel(player);
+                    RegisterThisPlayer();
+                }
+                    
             }
         }
 
@@ -293,6 +348,24 @@ public class PlayerController : MonoBehaviour
         collidersToIgnore = GetComponentsInChildren<IgnoreThisColliderWithParentPlayer>();
     }
 
+    public void RegisterThisPlayer()
+    {
+        pv.RPC("RegisterPlayerOnNetwork", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    void RegisterPlayerOnNetwork()
+    {
+        this.transform.SetParent(PlayerManager.Instance.players[player].spawnPoint);
+        GameManager.Instance.AddPlayerToGame(player);
+        //Debug.Log("Player added to list: " + player);
+        PlayerManager.Instance.players[player].instance = this.gameObject;
+        if (PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(player))
+            PlayerManager.Instance.spawnedPlayerDictionary[player] = PlayerManager.Instance.players[player].instance;
+        else
+            PlayerManager.Instance.spawnedPlayerDictionary.Add(player, PlayerManager.Instance.players[player].instance);
+    }
+
     private void OnDestroy()
     {
         playerControllerByGameObject.Remove(gameObject);
@@ -336,55 +409,21 @@ public class PlayerController : MonoBehaviour
     bool isControllerDecided = false;
     private void ProcessInput_PC()
     {
-        //horizontalInput = Input.GetAxis("P1_Horizontal_Axis_Keyboard");
-        //verticalInput = Input.GetAxis("P1_Vertical_Axis_Keyboard");
-        //moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-        //Vector2 axis = GetInputAxis();
-
-        //if (!isControllerDecided)
-        //{
-        //    if (GetInputAxis() != Vector2.zero)
-        //    {
-        //        isConsole = true;
-        //        isPC = false;
-        //        isControllerDecided = true;
-                
-        //    }
-        //    if (GetInputAxisKB() != Vector2.zero)
-        //    {
-        //        isPC = true;
-        //        isConsole = false;
-        //        isControllerDecided = true;
-
-        //    }
-            
-        //}
-        //else
-        {
-            //if (isPC)
-            //{
-            //    Vector2 axisKB = GetInputAxisKB();
-            //    horizontalInputKB = axisKB.x;
-            //    verticalInputKB = axisKB.y;
-            //    moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
-            //}
-            //else if (isConsole)
-            //{
-            //    Vector2 axis = GetInputAxis();
-            //    horizontalInput = axis.x;
-            //    verticalInput = axis.y;
-            //    moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-            //}
-            //else
-            //{
-            //    isControllerDecided = false;
-            //}
-        }
+        
 
         Vector2 axis = GetInputAxis();
         horizontalInput = axis.x;
         verticalInput = axis.y;
         moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
+
+        //foreach(Rewired.Player p in ReInput.players.Players)
+        //{
+        //    if (p.GetAnyButton())
+        //    {
+        //        Debug.Log(p.id);
+        //   
+
+        //Debug.Log(rewirePlayer.id);
 
         if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
         {
@@ -396,14 +435,18 @@ public class PlayerController : MonoBehaviour
         //if (Input.GetButtonDown("P1_Beam_Keyboard") && energyMeter.fillAmount != 1f)
         if ((rewirePlayer.GetButtonDown("Abduct") ) && energyMeter.fillAmount != 1f)
         {
-            Debug.Log("Beam Input");
+            //Debug.Log("Beam Input");
             
             pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
+            
         }
         else if ((rewirePlayer.GetButtonUp("Abduct")))
         {
             pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
-
+            if (IsSuperWeaponReady())
+            {
+                abductSwitchedToSuperWeapon = true;
+            }
         }
 
         if (twinStick)
@@ -414,11 +457,27 @@ public class PlayerController : MonoBehaviour
 
             //if (player != Player.Four)
             {
+                
                 if (rightStickDirection != Vector2.zero)
                 {
 
                     this.transform.localEulerAngles = new Vector3(0f, Mathf.Atan2(rightStickDirection.x, rightStickDirection.y) * 180 / Mathf.PI, 0f);
+                    aimStarted = true;
+                    AimDirection.SetActive(true);
+                    aimFlagObject.SetActive(false);
                 }
+                else if (aimStarted)
+                {
+                    aimStarted = false;
+                    AimDirection.SetActive(false);
+                    aimFlagObject.SetActive(true);
+                    currentWeapon.UpdateShootDirection(transform.forward);
+                    RPC_Fire(transform.forward);
+                    //Debug.Log("Fire");
+                }
+
+                
+
                 //Debug.Log("console");
             }
             
@@ -452,12 +511,26 @@ public class PlayerController : MonoBehaviour
 
         currentWeapon.UpdateShootDirection(transform.forward);
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Fire, player) && gunReady && !InputManager.Instance.GetButton(ButtonEnum.Beam, player))
-        if (rewirePlayer.GetButtonDown("Shoot") && gunReady && !rewirePlayer.GetButton("Abduct"))
-        {
+        //if (rewirePlayer.GetButtonDown("Shoot") && gunReady && !rewirePlayer.GetButton("Abduct"))
+        //{
 
-            //pv.RPC("RPC_Fire_Others", RpcTarget.All, transform.forward);
+        //    //pv.RPC("RPC_Fire_Others", RpcTarget.All, transform.forward);
+        //    RPC_Fire(transform.forward);
+        //}
+
+        // New aim code
+        if (rewirePlayer.GetButtonDown("Shoot"))
+        {
+            AimDirection.SetActive(true);
+            aimFlagObject.SetActive(false);
+        }
+        if (((currentWeapon.GetCurrentWeaponSettings().AutoFire && rewirePlayer.GetButtonUp("Shoot")) || rewirePlayer.GetButtonUp("Shoot")) && gunReady && !rewirePlayer.GetButton("Abduct"))
+        {
+            AimDirection.SetActive(false);
+            aimFlagObject.SetActive(true);
             RPC_Fire(transform.forward);
         }
+
 
         //if (InputManager.Instance.GetButtonDown(ButtonEnum.Dash, player) && boostReady)
         if (rewirePlayer.GetButtonDown("Dash") && boostReady)
@@ -478,7 +551,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon1, player) + "1");
             //Debug.Log(InputManager.Instance.GetAxisKB(AxisEnum.ActivateSuperWeapon2, player) + "2");
-            if (IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1")/* && rewirePlayer.GetButton("ActivateSuperWeapon2")*/)
+            if (IsSuperWeaponReady() && rewirePlayer.GetButton("Abduct") && abductSwitchedToSuperWeapon /*IsSuperWeaponReady() && rewirePlayer.GetButton("ActivateSuperWeapon1") && rewirePlayer.GetButton("ActivateSuperWeapon2")*/)
             {
                 // Debug.Log(InputManager.Instance.GetAxis(AxisEnum.ActivateSuperWeapon2, player));
                 pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
@@ -490,6 +563,11 @@ public class PlayerController : MonoBehaviour
     float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
     {
         return Mathf.Atan2(a.x - b.x, b.y - a.y) * Mathf.Rad2Deg;
+    }
+
+    public void BotBeamOn()
+    {
+        pv.RPC("RPC_Beam", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -504,6 +582,12 @@ public class PlayerController : MonoBehaviour
             ActivateBeam();
         }
         
+    }
+
+
+    public void BotBeamOff()
+    {
+        pv.RPC("RPC_Beam_Off", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -541,6 +625,11 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void Bot_ToggleSuperWeapon()
+    {
+        pv.RPC("RPC_ToggleSpecialWeapon", RpcTarget.AllBuffered);
+    }
+
     [PunRPC]
     void RPC_ToggleSpecialWeapon()
     {
@@ -548,12 +637,12 @@ public class PlayerController : MonoBehaviour
     }
 
     //[PunRPC]
-    void RPC_Fire(Vector3 fireDirection)
+    public void RPC_Fire(Vector3 fireDirection)
     {
         
         if (pv.IsMine)
         {
-            Debug.Log(currentWeapon.name);
+            //Debug.Log(currentWeapon.name);
 
             currentWeapon.Fire();
         }
@@ -576,46 +665,7 @@ public class PlayerController : MonoBehaviour
     bool aimStarted = false;
     private void ProcessInput()
     {
-        //if (!isControllerDecided)
-        //{
-        //    if (GetInputAxis() != Vector2.zero)
-        //    {
-        //        isConsole = true;
-        //        isPC = false;
-        //        isControllerDecided = true;
-
-        //    }
-        //    if (GetInputAxisKB() != Vector2.zero)
-        //    {
-        //       // Debug.Log("aksjckajc" + player + "---" + GetInputAxisKB());
-        //        isPC = true;
-        //        isConsole = false;
-        //        isControllerDecided = true;
-
-        //    }
-
-        //}
-        //else
-        //{
-        //    if (isPC)
-        //    {
-        //        Vector2 axisKB = GetInputAxisKB();
-        //        horizontalInputKB = axisKB.x;
-        //        verticalInputKB = axisKB.y;
-        //        moveInputVector = new Vector3(horizontalInputKB, 0.0f, verticalInputKB);
-        //    }
-        //    else if (isConsole)
-        //    {
-        //        Vector2 axis = GetInputAxis();
-        //        horizontalInput = axis.x;
-        //        verticalInput = axis.y;
-        //        moveInputVector = new Vector3(horizontalInput, 0.0f, verticalInput);
-        //    }
-        //    else
-        //    {
-        //        isControllerDecided = false;
-        //    }
-        //}
+        
 
         Vector2 axis = GetInputAxis();
         horizontalInput = axis.x;
@@ -817,7 +867,8 @@ public class PlayerController : MonoBehaviour
     public void ToggleSuperWeapon(bool activate)
     {
         superWeaponActive = activate;
-        TouchGameUI.instance.ToggleSuperWeaponButtonSprite(activate);
+        if(!isControlledByBot)
+            TouchGameUI.instance.ToggleSuperWeaponButtonSprite(activate);
         if (activate)
         {
            // superWeaponActive = activate;
@@ -951,7 +1002,7 @@ public class PlayerController : MonoBehaviour
     {
         //if (isPC)
         {
-            if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && isControlledLocally)
             {
                 ProcessInput_PC();
 

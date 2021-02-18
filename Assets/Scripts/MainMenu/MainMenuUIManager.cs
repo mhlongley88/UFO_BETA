@@ -110,7 +110,7 @@ public class MainMenuUIManager : MonoBehaviour
 
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         {
-            Debug.Log("PC");
+            //Debug.Log("PC");
             isConsole = false;
             isPC = true;
         }
@@ -396,6 +396,11 @@ public class MainMenuUIManager : MonoBehaviour
         }
         OnlineCharacterSelectionPanel.SetActive(false);
         OfflineCharacterSelectionPanel.SetActive(true);
+    }
+
+    public void SwitchToSplashScreen_WithoutStick()
+    {
+        currentMenu = Menu.Splash;
     }
 
     public void SwitchToCharacterSelect_WithoutStick()
@@ -739,36 +744,44 @@ public class MainMenuUIManager : MonoBehaviour
                         //    //currentMenu = Menu.Splash;
                         //    Photon.Pun.PhotonNetwork.LeaveRoom();
                         //}
-                        if (CharacterSelectPlayersReady() && Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount > 1)
+                        
+                        if (CharacterSelectPlayersReady() && Photon.Pun.PhotonNetwork.CurrentRoom != null && 
+                            Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount >= 1 && isWaitingTimePassed)
                         {
+                            
                             // if (CharacterSelectPlayersReady())
                             // {
                             //vCam1.SetActive(false);
                             //vCam2.SetActive(true);
-                            SetCameraView(vCam2LevelSelect);
+                            //SetCameraView(vCam2LevelSelect);
 
-                            myAudioSource.PlayOneShot(toLevelSelect);
-                            levelSelect.SetActive(true);
-                            levelSelectCharacters.AddActivePlayers();
-                            characterSelect.SetActive(false);
-                            currentMenu = Menu.LevelSelect;
-
+                            //myAudioSource.PlayOneShot(toLevelSelect);
+                            //levelSelect.SetActive(true);
+                            //levelSelectCharacters.AddActivePlayers();
+                            //characterSelect.SetActive(false);
+                            //currentMenu = Menu.LevelSelect;
                             if (Photon.Pun.PhotonNetwork.IsMasterClient)
                             {
-                                for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
-                                {
-                                    Debug.Log(LevelUnlockCheck.All[i].gameObject.name + " is " + LevelUnlockCheck.All[i].gameObject.activeSelf);
-                                    LobbyConnectionHandler.instance.pv.RPC("SyncVisibleLevels_LevelSelect", Photon.Pun.RpcTarget.Others, LevelUnlockCheck.All[i].gameObject.name, LevelUnlockCheck.All[i].gameObject.activeSelf);
-                                }
+                                StartCoroutine(LoadMultiplayerStage());
+                                currentMenu = Menu.LevelSelect;
                             }
+                            //if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                            //{
+                            //    for (int i = 0; i < LevelUnlockCheck.All.Count; i++)
+                            //    {
+                            //        Debug.Log(LevelUnlockCheck.All[i].gameObject.name + " is " + LevelUnlockCheck.All[i].gameObject.activeSelf);
+                            //        LobbyConnectionHandler.instance.pv.RPC("SyncVisibleLevels_LevelSelect", Photon.Pun.RpcTarget.Others, LevelUnlockCheck.All[i].gameObject.name, LevelUnlockCheck.All[i].gameObject.activeSelf);
+                            //    }
+                            //}
 
-                            Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
-                            LobbyUI.instance.FriendsListButton.SetActive(false);
+                            
+                            
 
-                            if (Photon.Pun.PhotonNetwork.IsMasterClient)
-                            {
-                                LobbyConnectionHandler.instance.pv.RPC("SyncHostName_LevelSelect", Photon.Pun.RpcTarget.All, LobbyConnectionHandler.instance.myDisplayName);
-                            }
+
+                            //if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                            //{
+                            //    LobbyConnectionHandler.instance.pv.RPC("SyncHostName_LevelSelect", Photon.Pun.RpcTarget.All, LobbyConnectionHandler.instance.myDisplayName);
+                            //}
 
                             Debug.Log("shouldnt be here");
                             // }
@@ -792,7 +805,7 @@ public class MainMenuUIManager : MonoBehaviour
                             //}
                         }
                         //if (GameManager.Instance.IsPlayerInGame(p) && InputManager.Instance.GetButtonDown(ButtonEnum.Submit, p) && ShowLevelTitle.levelStaticInt != 0)
-                        Debug.Log("LevelSelect?" + ShowLevelTitle.levelStaticInt);
+                        //Debug.Log("LevelSelect?" + ShowLevelTitle.levelStaticInt);
                         if (GameManager.Instance.IsPlayerInGame(p) && rewirePlayer.GetButtonDown("Submit") && ShowLevelTitle.levelStaticInt != 0)
                         {
                             //SceneManager.LoadScene("LoadingRoom");
@@ -802,6 +815,93 @@ public class MainMenuUIManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool isWaitingTimePassed = false;
+
+    public IEnumerator WaitForPlayers()
+    {
+        yield return new WaitForSeconds(10f);
+        isWaitingTimePassed = true;
+    }
+
+    void FillPlayerVoids()
+    {
+        int realPlayersCount = Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount;
+
+        for (int i = realPlayersCount; i < 4; i++)
+        {
+            switch (i)
+            {
+                case 1:
+                    AddOnlineBotToGame(Player.Two);
+                    break;
+                case 2:
+                    AddOnlineBotToGame(Player.Three);
+                    break;
+                case 3:
+                    AddOnlineBotToGame(Player.Four);
+                    break;
+            }
+        }
+    }
+
+    IEnumerator LoadMultiplayerStage()
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (Photon.Pun.PhotonNetwork.CurrentRoom.PlayerCount >= 1)
+        {
+            Photon.Pun.PhotonNetwork.CurrentRoom.IsOpen = false;
+            LobbyUI.instance.FriendsListButton.SetActive(false);
+
+            FillPlayerVoids();
+
+            //AddOnlineBotToGame(Player.Three);
+            //AddOnlineBotToGame(Player.Four);
+
+            //LobbyUI.instance.tempHolderLA.EnforceThisStageSettings();
+            ShowLevelTitle.levelStaticInt = 1;
+            yield return new WaitForSeconds(5f);
+            LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
+        }
+        else
+        {
+            currentMenu = Menu.CharacterSelect;
+        }
+    }
+    
+    void AddOnlineBotToGame(Player p)
+    {
+        BotConfigurator.instance.bot3.enableBot = true;
+        BotConfigurator.instance.bot3.preset = BotConfigurator.instance.medPreset;//LobbyUI.instance.tempHolderLA.gameObject.GetComponent<LevelSetBotPreset>().bot3.preset;
+        GameManager.Instance.AddPlayerToGame(p);
+        int id = UnityEngine.Random.Range(0, 6);
+        GameManager.Instance.SetPlayerCharacterChoice(p, id/*BotConfigurator.instance.bot3.characterIndex*/);
+        Debug.Log(p + "---" + id);
+        int characterIndexMenu = 0;
+        switch (p)
+        {
+            case Player.One:
+                characterIndexMenu = 0;
+                break;
+            case Player.Two:
+                characterIndexMenu = 1;
+                break;
+            case Player.Three:
+                characterIndexMenu = 2;
+                break;
+            case Player.Four:
+                characterIndexMenu = 3;
+                break;
+            case Player.None:
+                break;
+        }
+
+        GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].name,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].transform.position,
+                    MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].transform.rotation);
+        temp.GetComponent<CharacterSelectUI>().PlayerEnterGame(true);
+
     }
 
     public void SetCameraView(GameObject obj)
@@ -919,7 +1019,7 @@ public class MainMenuUIManager : MonoBehaviour
                 languagesStrings.Add(GetLocalLanguageRepresentation(supportedLanguage.ToString()));
         }
         languageDropdown.AddOptions(languagesStrings);
-        Debug.Log(languageDropdown.value + "" + languageDropdown.options.Count);
+        //Debug.Log(languageDropdown.value + "" + languageDropdown.options.Count);
         GameManager.Instance.selectedLanguage = languageDropdown.options[languageDropdown.value].text;
         foreach (TMP_Dropdown.OptionData item in languageDropdown.options)
         {
@@ -987,10 +1087,11 @@ public class MainMenuUIManager : MonoBehaviour
     }
 
 
-    Player tempPlayerChoice; int tempAlienChoice;
+    Player tempPlayerChoice; public int tempAlienChoice;
     public void HoldCharacterChoiceTemporarily(Player p, int choice)
     {
         tempPlayerChoice = p;
         tempAlienChoice = choice;
+        GameManager.Instance.selectedCharacterIndex = choice;
     }
 }

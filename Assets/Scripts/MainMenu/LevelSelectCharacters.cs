@@ -83,54 +83,30 @@ public class LevelSelectCharacters : MonoBehaviour
         else
         {
             Debug.Log("??");
-            List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
-            
-            Debug.Log(myplayerNumber[0] + myplayerNumber.Count + "########");
-            //switch (myplayerNumber[0])
-            //{
-            //    case Player.One:
-            //        myLevelPlayerMul = Instantiate(GameManager.Instance.GetPlayerModel(player), p1.position, p1.rotation, p1);
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.One;
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
-            //        break;
-            //    case Player.Two:
-            //        myLevelPlayerMul = Instantiate(GameManager.Instance.GetPlayerModel(player), p2.position, p2.rotation, p2);
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Two;
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
-            //        break;
-            //    case Player.Three:
-            //        myLevelPlayerMul = Instantiate(GameManager.Instance.GetPlayerModel(player), p3.position, p3.rotation, p3);
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Three;
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
-            //        break;
-            //    case Player.Four:
-            //        myLevelPlayerMul = Instantiate(GameManager.Instance.GetPlayerModel(player), p4.position, p4.rotation, p4);
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Four;
-            //        myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
-            //        break;
-            //}
-            switch (myplayerNumber[0])
+            Player myplayerNumber = GameManager.Instance.GetMyPlayerIndexMul();
+
+            switch (myplayerNumber)
             {
                 case Player.One:
-                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber[0]).name, p1.position, p1.rotation);
+                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber).name, p1.position, p1.rotation);
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.One;
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
                     //myLevelPlayerMul.transform.SetParent(p1);
                     break;
                 case Player.Two:
-                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber[0]).name, p1.position, p1.rotation);
+                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber).name, p1.position, p1.rotation);
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Two;
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
                     //myLevelPlayerMul.transform.SetParent(p2);
                     break;
                 case Player.Three:
-                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber[0]).name, p1.position, p1.rotation);
+                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber).name, p1.position, p1.rotation);
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Three;
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
                     //myLevelPlayerMul.transform.SetParent(p3);
                     break;
                 case Player.Four:
-                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber[0]).name, p1.position, p1.rotation);
+                    myLevelPlayerMul = Photon.Pun.PhotonNetwork.Instantiate(GameManager.Instance.GetPlayerModel(myplayerNumber).name, p1.position, p1.rotation);
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().myPlayer = Player.Four;
                     myLevelPlayerMul.GetComponent<LevelSelectPlayers>().SyncTransformsOnOtherInstances();
                     //myLevelPlayerMul.transform.SetParent(p4);

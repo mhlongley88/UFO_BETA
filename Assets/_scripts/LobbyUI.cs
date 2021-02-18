@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 //using Steamworks;
 public class LobbyUI : MonoBehaviour
@@ -26,7 +27,8 @@ public class LobbyUI : MonoBehaviour
 
     public Text InvitedFriendName;
     public GameObject InvitationPanel, FriendsListButton;
-
+    public CharacterSelectUI offlineCharacterSelect;
+    public ShowLevelTitle tempHolderLA;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +45,11 @@ public class LobbyUI : MonoBehaviour
 
     }
     
+    public void CancelMatchmaking()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+
     public void InviteRecieved(string id, string roomId)
     {
        // CSteamID Id = new CSteamID();
@@ -66,6 +73,7 @@ public class LobbyUI : MonoBehaviour
     {
         isPrivateMatch = _isPrivateMatch ? true : false;
         isPublicMatch = !_isPrivateMatch ? true : false;
+
         if (!_isPrivateMatch)
         {
             LobbyConnectionHandler.instance.StartMatchMaking();
@@ -74,6 +82,62 @@ public class LobbyUI : MonoBehaviour
         {
             LobbyConnectionHandler.instance.isPrivateMatch = true;
             PrivateMatch();
+        }
+    }
+
+    IEnumerator checkInternetConnection(Action<bool> action)
+    {
+        WWW www = new WWW("http://google.com");
+        yield return www;
+        if (www.error != null)
+        {
+            action(false);
+        }
+        else
+        {
+            action(true);
+        }
+    }
+    public void CheckConnection()
+    {
+        // Start matchmaking counter
+        
+
+
+        StartCoroutine(checkInternetConnection((isConnected) => {
+            // handle connection status here
+            //Debug.Log("Connected to internet: " + isConnected);
+            StartMatchmaking(isConnected);
+        }));
+    }
+
+    public void StartMatchmaking(bool isConnectedToInternet)
+    {
+        if (!isConnectedToInternet)
+        {
+            MainMenuUIManager.Instance.touchMenuUI.localMatchingCancelled = false;
+            LobbyConnectionHandler.instance.IsMultiplayerMode = false;
+            MainMenuUIManager.Instance.touchMenuUI.EnableCancelMatchmakingButton();
+            StartCoroutine(StartLocalStage_NoInernetConnection());
+        }
+        else
+        {
+            LobbyConnectionHandler.instance.IsMultiplayerMode = true;
+            MainMenuUIManager.Instance.SwitchToCharacterSelect_WithoutStick();
+            LobbyConnectionHandler.instance.StartMatchMaking();
+        }
+    }
+
+    IEnumerator StartLocalStage_NoInernetConnection()
+    {
+        yield return new WaitForSeconds(3f);
+        if (!MainMenuUIManager.Instance.touchMenuUI.localMatchingCancelled)
+        {
+            MainMenuUIManager.Instance.OfflineButtonListener(0);
+            MainMenuUIManager.Instance.SwitchToCharacterSelect_WithoutStick();
+            offlineCharacterSelect.SetCharacter();
+            tempHolderLA.EnforceThisStageSettings();
+            MainMenuUIManager.Instance.LoadScene_LoadingRoon();
         }
     }
 

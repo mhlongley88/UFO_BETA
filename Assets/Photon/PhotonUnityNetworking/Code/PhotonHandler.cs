@@ -23,9 +23,9 @@ namespace Photon.Pun
     /// <summary>
     /// Internal MonoBehaviour that allows Photon to run an Update loop.
     /// </summary>
-    internal class PhotonHandler : ConnectionHandler, IInRoomCallbacks, IMatchmakingCallbacks
+    public class PhotonHandler : ConnectionHandler, IInRoomCallbacks, IMatchmakingCallbacks
     {
-        internal static PhotonHandler Instance;
+        public static PhotonHandler Instance;
 
         protected internal static bool AppQuits;
 
@@ -83,11 +83,21 @@ namespace Photon.Pun
             {
                 PhotonNetwork.NewSceneLoaded();
             };
+            //Debug.Log(this.gameObject.name);
         }
 
 
         /// <summary>Called by Unity when the application is closed. Disconnects.</summary>
-        protected override void OnApplicationQuit()
+
+        //protected override void OnApplicationQuit()
+        //{
+        //    /// avoid race condition when player disconnects abruptly
+
+        //    AppQuits = true;
+        //    base.OnApplicationQuit();
+        //}
+
+        public void QuitApplication()
         {
             AppQuits = true;
             base.OnApplicationQuit();
