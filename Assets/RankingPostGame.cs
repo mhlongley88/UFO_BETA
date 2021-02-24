@@ -40,7 +40,7 @@ public class RankingPostGame : MonoBehaviour
         instantiatedObjects.Clear();
     }
 
-    public void SubmitPlayer(int rankNumber, GameObject playerModel)
+    public void SubmitPlayer(int rankNumber, GameObject playerModel, Player p=Player.None)
     {
         if (rankNumber >= 0 && rankNumber < ranks.Length)
         {
@@ -70,9 +70,11 @@ public class RankingPostGame : MonoBehaviour
                 t.SetParent(firstPlaceTransform);
                 TouchGameUI.instance.LevelScreenControls.SetActive(false);
                 TouchGameUI.instance.ResultScreenControls.SetActive(true);
+                GameManager.Instance.AssignRewardOnResultScreen();
             }
-                
 
+            
+            
             rank.gameObject.SetActive(false);
             t.gameObject.SetActive(true);
         }

@@ -103,18 +103,31 @@ public class NormalWeapon : Weapon
     {
        // if (currentAmmo > 0 && canFire)
         {
-            float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
-            Bullet b;
-            b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoints[0].transform.position, Quaternion.identity).GetComponent<Bullet>();
-            b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+            //for (int i = 0; i < GetCurrentWeaponSetting().ShotsPerVolley; i++)
+            {
+                float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+                Bullet b;
+                b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, bulletSpawnPoints[0].transform.position, Quaternion.identity).GetComponent<Bullet>();
+                b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+            }
+                
 
         }
     }
 
+    IEnumerator FireProjectilesAuto(int count)
+    {
+        yield return new WaitForSeconds(GetCurrentWeaponSetting().FireDelayAuto);
 
+        if (count > 0)
+        {
+            Fire(false);
+            StartCoroutine(FireProjectilesAuto(--count));
+        }
+    }
 
     //override PhotonView pv;
-    public override void Fire()
+    public override void Fire(bool viaPress = true)
     {
      //   Debug.Log(currentAmmo + "-" + canFire);
         if (currentAmmo > 0 && canFire)
@@ -150,7 +163,9 @@ public class NormalWeapon : Weapon
             StartCoroutine(AmmoCooldownCoroutine());
             StartCoroutine(WeaponCooldownCoroutine());
             ufoRigidbody.AddExplosionForce(GetCurrentWeaponSetting().RecoilForce, shootDirection.normalized * 1.0f + transform.position, 1f, 0f, ForceMode.Impulse);
-            if(pv) pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
+            if (viaPress)
+                StartCoroutine(FireProjectilesAuto((GetCurrentWeaponSetting().ProjectileCount - 1)));
+            if (pv) pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }
     }
 }

@@ -201,6 +201,17 @@ public class SuperWeapon : Weapon
         DeactivateWeapon();
         canFire = true;
     }
+
+    IEnumerator FireProjectilesAuto(int count)
+    {
+        yield return new WaitForSeconds(GetCurrentWeaponSetting().FireDelayAuto);
+
+        if(count > 0)
+        {
+            Fire(false);
+            StartCoroutine(FireProjectilesAuto(--count));
+        }
+    }
     //public override void Fire()
     //{
     //    if (LobbyConnectionHandler.instance.IsMultiplayerMode)
@@ -214,15 +225,19 @@ public class SuperWeapon : Weapon
     {
         if (currentAmmo > 0 && canFire)
         {
-            float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
-            Bullet b;
-            b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
-            b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+            //for (int i = 0; i < GetCurrentWeaponSetting().ShotsPerVolley; i++)
+            {
+                float shootAngle = Random.Range(-GetCurrentWeaponSetting().Spread / 2.0f, GetCurrentWeaponSetting().Spread / 2.0f);
+                Bullet b;
+                b = Instantiate(GetCurrentWeaponSetting().BulletPrefab, transform.position + GetCurrentWeaponSetting().WeaponFiringPositionOffsets[firePositionIndex], Quaternion.identity).GetComponent<Bullet>();
+                b.FireBullet(Quaternion.AngleAxis(shootAngle, Vector3.up) * fireDirection, ufoCollider, GetCurrentWeaponSetting().HealthDamage + healthDamageOffset, GetCurrentWeaponSetting().ScaleDamage, GetCurrentWeaponSetting().BulletVelocity);
+            }
+                
 
         }
     }
     //PhotonView pv;
-    public override void Fire()
+    public override void Fire(bool viaPress = true)
     {
         if (currentAmmo > 0 && canFire)
         {
@@ -262,7 +277,8 @@ public class SuperWeapon : Weapon
             {
                 DeactivateWeapon();
             }
-
+            if(viaPress)
+                StartCoroutine(FireProjectilesAuto((GetCurrentWeaponSetting().ProjectileCount-1)));
             if(pv != null)
                 pv.RPC("RPC_Fire_Others", RpcTarget.Others, transform.forward);
         }

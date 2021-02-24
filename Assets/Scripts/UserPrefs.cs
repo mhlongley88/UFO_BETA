@@ -24,11 +24,11 @@ public class UserPrefs : MonoBehaviour
 {
     public static UserPrefs instance;
 
-    string path;
+    string path, pathUFOPrefs;
     public string filename = "UFO_SaveData";
-
+    public string filenameUFOPrefs = "UFO_UpgradePrefs";
     UserDataContent content;
-
+    UFOPrefs contentUFOPrefs;
     void Awake()
     {
         if (instance != null && instance != this)
@@ -41,12 +41,21 @@ public class UserPrefs : MonoBehaviour
             DontDestroyOnLoad(this);
         }
 
+
+    }
+
+    private void Start()
+    {
+        Debug.Log(Application.dataPath);
 #if UNITY_EDITOR
         path = Application.dataPath + "/" + filename + ".json";
+        pathUFOPrefs = Application.dataPath + "/" + filenameUFOPrefs + ".json";
 #else
-            path = Application.persistentDataPath + "/" + filename + ".json";
+        path = Application.persistentDataPath + "/" + filename + ".json";
+        pathUFOPrefs = Application.persistentDataPath + "/" + filenameUFOPrefs + ".json";
 #endif
         Load();
+        LoadUfoPrefs();
     }
 
     void Load()
@@ -54,13 +63,52 @@ public class UserPrefs : MonoBehaviour
         if (!File.Exists(path))
         {
             content = new UserDataContent();
-            var json = JsonUtility.ToJson(content);
+            var json = JsonUtility.ToJson(content, true);
             File.WriteAllText(path, json);
         }
         else
         {
             content = JsonUtility.FromJson<UserDataContent>(File.ReadAllText(path));
         }
+    }
+
+    void LoadUfoPrefs()
+    {
+        if (!File.Exists(pathUFOPrefs))
+        {
+            contentUFOPrefs = new UFOPrefs();
+            foreach(GameManager.CharacterAssets asset in GameManager.Instance.Characters)
+            {
+                UFOAttributes props = SetUFOProps(asset);
+                contentUFOPrefs.ufoData.Add(props);
+                
+            }
+            var json = JsonUtility.ToJson(contentUFOPrefs, true);
+            File.WriteAllText(pathUFOPrefs, json);
+        }
+        else
+        {
+            contentUFOPrefs = JsonUtility.FromJson<UFOPrefs>(File.ReadAllText(pathUFOPrefs));
+            Debug.Log(contentUFOPrefs.ufoData.Count);
+        }
+    }
+
+    UFOAttributes SetUFOProps(GameManager.CharacterAssets asset)
+    {
+        UFOAttributes props = new UFOAttributes();
+        CharacterLevelSelectInfo character = asset.characterModel.GetComponent<CharacterLevelSelectInfo>();
+        props.ufoIndex = character.ufoIndex;
+        props.Damage = character.Damage;
+        props.RateOfFire = character.RateOfFire;
+        props.Accuracy = character.Accuracy;
+        props.isUnlocked = character.isUnlocked;
+        return props;
+    }
+
+   public UFOPrefs GetUFOProps()
+    {
+        //Debug.Log(contentUFOPrefs.ufoData.Count);
+        return contentUFOPrefs;
     }
 
     public bool HasKey(string key)
@@ -130,9 +178,17 @@ public class UserPrefs : MonoBehaviour
         return pair != null ? System.Convert.ToBoolean(pair.value) : defaultValue;
     }
 
+    //private void OnDisable()
+    //{
+    //    Save();
+    //}
+
     public void Save()
     {
-        var json = JsonUtility.ToJson(content);
+        var json = JsonUtility.ToJson(content, true);
         File.WriteAllText(path, json);
+
+        var json2 = JsonUtility.ToJson(contentUFOPrefs, true);
+        File.WriteAllText(pathUFOPrefs, json2);
     }
 }

@@ -54,10 +54,14 @@ MonoBehaviour:
   _damage: 0.35
   _rateOfFire: 0.6
   _accuracy: 0.75
+  _projCountAuto: 0
+  _fireDelayAuto: 0
   characterHead: {fileID: 21300000, guid: cb6be58583c9b0f42b652de3700e8d2d, type: 3}
   characterLivesCircleTint: {r: 0.38470092, g: 0.8962264, b: 0.48026055, a: 1}
   muzzleFlashVfx: {fileID: 1000012903210382, guid: 397ccf67564205345a8bfdf09a5b5bed,
     type: 3}
+  ufoIndex: 0
+  isUnlocked: 1
 --- !u!1 &1274454448025570
 GameObject:
   m_ObjectHideFlags: 0
@@ -6299,22 +6303,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 971459040617191457, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 47972231509044766, guid: 88f8ba9618842f6488ed17641b933139,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8495637529604126007, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6225807156808945906, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280685182972896867, guid: 88f8ba9618842f6488ed17641b933139,
+    - target: {fileID: 2275661320968774340, guid: 88f8ba9618842f6488ed17641b933139,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6324,32 +6323,7 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3651764844995597927, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7812154088470109616, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4963146474671304647, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1833152371358849062, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 971459040617191457, guid: 88f8ba9618842f6488ed17641b933139,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8014416342263850977, guid: 88f8ba9618842f6488ed17641b933139,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6359,7 +6333,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3651764844995597927, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5265643454501803592, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4963146474671304647, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6225807156808945906, guid: 88f8ba9618842f6488ed17641b933139,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6369,7 +6358,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2275661320968774340, guid: 88f8ba9618842f6488ed17641b933139,
+    - target: {fileID: 8014416342263850977, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812154088470109616, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495637529604126007, guid: 88f8ba9618842f6488ed17641b933139,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280685182972896867, guid: 88f8ba9618842f6488ed17641b933139,
         type: 3}
       propertyPath: m_IsActive
       value: 0

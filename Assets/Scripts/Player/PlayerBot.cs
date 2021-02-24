@@ -40,10 +40,12 @@ public class PlayerBot : MonoBehaviour
 
     Transform targetAbduct;
 
+    Photon.Pun.PhotonView pv;
+
     void Awake()
     {
         playerController = GetComponent<PlayerController>();
-
+        pv = this.GetComponent<Photon.Pun.PhotonView>();
         destination = transform.position + transform.forward * 20.0f;
         playerController.allowLocalProcessInput = false;
 
@@ -69,7 +71,261 @@ public class PlayerBot : MonoBehaviour
         //GameManager.Instance.RemovePlayerFromGame(chosenPlayer);
     }
 
+    
     void Update()
+    {
+        if (!pv)
+        {
+            OfflineMode();
+        }
+        else
+        {
+            if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                OnlineMode();
+            
+            if (preset.increaseHealth)
+            {
+                if (increaseHealthRateElapsed < Time.time)
+                {
+                    playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
+
+                    increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
+                }
+            }
+
+
+            if (preset.increaseDamage)
+            {
+                if (increaseDamageRateElapsed < Time.time)
+                {
+                    playerController.CurrentWeapon.healthDamageOffset += preset.amountDamageToIncrease;
+
+                    increaseDamageRateElapsed = Time.time + preset.increaseDamageRate;
+                }
+            }
+        }
+    }
+
+    IEnumerator StickToSameEnemy(float t)
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        if(!PlayerManager.Instance.players[currentEnemy].instance || t < 0)
+        {
+            targetSelected = false;
+        }
+        else
+        {
+            StartCoroutine(StickToSameEnemy(t-0.25f));
+        }
+
+    }
+    Player currentEnemy;
+    bool targetSelected = false;
+    Player FindFoe()
+    {
+        if (!targetSelected)
+        {
+            List<Player> players = GameManager.Instance.GetAlivePlayers();
+            players.Remove(playerController.player);
+            //Debug.Log(players.Count);
+            Player selectedTarget = Player.None;
+            if (players.Count >= 1)
+            {
+                selectedTarget = players[Random.Range(0, players.Count)];
+                currentEnemy = selectedTarget;
+                targetSelected = true;
+                StartCoroutine(StickToSameEnemy(Random.Range(5, 15)));
+            }
+        }
+        
+        return (currentEnemy);
+    }
+
+    void OnlineMode()
+    {
+        Debug.Log("Master Client Bot Working");   
+        Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
+        var ea = lookDir.eulerAngles;
+        ea.x = ea.z = 0.0f;
+        lookDir.eulerAngles = ea;
+
+        if (GameManager.Instance.paused || GameManager.Instance.HasCutsceneObjectsActive)
+        {
+            playerController.ApplyExternalInput(Vector3.zero, lookDir);
+            abductOn = false;
+            targetAbduct = null;
+            playerController.DeactivateBeam();
+
+            if (playerController.superWeaponActive) playerController.ToggleSuperWeapon(false);
+
+            return;
+        }
+
+        if (movingRate < Time.time)
+        {
+            moving = !moving;
+
+            movingRate = Time.time + (moving ? Random.Range(2.7f, 6) : Random.Range(1.5f, 3.0f));
+
+            if (moving)
+                followingPlayer = Random.value > 0.45f;
+        }
+        var adversaryPlayer = FindFoe();
+        Debug.Log("Selected Enemy: " + adversaryPlayer);
+        if (adversaryPlayer == Player.None)
+        {
+            return;
+        }
+        //var adversaryPlayer = GameManager.Instance.GetAlivePlayers().Find(it => playerController.player != it/*!chosenPlayer.Contains(it)*/);
+
+        var adversaryObject = PlayerManager.Instance.players[adversaryPlayer].instance;
+        
+        if (moving)
+        {
+            if ((destination - transform.position).magnitude < 1)
+                FindNewPoint();
+        }
+
+        if (adversaryObject)
+        {
+            lookDir = Quaternion.LookRotation(adversaryObject.transform.position - transform.position, Vector3.up);
+            ea = lookDir.eulerAngles;
+            ea.x = ea.z = 0.0f;
+            lookDir.eulerAngles = ea;
+
+            if (followingPlayer)
+                destination = adversaryObject.transform.position;
+        }
+
+        if (preset.abduct)
+        {
+            if (abductOn)
+            {
+                if (targetAbduct != null)
+                {
+                    destination = targetAbduct.position;
+                }
+                else
+                {
+                    abductOn = false;
+                    targetAbduct = null;
+                    playerController.BotBeamOff();//.DeactivateBeam();
+                }
+            }
+        }
+
+
+        playerController.ApplyExternalInput(moving ? (destination - transform.position).normalized : Vector3.zero, lookDir);
+
+        // Shooting
+        if (adversaryObject && shootingRate < Time.time)
+        {
+            playerController.CurrentWeapon.UpdateShootDirection(transform.forward);
+            playerController.RPC_Fire(transform.forward);
+
+            shootingRate = Time.time + Random.Range(preset.shootRateMinMax.x, preset.shootRateMinMax.y);
+
+            // A little variation
+            if (Random.value > 0.75f)
+                shootingRate = Time.time + Random.Range(preset.shootRateMinMax.x - 0.1f, preset.shootRateMinMax.y - 0.1f);
+        }
+
+        // Abduction
+        if (preset.abduct)
+        {
+            if (!abductOn)
+            {
+                if (abductRateElapsed < Time.time)
+                {
+                    if (ObjectAbduct.AbductableObjects.Count > 0)
+                    {
+                        for (int i = 0; i < ObjectAbduct.AbductableObjects.Count; i++)
+                        {
+                            var abductable = ObjectAbduct.AbductableObjects[i];
+
+                            var p = abductable.transform.position;
+                            p.y = transform.position.y;
+
+                            if ((p - transform.position).magnitude < 6.0f)
+                            {
+                                if (abductable != null)
+                                {
+                                    abductOn = true;
+                                    targetAbduct = abductable.transform;
+                                    playerController.BotBeamOn();
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    abductRateElapsed = Time.time + Random.Range(1.0f, 4.0f);
+                }
+            }
+            else
+            {
+                if (abductRateElapsed < Time.time)
+                {
+                    abductOn = false;
+                    targetAbduct = null;
+                    playerController.BotBeamOff();
+
+                    abductRateElapsed = Time.time + Random.Range(6.0f, 8.0f);
+                }
+            }
+            //playerController.inputAbduction = abductOn;
+        }
+
+        //Specials
+        if (preset.useSpecials && !usingSpecial)
+        {
+            if (playerController.IsSuperWeaponReady())
+            {
+                usingSpecial = true;
+                StartCoroutine(UseSpecial());
+            }
+        }
+
+        if (preset.useDash)
+        {
+            if (adversaryObject != null)
+            {
+                if ((adversaryObject.transform.position - transform.position).magnitude < 4)
+                {
+                    if (useDashElaspsed < Time.time)
+                    {
+                        playerController.tryToBoost();
+                        useDashElaspsed = Time.time + Random.Range(0.8f, 2.0f);
+                    }
+                }
+            }
+        }
+
+        //if (preset.increaseHealth)
+        //{
+        //    if (increaseHealthRateElapsed < Time.time)
+        //    {
+        //        playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
+
+        //        increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
+        //    }
+        //}
+
+
+        //if (preset.increaseDamage)
+        //{
+        //    if (increaseDamageRateElapsed < Time.time)
+        //    {
+        //        playerController.CurrentWeapon.healthDamageOffset += preset.amountDamageToIncrease;
+
+        //        increaseDamageRateElapsed = Time.time + preset.increaseDamageRate;
+        //    }
+        //}
+    }
+
+    void OfflineMode()
     {
         Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
         var ea = lookDir.eulerAngles;
@@ -83,18 +339,18 @@ public class PlayerBot : MonoBehaviour
             targetAbduct = null;
             playerController.DeactivateBeam();
 
-            if(playerController.superWeaponActive) playerController.ToggleSuperWeapon(false);
+            if (playerController.superWeaponActive) playerController.ToggleSuperWeapon(false);
 
             return;
         }
 
-        if(movingRate < Time.time)
+        if (movingRate < Time.time)
         {
             moving = !moving;
 
             movingRate = Time.time + (moving ? Random.Range(2.7f, 6) : Random.Range(1.5f, 3.0f));
 
-            if(moving)
+            if (moving)
                 followingPlayer = Random.value > 0.45f;
         }
 
@@ -117,10 +373,10 @@ public class PlayerBot : MonoBehaviour
             if (followingPlayer)
                 destination = adversaryObject.transform.position;
         }
-        
-        if(preset.abduct)
+
+        if (preset.abduct)
         {
-            if(abductOn)
+            if (abductOn)
             {
                 if (targetAbduct != null)
                 {
@@ -139,7 +395,7 @@ public class PlayerBot : MonoBehaviour
         playerController.ApplyExternalInput(moving ? (destination - transform.position).normalized : Vector3.zero, lookDir);
 
         // Shooting
-        if(adversaryObject && shootingRate < Time.time)
+        if (adversaryObject && shootingRate < Time.time)
         {
             playerController.CurrentWeapon.UpdateShootDirection(transform.forward);
             playerController.CurrentWeapon.Fire();
@@ -199,7 +455,7 @@ public class PlayerBot : MonoBehaviour
         }
 
         //Specials
-        if(preset.useSpecials && !usingSpecial)
+        if (preset.useSpecials && !usingSpecial)
         {
             if (playerController.IsSuperWeaponReady())
             {
@@ -208,7 +464,7 @@ public class PlayerBot : MonoBehaviour
             }
         }
 
-        if(preset.useDash)
+        if (preset.useDash)
         {
             if (adversaryObject != null)
             {
@@ -223,12 +479,12 @@ public class PlayerBot : MonoBehaviour
             }
         }
 
-        if(preset.increaseHealth)
+        if (preset.increaseHealth)
         {
             if (increaseHealthRateElapsed < Time.time)
             {
                 playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
-    
+
                 increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
             }
         }
@@ -249,7 +505,7 @@ public class PlayerBot : MonoBehaviour
     {
         yield return new WaitForSeconds(1.0f);
 
-        playerController.ToggleSuperWeapon(true);
+        playerController.Bot_ToggleSuperWeapon();//.ToggleSuperWeapon(true);
         usingSpecial = false;
     }
 

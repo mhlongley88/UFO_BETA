@@ -51,15 +51,16 @@ public class UnlockSystem : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        matchesCompleted = UserPrefs.instance.GetInt(BattlesCompletedPrefsKey, 0);
-        onlineMatchesCompleted = UserPrefs.instance.GetInt(OnlineBattlesCompletedPrefsKey, 0);
+        
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        for(int i = 0; i < GameManager.Instance.Characters.Length; i++)
+        matchesCompleted = UserPrefs.instance.GetInt(BattlesCompletedPrefsKey, 0);
+        onlineMatchesCompleted = UserPrefs.instance.GetInt(OnlineBattlesCompletedPrefsKey, 0);
+        for (int i = 0; i < GameManager.Instance.Characters.Length; i++)
         {
             if (GameManager.Instance.Characters[i].matchThreshold > matchesCompleted)
             {

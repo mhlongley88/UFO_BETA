@@ -73,6 +73,15 @@ public class ScriptableWeapon : ScriptableObject
     [SerializeField]
     private float weaponDuration = 10f;
 
+
+    [SerializeField]
+    private int _projCountAuto = 1;
+    [SerializeField]
+    private float _fireDelayAuto = 0.3f;
+
+    public int ProjectileCount { get { return _projCountAuto; } }
+    public float FireDelayAuto { get { return _fireDelayAuto; } }
+
     public bool Reloadable
     {
         get

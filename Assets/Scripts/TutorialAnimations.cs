@@ -261,23 +261,37 @@ public class TutorialAnimations : MonoBehaviour
         rotNull.transform.Rotate(0, 180, 0);
         while (!canProgress)
         {
-           // canProgress = true;
+            // canProgress = true;
 
-            for (int i = 0; i < activePlayers.Count; i++)
+            foreach (var player in PlayerController.playerControllerByGameObject)
             {
-                if (!performedAction[activePlayers[i]])
+                if (!performedAction[player.Value.player])
                 {
-                    //canProgress = false;
-                    var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
-
-                    
-                    if (playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+                    // canProgress = false;
+                    //Debug.Log(player.Value.IsSuperWeaponReady() + "---" + player.Value.rewirePlayer.GetButton("Abduct") + "---" + player.Value.abductSwitchedToSuperWeapon);
+                    if (/*player.Value.IsSuperWeaponReady() && */ player.Value.rewirePlayer.GetButtonDown("Abduct")/* && player.Value.abductSwitchedToSuperWeapon*/) // Wait for one of the players to have special weapon ready
                     {
-                        //performedAction[activePlayers[i]] = true;
+                        //performedAction[player.Value.player] = true;
                         canProgress = true;
                     }
                 }
             }
+
+            //for (int i = 0; i < activePlayers.Count; i++)
+            //{
+            //    if (!performedAction[activePlayers[i]])
+            //    {
+            //        //canProgress = false;
+            //        var playerInput = ReInput.players.GetPlayer(GetPlayerIndex(activePlayers[i]));
+
+                    
+            //        if (player.Value.IsSuperWeaponReady() && rewirePlayer.GetButton("Abduct") && abductSwitchedToSuperWeapon)//(playerInput.GetButton("ActivateSuperWeapon1") && playerInput.GetButton("ActivateSuperWeapon2"))
+            //        {
+            //            //performedAction[activePlayers[i]] = true;
+            //            canProgress = true;
+            //        }
+            //    }
+            //}
 
             activePlayers = GameManager.Instance.GetActivePlayers();
             yield return null;

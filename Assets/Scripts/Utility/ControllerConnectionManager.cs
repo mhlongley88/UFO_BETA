@@ -56,7 +56,7 @@ public class ControllerConnectionManager : MonoBehaviour
             instance = this;
         else
         {
-            Debug.Log("Duplicate ControllerConnectionManager detected! Destroying " + gameObject + "'s component.");
+            //Debug.Log("Duplicate ControllerConnectionManager detected! Destroying " + gameObject + "'s component.");
             Destroy(this);
         }
 

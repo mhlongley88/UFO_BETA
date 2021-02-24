@@ -51,7 +51,7 @@ public abstract class Weapon : MonoBehaviour
     }
 
     //Photon.Pun.PhotonView pv;
-    public virtual void Fire()
+    public virtual void Fire(bool viaPress = true)
     {
         Debug.Log(currentAmmo + "-" + canFire);
         if (currentAmmo > 0 && canFire)

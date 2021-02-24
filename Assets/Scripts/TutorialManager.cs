@@ -66,7 +66,8 @@ public class TutorialManager : MonoBehaviour
         t -= 0.5f;
         if (t <= 0)
         {
-            GoToLA();
+            //GoToLA();
+            GoToMainMenu();
         }
         else
         {
@@ -113,7 +114,7 @@ public class TutorialManager : MonoBehaviour
         
         if (canGoToMenu)
         {
-            skipPanel.SetActive(true);
+            //skipPanel.SetActive(true);
             if (!isGoToMenuTimerStarted)
             {
                 isGoToMenuTimerStarted = true;
@@ -166,5 +167,10 @@ public class TutorialManager : MonoBehaviour
         LoadIntroSceneLevel.introSceneLevel = introLevelNameAfterSkipTutorial;
         ShowLevelTitle.levelStaticInt = levelIntAfterSkipTutorial;
         SceneManager.LoadScene("LoadingRoom");
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

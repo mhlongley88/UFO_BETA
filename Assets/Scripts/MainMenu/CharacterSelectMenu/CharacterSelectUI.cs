@@ -34,7 +34,7 @@ public class CharacterSelectUI : MonoBehaviour
 
 
     public string playerName;
-    public TextMeshPro playerNameText;
+    public TextMeshProUGUI playerNameText;
 
     public Transform characterModelContainer;
     private GameObject currentCharacterModel;
@@ -51,87 +51,94 @@ public class CharacterSelectUI : MonoBehaviour
     public Image DamageFG, RateOfFireFG, AccuracyFG;
     public bool UseWithoutStick = false;
 
+    public GameObject oldUI, newUI;
+    public Image ufoPortrait;
+    public int playerLevel;
+    public float playerStars;
+
     int _selectedCharacterIndex = 0;
-    private int selectedCharacterIndex {get { return _selectedCharacterIndex; } 
-        set 
-        {
-            if (!LobbyConnectionHandler.instance.IsMultiplayerMode || (pv && pv.IsMine))
-            {
-                int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
+    private int selectedCharacterIndex;
+    //{
+    //    get { return _selectedCharacterIndex; } 
+    //    set 
+    //    {
+    //        if (!LobbyConnectionHandler.instance.IsMultiplayerMode || (pv && pv.IsMine))
+    //        {
+    //            int wonMatches = UnlockSystem.instance.GetMatchesCompleted();
 
-                if (value >= GameManager.Instance.Characters.Length)
-                {
-                    _selectedCharacterIndex = 0;
-                    return;
-                }
+    //            if (value >= GameManager.Instance.Characters.Length)
+    //            {
+    //                _selectedCharacterIndex = 0;
+    //                return;
+    //            }
 
-                if (value < 0)
-                {
-                    for (int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
-                    {
-                        if (wonMatches >= GameManager.Instance.Characters[e].matchThreshold || CharacterUnlockFromProgression.IsUnlocked(e))
-                        {
-                            _selectedCharacterIndex = e;
-                            break;
-                        }
-                    }
+    //            if (value < 0)
+    //            {
+    //                for (int e = GameManager.Instance.Characters.Length - 1; e >= 0; e--)
+    //                {
+    //                    if (wonMatches >= GameManager.Instance.Characters[e].matchThreshold || CharacterUnlockFromProgression.IsUnlocked(e))
+    //                    {
+    //                        _selectedCharacterIndex = e;
+    //                        break;
+    //                    }
+    //                }
 
-                    return;
-                }
+    //                return;
+    //            }
 
 
-                int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
+    //            int characterUnlockedAtWonMatches = GameManager.Instance.Characters[value].matchThreshold;
 
-                if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(value))
-                    _selectedCharacterIndex = value;
-                else
-                {
-                    if (value > _selectedCharacterIndex)
-                    {
-                        for (int e = value; e < GameManager.Instance.Characters.Length; e++)
-                        {
-                            characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
-                            if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
-                            {
-                                _selectedCharacterIndex = e;
-                                break;
-                            }
-                            else
-                            {
-                                if (e == GameManager.Instance.Characters.Length - 1)
-                                {
-                                    e = -1;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int e = value; e >= 0; e--)
-                        {
-                            characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
-                            if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
-                            {
-                                _selectedCharacterIndex = e;
-                                break;
-                            }
-                            else
-                            {
-                                if (e == GameManager.Instance.Characters.Length - 1)
-                                {
-                                    e = -1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                _selectedCharacterIndex = value;
-            }
-        }
-    }
+    //            if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(value))
+    //                _selectedCharacterIndex = value;
+    //            else
+    //            {
+    //                if (value > _selectedCharacterIndex)
+    //                {
+    //                    for (int e = value; e < GameManager.Instance.Characters.Length; e++)
+    //                    {
+    //                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+    //                        if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+    //                        {
+    //                            _selectedCharacterIndex = e;
+    //                            break;
+    //                        }
+    //                        else
+    //                        {
+    //                            if (e == GameManager.Instance.Characters.Length - 1)
+    //                            {
+    //                                e = -1;
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    for (int e = value; e >= 0; e--)
+    //                    {
+    //                        characterUnlockedAtWonMatches = GameManager.Instance.Characters[e].matchThreshold;
+    //                        if (wonMatches >= characterUnlockedAtWonMatches || CharacterUnlockFromProgression.IsUnlocked(e))
+    //                        {
+    //                            _selectedCharacterIndex = e;
+    //                            break;
+    //                        }
+    //                        else
+    //                        {
+    //                            if (e == GameManager.Instance.Characters.Length - 1)
+    //                            {
+    //                                e = -1;
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            _selectedCharacterIndex = value;
+    //        }
+    //    }
+    //}
 
     public CharacterSelectState selectState = CharacterSelectState.WaitingForPlayer;
 
@@ -145,6 +152,14 @@ public class CharacterSelectUI : MonoBehaviour
         return selectState;
     }
 
+    private void Awake()
+    {
+        if (this.GetComponent<PhotonView>())
+        {
+            pv = this.GetComponent<PhotonView>();
+        }
+    }
+
     int rewirePlayerId = 0;
     Rewired.Player rewirePlayer;
 
@@ -152,11 +167,12 @@ public class CharacterSelectUI : MonoBehaviour
     void Start()
     {
         // pressStart.SetActive(true);
-        if(!UseWithoutStick)
-            characterModelContainer = this.transform.GetChild(0).GetChild(3);
+        //if(!UseWithoutStick)
+            //characterModelContainer = this.transform.GetChild(0).GetChild(3);
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            playerNameText.text = playerName;
+            if(playerNameText)
+                playerNameText.text = playerName;
             if(currentCharacterModel == null)
                 currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
 
@@ -181,7 +197,7 @@ public class CharacterSelectUI : MonoBehaviour
         }
         else
         {
-            pv = this.GetComponent<PhotonView>();
+            
 
             int spawnIndex = 0;
             int counter = 0;
@@ -198,7 +214,7 @@ public class CharacterSelectUI : MonoBehaviour
             //rewirePlayer = ReInput.players.GetPlayer(spawnIndex);
             //rewirePlayer.controllers.maps.SetAllMapsEnabled(true);
 
-            if (pv.IsMine)
+            if (pv && pv.IsMine)
                 pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
 
             //foreach()
@@ -209,7 +225,8 @@ public class CharacterSelectUI : MonoBehaviour
                 player.controllers.ClearControllersOfType(ControllerType.Joystick);
             }
 
-            rewirePlayer = ReInput.players.GetPlayer(3);
+            //rewirePlayer = ReInput.players.GetPlayer(3);// Steam version. Commented for mobile
+            rewirePlayer = ReInput.players.GetPlayer(0);
             //rewirePlayer.controllers.hasKeyboard = true;
             //rewirePlayer.controllers.hasMouse = true;
             foreach (Rewired.Joystick joystick in ReInput.controllers.Joysticks)
@@ -223,7 +240,7 @@ public class CharacterSelectUI : MonoBehaviour
         {
             GameManager.Instance.RemoveAllPlayersFromGame();
             SelectingCharacter_WithoutStick();
-            MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel);
+            MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[GameManager.Instance.selectedCharacterIndex].characterModel, GameManager.Instance.Characters[GameManager.Instance.selectedCharacterIndex].characterId);
         }
     }
 
@@ -242,9 +259,9 @@ public class CharacterSelectUI : MonoBehaviour
     [PunRPC]
     void SyncMulSpawn(int index)
     {
-        Debug.Log("Spawning");
+        //Debug.Log("Spawning");
         playerNameText.text = playerName;
-        Debug.Log(selectedCharacterIndex);
+        //Debug.Log(selectedCharacterIndex);
         if(characterModelContainer == null)
             characterModelContainer = this.transform.GetChild(0).GetChild(3);
         for (int i=0; i< characterModelContainer.transform.childCount; i++)
@@ -258,6 +275,8 @@ public class CharacterSelectUI : MonoBehaviour
         currentCharacterModel.transform.localPosition = Vector3.zero;
 
         var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        ufoPortrait.sprite = MainMenuUIManager.Instance.touchMenuUI.UfoAvatar[index];
 
         characterLabel.text = info.Name;
         weaponTypeImage.sprite = info.WeaponType;
@@ -323,7 +342,7 @@ public class CharacterSelectUI : MonoBehaviour
         else if (selectedCharacterIndex >= GameManager.Instance.Characters.Length) selectedCharacterIndex = 0;
 
         //selectedCharacterIndex = Mathf.Abs(selectedCharacterIndex) % GameManager.Instance.Characters.Length;
-
+        Debug.Log(selectedCharacterIndex);
         Destroy(currentCharacterModel);
         currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
         currentCharacterModel.transform.localPosition = Vector3.zero;
@@ -429,7 +448,7 @@ public class CharacterSelectUI : MonoBehaviour
 
     public void SpawnCharacterMainHub()
     {
-        MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel);
+        MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, GameManager.Instance.Characters[GameManager.Instance.selectedCharacterIndex].characterId);
     }
 
     // [PunRPC]
@@ -577,7 +596,7 @@ public class CharacterSelectUI : MonoBehaviour
             GameManager.Instance.AddPlayerToGame(player);
             selectState = CharacterSelectState.SelectingCharacter;
         }
-        else
+        else if(!UseWithoutStick)
         {
             int ready = 0;
             if (CharacterSelectState.ReadyToStart == selectState)
@@ -593,17 +612,29 @@ public class CharacterSelectUI : MonoBehaviour
         }
     }
 
-    public void PlayerEnterGame()
+    public void PlayerEnterGame(bool isBot = false)
     {
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
             pressStart.SetActive(false);
             charSelect.SetActive(true);
             GameManager.Instance.AddPlayerToGame(player);
+            
             selectState = CharacterSelectState.SelectingCharacter;
         }
         else
         {
+            if (isBot)
+            {
+                isControlledByBot = isBot;
+                selectedCharacterIndex = GameManager.Instance.GetPlayerCharacterChoice(player);
+            }
+            else
+            {
+                selectedCharacterIndex = GameManager.Instance.selectedCharacterIndex;
+                GameManager.Instance.localPlayer = player;
+            }
+            
             int ready = 0;
             if(CharacterSelectState.ReadyToStart == selectState)
             {
@@ -615,15 +646,17 @@ public class CharacterSelectUI : MonoBehaviour
             }
             pv.RPC("PlayerEnterSync", RpcTarget.AllBuffered, LobbyConnectionHandler.instance.myDisplayName,ready);//hunz
             pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
+            pv.RPC("SyncPlayerReady", RpcTarget.AllBuffered);
         }
     }
-    public bool isSynced = false;
+    public bool isSynced = false, isControlledByBot = false;
     [PunRPC]
     void PlayerEnterSync(string displayName, int isReady)
     {
         //pressStart.SetActive(false);
         if (!isSynced)
         {
+            
             this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
             charSelect.SetActive(true);
             GameManager.Instance.AddPlayerToGame(player);
@@ -631,6 +664,11 @@ public class CharacterSelectUI : MonoBehaviour
             if (!GameManager.Instance.PlayerObjsMul.Contains(this))
             {
                 GameManager.Instance.PlayerObjsMul.Add(this);
+            }
+            oldUI.SetActive(false);
+            if (pv.IsMine && !isControlledByBot)
+            {
+                newUI.SetActive(false);
             }
             SyncTransforms();
             playerName = playerNameText.text = displayName;
@@ -645,34 +683,50 @@ public class CharacterSelectUI : MonoBehaviour
     void SyncTransforms()
     {
 
-        switch (player)
+        if (!pv.IsMine || isControlledByBot)
         {
-            case Player.One:
-                this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
-                this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[0].gameObject.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localRotation;
-                this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localScale;
-                break;
-            case Player.Two:
-                this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
-                this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[1].gameObject.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[1].transform.localRotation;
-                this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[1].transform.localScale;
-                break;
-            case Player.Three:
-                this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
-                this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[2].gameObject.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[2].transform.localRotation;
-                this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[2].transform.localScale;
-                break;
-            case Player.Four:
-                this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
-                this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[3].gameObject.transform.localPosition;
-                this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[3].transform.localRotation;
-                this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[3].transform.localScale;
-                break;
-            case Player.None:
-                break;
+            this.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.OpponentCharacterSelectContainerOnline);
+            this.transform.localScale = Vector3.one;
+            this.transform.localPosition = new Vector3(this.transform.position.x, this.transform.position.y, 0);
+
+            //switch (player)
+            //{
+            //case Player.One:
+            //    this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+            //    this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[0].gameObject.transform.localPosition;
+            //    this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localRotation;
+            //    this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[0].transform.localScale;
+            //    break;
+            //case Player.Two:
+            //    this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+            //    this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[1].gameObject.transform.localPosition;
+            //    this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[1].transform.localRotation;
+            //    this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[1].transform.localScale;
+            //    break;
+            //case Player.Three:
+            //    this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+            //    this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[2].gameObject.transform.localPosition;
+            //    this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[2].transform.localRotation;
+            //    this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[2].transform.localScale;
+            //    break;
+            //case Player.Four:
+            //    this.transform.SetParent(MainMenuUIManager.Instance.characterSelect.transform);
+            //    this.transform.localPosition = MainMenuUIManager.Instance.characterSelectMenus[3].gameObject.transform.localPosition;
+            //    this.transform.localRotation = MainMenuUIManager.Instance.characterSelectMenus[3].transform.localRotation;
+            //    this.transform.localScale = MainMenuUIManager.Instance.characterSelectMenus[3].transform.localScale;
+            //    break;
+            //case Player.None:
+            //    break;
+            //}
+        }
+        else
+        {
+            //this.GetComponent<RectTransform>().localScale = Vector3.one;
+            //this.GetComponent<RectTransform>().localPosition = new Vector3(this.transform.position.x, this.transform.position.y, 0);
+            this.transform.SetParent(MainMenuUIManager.Instance.touchMenuUI.myCharacterSelectContainer);
+            
+            //this.transform.localScale = Vector3.one;
+            //this.transform.localPosition = new Vector3(this.transform.position.x, this.transform.position.y, 0);
         }
 
         
@@ -707,7 +761,7 @@ public class CharacterSelectUI : MonoBehaviour
         //pStatsInfo.SetActive(charSelect.activeInHierarchy);
         if (GameManager.Instance.paused)
             return;
-        if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv.IsMine)
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode && pv && pv.IsMine)
         {
             switch (selectState)
             {

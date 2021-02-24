@@ -93,7 +93,7 @@ public class InputManager : MonoBehaviour
         }
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
         {
-            Debug.Log("PC");
+            //Debug.Log("PC");
             isConsole = false;
             isPC = true;
         }
