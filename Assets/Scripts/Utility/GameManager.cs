@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public List<CharacterSelectUI> PlayerObjsMul;
     public bool goesNextLevelInsteadOfRetry;
 
+    public bool enterTutorial = false;
     public int selectedLevelIndex;
     public bool isLocalSPMode, IsLocalPvPMode;
     //public GameObject conquered_go;
@@ -62,13 +63,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
+    //private Dictionary<Player, int> playerSelectionDict = new Dictionary<Player, int>();
+    private Dictionary<Player, PlayerData> playerSelectionDict = new Dictionary<Player, PlayerData>();
 
+    //private Dictionary<Player, PlayerData> playerSelectionDictNew = new Dictionary<Player, PlayerData>();
     // private int player1CharacterSelection = 1;
     // private int player2CharacterSelection = 1;
     // private int player3CharacterSelection = 1;
     // private int player4CharacterSelection = 1;
 
+    private StoreItemHolder tryItem;
 
     private Player activePlayers = Player.None;
     private static GameManager instance;
@@ -91,6 +95,8 @@ public class GameManager : MonoBehaviour
     public string playerNameKey = "displayName";
     public int selectedCharacterIndex;
 
+
+
     public void Awake()
     {
         Cursor.visible = true;
@@ -101,6 +107,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            //tryItem = new StoreItemHolder();
             instance = this;
             DontDestroyOnLoad(this);
             
@@ -215,8 +222,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Debug.Log(Input.GetJoystickNames().Length);
-
+        //Debug.Log(GetTryProps());
+        //Debug.Log("Total Players: " + GameManager.Instance.GetActivePlayers().Count);
         var cutsceneObjects = GameObject.FindGameObjectsWithTag("CutsceneObject");
         HasCutsceneObjectsActive = cutsceneObjects.Length > 0;
 
@@ -439,6 +446,7 @@ public class GameManager : MonoBehaviour
 
     public void RemoveAllPlayersFromGame()
     {
+        //Debug.Log("RemoveAllPlayersFromGame ");
         activePlayers = Player.None;
     }
 
@@ -449,6 +457,7 @@ public class GameManager : MonoBehaviour
 
     public void RemovePlayerFromGame(Player player)
     {
+        
         activePlayers = activePlayers & (~player);
     }
 
@@ -465,9 +474,19 @@ public class GameManager : MonoBehaviour
 
         //winsText.SetActive(true);
         gameOver = true;
-        StartCoroutine(DelayThis());
+        StartCoroutine(DelayThis(gameWon));
         instanceMe.instance.gameObject.SetActive(true);
-        instanceUI.instance.gameObject.SetActive(false);
+        //instanceUI.instance.gameObject.SetActive(false);
+
+        //var lastPlayerAlive = PlayerManager.Instance.GetLastAlivePlayer_Online();
+        //bool winner = lastPlayerAlive == localPlayer;
+        //Debug.Log(lastPlayerAlive + " - " + localPlayer);
+
+        GameManager.Instance.AssignRewardOnResultScreen(gameWon);
+
+        
+        LevelUIManager.Instance.DisableAllUI();
+
         GamesCompletedTally.gameWasCompleted = true;
         GamesCompletedTally.gamesCompleted++;
         /* conquered_go = GameObject.Find("CAMERA/Conquered_UI_PFX");
@@ -492,6 +511,7 @@ public class GameManager : MonoBehaviour
         }
         gameOver = false;
         canAdvance = false;
+        Debug.Log("Here1");
         RemoveAllPlayersFromGame();
         SceneManager.LoadScene("MainMenu");
     }
@@ -631,6 +651,7 @@ public class GameManager : MonoBehaviour
         
         else
         {
+            Debug.Log("Here2");
             RemoveAllPlayersFromGame();
             int spawnIndex = 0;
             int counter = 0;
@@ -712,40 +733,42 @@ public class GameManager : MonoBehaviour
         return players;
     }
 
-    public void SetPlayerCharacterChoice(Player p, int choice)
+    public void SetPlayerCharacterChoice(Player p, PlayerData pd)
     {
         if (playerSelectionDict.ContainsKey(p))
         {
-            playerSelectionDict[p] = choice;
+            playerSelectionDict[p] = pd;
             
            // Debug.Log(choice);
         }
         else
         {
-            playerSelectionDict.Add(p, choice);
+            playerSelectionDict.Add(p, pd);
         }
+    }
 
-        if (LobbyConnectionHandler.instance.playerSelectionDict.ContainsKey(p))
+    public void SetPlayerCharacterChoice(Player p, int choice)
+    {
+        if (playerSelectionDict.ContainsKey(p))
         {
-            LobbyConnectionHandler.instance.playerSelectionDict[p] = choice;
+            playerSelectionDict[p].charId = choice;
 
-           // Debug.Log(choice);
+            // Debug.Log(choice);
         }
         else
         {
-            LobbyConnectionHandler.instance.playerSelectionDict.Add(p, choice);
+            PlayerData pd = new PlayerData();
+            pd.charId = choice;
+            playerSelectionDict.Add(p, pd);
         }
-        
-
     }
-
 
     public int GetPlayerCharacterChoice(Player p)
     {
        // Debug.Log(p.ToString());
         try
         {
-            return /*LobbyConnectionHandler.instance.*/playerSelectionDict[p];
+            return playerSelectionDict[p].charId;
         }
         catch (KeyNotFoundException e)
         {
@@ -755,10 +778,46 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public PlayerData GetPlayerDataChoice(Player p)
+    {
+        try
+        {
+            return playerSelectionDict[p];
+        }
+        catch (KeyNotFoundException e)
+        {
+            Debug.LogWarning(e.Message);
+            return null;
+        }
+    }
+
+    public PlayerData GetUFODataChoice(int id)
+    {
+        UFOAttributes attr = GameManager.Instance.GetUfoAttribute(id);
+        PlayerData data = GameManager.Instance.GetNewPlayerData(LobbyConnectionHandler.instance.myDisplayName, id, attr.ufoLevel, attr.ufoXP);
+        return data;
+    }
+
+    public PlayerData GetNewPlayerData(string dispName, int charId, int level, float currLevelProg)
+    {
+        PlayerData pd = new PlayerData();
+        pd.charId = charId;
+        pd.currLevelProgress = currLevelProg;
+        pd.plevel = level.ToString();
+        pd.pname = dispName;
+        return pd;
+    }
+
     public GameObject GetPlayerModel(Player player)
     {
         //Debug.Log(this.name);
         return characters[GetPlayerCharacterChoice(player)].characterModel;
+    }
+
+    public GameObject GetLocalPlayerModel()
+    {
+        //Debug.Log(this.name);
+        return characters[GetPlayerCharacterChoice(localPlayer)].characterModel;
     }
 
     public void SetPlayerPlayedWithThisModel(Player player)
@@ -809,9 +868,13 @@ public class GameManager : MonoBehaviour
         instancePostGame.instance.gameObject.SetActive(true);
     }
 
-    IEnumerator DelayThis ()
+    IEnumerator DelayThis (bool gameWon)
     {
-        yield return new WaitForSeconds(8.0f);
+        yield return new WaitForSeconds(3f);
+        TouchGameUI.instance.ResultScreenControls.SetActive(true);
+        PlayerManager.Instance.resultScreenUI.EnableResultScreen(gameWon);
+        yield return new WaitForSeconds(5.0f);
+        
         canAdvance = true;
     }
 
@@ -831,27 +894,33 @@ public class GameManager : MonoBehaviour
         return UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == index);
     }
 
+    public UFOAttributes GetSelectedUfoAttribute()
+    {
+        //UFOAttributes attr = UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == index).ufoXP;
+        return UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == selectedCharacterIndex);
+    }
+
     public void SetUfoAttribute(int index, UFOAttributes val)
     {
-        //UserPrefs.instance.SetFloat(key, val.);
-
         UFOAttributes attr = UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == index);
-        Debug.Log(index + "-" + attr.ufoXP + "-" + val.ufoXP);
         attr.ufoXP = val.ufoXP;
         attr.ufoLevel = val.ufoLevel;
         attr.RateOfFire = val.RateOfFire;
         attr.Damage = val.Damage;
         attr.Accuracy = val.Accuracy;
         UserPrefs.instance.Save();
-        //switch (key)
-        //{
-        //    case "XP":
-        //        UserPrefs.instance.SetFloat("XP", val.ufoXP);
-        //        return;
-        //    case "Level":
-        //        UserPrefs.instance.SetFloat("XP", val.ufoXP);
-        //        return;
-        //}
+    }
+
+    public void SetSelectedUfoAttribute(UFOAttributes val)
+    {
+
+        UFOAttributes attr = UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == selectedCharacterIndex);
+        attr.ufoXP = val.ufoXP;
+        attr.ufoLevel = val.ufoLevel;
+        attr.RateOfFire = val.RateOfFire;
+        attr.Damage = val.Damage;
+        attr.Accuracy = val.Accuracy;
+        UserPrefs.instance.Save();
     }
 
     public void UnlockUFO_Purchase(int index, int priceGems)
@@ -877,10 +946,10 @@ public class GameManager : MonoBehaviour
         UserPrefs.instance.SetInt("gold", val);
     }
 
-    public void AddCoins(int val)
+    public void AddCoins(int val, bool updateUI = true)
     {
         UserPrefs.instance.SetInt("gold", (GetCoins() + val));
-        if (MainMenuUIManager.Instance)
+        if (MainMenuUIManager.Instance && updateUI)
         {
             MainMenuUIManager.Instance.touchMenuUI.DisplayGemsCoinsMainHub();
         }
@@ -896,30 +965,80 @@ public class GameManager : MonoBehaviour
         UserPrefs.instance.SetInt("gems", val);
     }
 
-    public void AddGems(int val)
+    public void AddGems(int val, bool updateUI = true)
     {
         UserPrefs.instance.SetInt("gems", (GetGems() + val));
-        if (MainMenuUIManager.Instance)
+        if (MainMenuUIManager.Instance && updateUI)
         {
             MainMenuUIManager.Instance.touchMenuUI.DisplayGemsCoinsMainHub();
         }
     }
 
-    public void AssignRewardOnResultScreen()
+    public void PurchaseSkin(int skinId, int characterId, int price)
     {
-        int lowerBound = (4 - localPlayerRank)* 20;
-        int upperBound = (4 - localPlayerRank) * 50;
-        GameManager.Instance.SetCoins((GameManager.Instance.GetCoins() + UnityEngine.Random.Range(lowerBound, upperBound)));
+        UFOAttributes attr = GetUfoAttribute(characterId);
+        //Debug.Log(characterId + "--" + skinId);
+        if (!attr.Skins[skinId].isUnlocked)
+        {
+            attr.Skins[skinId].isUnlocked = true;
+            AddGems(-price);
+            UserPrefs.instance.Save();
+        }
+    }
 
-        //Player p = LobbyConnectionHandler.instance.IsMultiplayerMode ? localPlayer : Player.One;
-        UFOAttributes attr = GetUfoAttribute(LocalPlayerId);
-        attr.ufoXP += UnityEngine.Random.Range((float)(lowerBound/ upperBound), 1);
+    public void SetCurrentSkin(int skinId, int characterId)
+    {
+        UFOAttributes attr = GetUfoAttribute(characterId);
+        attr.currSkinId = skinId;
+        UserPrefs.instance.Save();
+    }
+
+    public void SetTryProps(StoreItem item)
+    {
+        tryItem = new StoreItemHolder();
+        tryItem.itemId = item.itemId;
+        tryItem.skin_characterId = item.skin_characterId;
+        tryItem.type = item.type;
+        tryItem.requiredGems = item.requiredGems;
+    }
+
+    public StoreItemHolder GetTryProps()
+    {
+        return tryItem;
+    }
+
+    public void SetTryProps(StoreItemHolder item)
+    {
+        tryItem = item;
+    }
+
+    public void ResetTryProps()
+    {
+        tryItem = null;
+    }
+
+    public void AssignRewardOnResultScreen(bool gameWon)
+    {
+        //int lowerBound = (4 - localPlayerRank)* 20;
+        //int upperBound = (4 - localPlayerRank) * 50;
+        UFOAttributes attr = GetUfoAttribute(selectedCharacterIndex);
+        if (gameWon)
+        {
+            SetGems((GetGems() + UnityEngine.Random.Range(8, 13)));
+            GameManager.Instance.SetCoins((GameManager.Instance.GetCoins() + UnityEngine.Random.Range(150, 223)));
+            attr.ufoXP += UnityEngine.Random.Range(0.15f, 0.22f);
+        }
+        else
+        {
+            GameManager.Instance.SetCoins((GameManager.Instance.GetCoins() + UnityEngine.Random.Range(66, 89)));
+            attr.ufoXP += UnityEngine.Random.Range(0.04f, 0.12f);
+        }
 
         if (isRewardEventsMatch)
         {
-            SetGems((GetGems() + UnityEngine.Random.Range(lowerBound, upperBound)));
+            SetGems((GetGems() + UnityEngine.Random.Range(10, 20)));
         }
-        SetUfoAttribute(LocalPlayerId, attr);
+        SetUfoAttribute(selectedCharacterIndex, attr);
         
     }
 }

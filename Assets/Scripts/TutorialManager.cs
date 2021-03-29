@@ -20,6 +20,7 @@ public class TutorialManager : MonoBehaviour
     public TutorialAnimations tutorialAnimationsPrefab;
     public Transform tutorialAnimationsParent;
     public GameObject cityDesign;
+    public GameObject TryCanvas, TutorialCanvas;
     public bool canGoToMenu = false;
     bool allPlayersInGame = false;
 
@@ -35,6 +36,8 @@ public class TutorialManager : MonoBehaviour
 
         firstTutorialAnimationsPos = currentTutorialAnimations.transform.localPosition;
         firstTutorialAnimationsRot = currentTutorialAnimations.transform.localRotation;
+
+
     }
 
     // Start is called before the first frame update
@@ -57,6 +60,16 @@ public class TutorialManager : MonoBehaviour
             }
 
             p.input = ReInput.players.GetPlayer(rewirePlayerId);
+
+
+            if (GameManager.Instance.GetTryProps() != null)
+            {
+                cityDesign.SetActive(true);
+                TryCanvas.SetActive(true);
+                TutorialCanvas.SetActive(false);
+                GameManager.Instance.canAdvance = true;
+                GameManager.Instance.gameOver = true;
+            }
         }
     }
     bool isGoToMenuTimerStarted;
@@ -99,6 +112,20 @@ public class TutorialManager : MonoBehaviour
                 if (!GameManager.Instance.IsPlayerInGame(p.player))
                 {
                     allPlayersInGame = false;
+
+                    //This is a try Case
+                    //if(GameManager.Instance.GetTryProps() != null)
+                    //{
+                    //    GameManager.Instance.AddPlayerToGame(p.player);
+                    //    GameManager.Instance.SetPlayerCharacterChoice(p.player, UnityEngine.Random.Range(1, 4));
+
+                    //    PlayerManager.Instance.SpawnPlayerTryOnly(p.player);
+
+                    //    TryCanvas.SetActive(true);
+                    //    TutorialCanvas.SetActive(false);
+                    //    GameManager.Instance.canAdvance = true;
+                    //}
+                    //else
 
                     if (p.input.GetButtonDown("EnterTutorial"))
                     {

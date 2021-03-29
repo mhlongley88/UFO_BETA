@@ -712,7 +712,7 @@ public sealed class EZReplayManager : SoftRare.Public.EZReplayManager {
     void Awake()
     {
 #if UNITY_IPHONE
-		Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");	
+//		Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");	
 #endif
 			
         instantiateSingleton();

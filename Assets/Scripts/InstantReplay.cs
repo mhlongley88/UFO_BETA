@@ -36,7 +36,7 @@ public class InstantReplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myAudioSource = GameObject.Find("/CAMERA/AudioManager").GetComponent<AudioSource>();
+        myAudioSource = GameObject.Find("/LevelObjects/CAMERA/AudioManager").GetComponent<AudioSource>();
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
         //vCam1.SetActive(true);
         //     replayCam.SetActive(false);
@@ -76,37 +76,16 @@ public class InstantReplay : MonoBehaviour
         //    Debug.Log("should be recording");
         //}
 
-        if (GameManager.Instance.gameOver)
-        {
-            DOVirtual.DelayedCall(2.0f, () =>
-            {
-                playerManager.gameHasEnded = true;
-                camToResults.SetActive(true);
-                ResultsScreen.SetActive(true);
-                /* ezrm.stop();
-                 Debug.Log("should be stopped");
-                 // Transition + Playback Instant replay
-                 {
-                    // ezrm.play(0, true, false, false);
-
-                     Debug.Log("should be playing");
-                     // vCam1.SetActive(false);
-                     rpa.SetActive(true);
-                     camToReplay.ExecuteTransition();
-                     myAudioSource.PlayOneShot(transitionSFX);
-                     UIObject.SetActive(false);
-
-                     for (int i = 0; i < players.Length; i++)
-                     {
-                         GameObject.FindGameObjectsWithTag("Player")[i].gameObject.SetActive(false);
-                     }
-
-                     //replayCam.SetActive(true);
-                     playerManager.gameHasEnded = true;
-                 }*/
-            });
-            // startedRecording = false;
-        }
+        //if (GameManager.Instance.gameOver)
+        //{
+        //    DOVirtual.DelayedCall(2.0f, () =>
+        //    {
+        //        playerManager.gameHasEnded = true;
+        //        camToResults.SetActive(true);
+        //        ResultsScreen.SetActive(true);
+        //    });
+        //    // startedRecording = false;
+        //}
 
         // if (playerManager.gameHasEnded)
         //{

@@ -53,8 +53,8 @@ public class CharacterSelectUI : MonoBehaviour
 
     public GameObject oldUI, newUI;
     public Image ufoPortrait;
-    public int playerLevel;
-    public float playerStars;
+    public TextMeshProUGUI playerLevel;
+    public Image playerStars;
 
     int _selectedCharacterIndex = 0;
     private int selectedCharacterIndex;
@@ -256,35 +256,7 @@ public class CharacterSelectUI : MonoBehaviour
         }
     }
 
-    [PunRPC]
-    void SyncMulSpawn(int index)
-    {
-        //Debug.Log("Spawning");
-        playerNameText.text = playerName;
-        //Debug.Log(selectedCharacterIndex);
-        if(characterModelContainer == null)
-            characterModelContainer = this.transform.GetChild(0).GetChild(3);
-        for (int i=0; i< characterModelContainer.transform.childCount; i++)
-        {
-            Destroy(characterModelContainer.transform.GetChild(i).gameObject);
-        }
-
-        selectedCharacterIndex = Mathf.Abs(index) % GameManager.Instance.CharactersMul.Length;
-        currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
-        currentCharacterModel.transform.SetParent(characterModelContainer);
-        currentCharacterModel.transform.localPosition = Vector3.zero;
-
-        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
-
-        ufoPortrait.sprite = MainMenuUIManager.Instance.touchMenuUI.UfoAvatar[index];
-
-        characterLabel.text = info.Name;
-        weaponTypeImage.sprite = info.WeaponType;
-        specialWeaponImage.sprite = info.SpecialWeapon;
-        damageSlider.value = info.Damage;
-        rateOfFireSlider.value = info.RateOfFire;
-        accuracySlider.value = info.Accuracy;
-    }
+    
 
     void SpawnMultiplayer()
     {
@@ -446,10 +418,7 @@ public class CharacterSelectUI : MonoBehaviour
         MainMenuUIManager.Instance.HoldCharacterChoiceTemporarily(player, selectedCharacterIndex);
     }
 
-    public void SpawnCharacterMainHub()
-    {
-        MainMenuUIManager.Instance.touchMenuUI.SpawnSelectedCharacter(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, GameManager.Instance.Characters[GameManager.Instance.selectedCharacterIndex].characterId);
-    }
+    
 
     // [PunRPC]
     void SyncSelection(bool forward)
@@ -612,7 +581,7 @@ public class CharacterSelectUI : MonoBehaviour
         }
     }
 
-    public void PlayerEnterGame(bool isBot = false)
+    public void PlayerEnterGame(PlayerData pd, bool isBot = false)
     {
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
@@ -644,14 +613,14 @@ public class CharacterSelectUI : MonoBehaviour
             {
                 ready = 0;
             }
-            pv.RPC("PlayerEnterSync", RpcTarget.AllBuffered, LobbyConnectionHandler.instance.myDisplayName,ready);//hunz
+            pv.RPC("PlayerEnterSync", RpcTarget.AllBuffered, ready);//hunz
             pv.RPC("SyncMulSpawn", RpcTarget.AllBuffered, selectedCharacterIndex);
-            pv.RPC("SyncPlayerReady", RpcTarget.AllBuffered);
+            pv.RPC("SyncPlayerReady", RpcTarget.AllBuffered, pd.pname, pd.charId, int.Parse(pd.plevel), pd.currLevelProgress);
         }
     }
     public bool isSynced = false, isControlledByBot = false;
     [PunRPC]
-    void PlayerEnterSync(string displayName, int isReady)
+    void PlayerEnterSync(int isReady)
     {
         //pressStart.SetActive(false);
         if (!isSynced)
@@ -671,7 +640,7 @@ public class CharacterSelectUI : MonoBehaviour
                 newUI.SetActive(false);
             }
             SyncTransforms();
-            playerName = playerNameText.text = displayName;
+            
             if(isReady == 1)
             {
                 selectState = CharacterSelectState.ReadyToStart;
@@ -679,6 +648,55 @@ public class CharacterSelectUI : MonoBehaviour
             isSynced = true;
         }
     }
+    [PunRPC]
+    void SyncPlayerReady(string dispName, int charId, int level, float currLevelProg)
+    {
+        readyObject.SetActive(false);
+        myAudioSource.PlayOneShot(playerReadySFX);
+        PlayerData pd = GameManager.Instance.GetNewPlayerData(dispName, charId, level, currLevelProg);
+        GameManager.Instance.SetPlayerCharacterChoice(player, pd);
+        playerStars.fillAmount = currLevelProg;
+        playerLevel.text = level.ToString();
+        playerName = playerNameText.text = dispName;
+        selectState = CharacterSelectState.ReadyToStart;
+    }
+
+    [PunRPC]
+    void SyncBackCharacterSelection()
+    {
+        readyObject.SetActive(true);
+        selectState = CharacterSelectState.SelectingCharacter;
+    }
+    [PunRPC]
+    void SyncMulSpawn(int index)
+    {
+        //Debug.Log("Spawning");
+        playerNameText.text = playerName;
+        //Debug.Log(selectedCharacterIndex);
+        if (characterModelContainer == null)
+            characterModelContainer = this.transform.GetChild(0).GetChild(3);
+        for (int i = 0; i < characterModelContainer.transform.childCount; i++)
+        {
+            Destroy(characterModelContainer.transform.GetChild(i).gameObject);
+        }
+
+        selectedCharacterIndex = Mathf.Abs(index) % GameManager.Instance.CharactersMul.Length;
+        currentCharacterModel = Instantiate(GameManager.Instance.Characters[selectedCharacterIndex].characterModel, Vector3.zero, Quaternion.identity, characterModelContainer);
+        currentCharacterModel.transform.SetParent(characterModelContainer);
+        currentCharacterModel.transform.localPosition = Vector3.zero;
+
+        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+
+        ufoPortrait.sprite = MainMenuUIManager.Instance.touchMenuUI.UfoAvatar[index];
+
+        characterLabel.text = info.Name;
+        weaponTypeImage.sprite = info.WeaponType;
+        specialWeaponImage.sprite = info.SpecialWeapon;
+        damageSlider.value = info.Damage;
+        rateOfFireSlider.value = info.RateOfFire;
+        accuracySlider.value = info.Accuracy;
+    }
+
 
     void SyncTransforms()
     {
@@ -732,21 +750,7 @@ public class CharacterSelectUI : MonoBehaviour
         
     }
 
-    [PunRPC]
-    void SyncPlayerReady()
-    {
-        readyObject.SetActive(false);
-        myAudioSource.PlayOneShot(playerReadySFX);
-        GameManager.Instance.SetPlayerCharacterChoice(player, selectedCharacterIndex);
-        selectState = CharacterSelectState.ReadyToStart;
-    }
-
-    [PunRPC]
-    void SyncBackCharacterSelection()
-    {
-        readyObject.SetActive(true);
-        selectState = CharacterSelectState.SelectingCharacter;
-    }
+    
     public void EnableCharacterSelectSplashScreen()
     {
         pressStart.SetActive(true);
@@ -833,7 +837,7 @@ public class CharacterSelectUI : MonoBehaviour
                     //if (InputManager.Instance.GetButtonDownCharacterSelection(ButtonEnum.Submit, player))
                     if (rewirePlayer.GetButtonDown("Submit"))
                     {
-                        PlayerEnterGame();
+                        PlayerEnterGame(GameManager.Instance.GetUFODataChoice(GameManager.Instance.selectedCharacterIndex));
                         MainMenuUIManager.Instance.selectingCharacters = true;
                     }
                     break;
@@ -856,7 +860,7 @@ public class CharacterSelectUI : MonoBehaviour
                     {
                         readyObject.SetActive(false);
                         myAudioSource.PlayOneShot(playerReadySFX);
-                        GameManager.Instance.SetPlayerCharacterChoice(player, selectedCharacterIndex);
+                        //GameManager.Instance.SetPlayerCharacterChoice(player, selectedCharacterIndex);
                         selectState = CharacterSelectState.ReadyToStart;
                     }
                     break;

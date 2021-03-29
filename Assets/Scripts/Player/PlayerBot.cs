@@ -144,7 +144,7 @@ public class PlayerBot : MonoBehaviour
 
     void OnlineMode()
     {
-        Debug.Log("Master Client Bot Working");   
+        //Debug.Log("Master Client Bot Working");   
         Quaternion lookDir = Quaternion.LookRotation(destination - transform.position, Vector3.up);
         var ea = lookDir.eulerAngles;
         ea.x = ea.z = 0.0f;
@@ -172,7 +172,7 @@ public class PlayerBot : MonoBehaviour
                 followingPlayer = Random.value > 0.45f;
         }
         var adversaryPlayer = FindFoe();
-        Debug.Log("Selected Enemy: " + adversaryPlayer);
+        //Debug.Log("Selected Enemy: " + adversaryPlayer);
         if (adversaryPlayer == Player.None)
         {
             return;

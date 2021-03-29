@@ -7,6 +7,10 @@ public class CharacterLevelSelectInfo : MonoBehaviour
     [SerializeField]
     private string _name;
     [SerializeField]
+    private string _subname;
+    [SerializeField]
+    private string _details;
+    [SerializeField]
     private Sprite _weaponType;
     [SerializeField]
     private Sprite _specialWeapon;
@@ -29,6 +33,8 @@ public class CharacterLevelSelectInfo : MonoBehaviour
     public int ufoIndex;
     public bool isUnlocked;
     public string Name { get { return _name; } }
+    public string SubName { get { return _subname; } }
+    public string Details { get { return _details; } }
     public Sprite WeaponType { get { return _weaponType; } }
     public Sprite SpecialWeapon { get { return _specialWeapon; } }
     public float Damage { get { return _damage; } }
@@ -43,9 +49,79 @@ public class CharacterLevelSelectInfo : MonoBehaviour
 
     public GameObject MuzzleFlashVfx => muzzleFlashVfx;
 
+    public CompleteSkin[] Skins;
+    public int currentSkinId, priceGems;
+    
+
     void Start()
     {
-        //UpdateValues(UserPrefs.instance.GetUFOProps().ufoData.Find(item => item.ufoIndex == ufoIndex));
+        if (PlayerManager.Instance && GameManager.Instance.GetTryProps() == null)
+        {
+            UFOAttributes attr = GameManager.Instance.GetUfoAttribute(ufoIndex);
+            currentSkinId = attr.currSkinId;
+            ActivateSkin();
+        }
+    }
+
+    public void ActivateSkin()
+    {
+        
+
+        foreach(CompleteSkin cSkin in Skins)
+        {
+            foreach(SkinStats skin in cSkin.skins)
+            {
+                if (skin.hasAdditionalRequirements)
+                {
+                    skin.OnDeactivate.Invoke();
+                }
+                skin.gameObject.SetActive(false);
+            }
+        }
+        if (currentSkinId < 0) return;
+
+
+        CompleteSkin activeSkin = Skins[currentSkinId];
+
+        foreach(SkinStats skin in activeSkin.skins)
+        {
+            skin.gameObject.SetActive(true);
+            if (skin.hasAdditionalRequirements)
+            {
+                skin.OnActivate.Invoke();
+            }
+        }
+        
+    }
+
+
+    public void ActivateSkin_LoadOutStore(int id)
+    {
+        if (currentSkinId < 0) return;
+
+        foreach (CompleteSkin cSkin in Skins)
+        {
+            foreach (SkinStats skin in cSkin.skins)
+            {
+                if (skin.hasAdditionalRequirements)
+                {
+                    skin.OnDeactivate.Invoke();
+                }
+                skin.gameObject.SetActive(false);
+            }
+        }
+        //Debug.Log(id);
+        CompleteSkin activeSkin = Skins[id];
+
+        foreach (SkinStats skin in activeSkin.skins)
+        {
+            skin.gameObject.SetActive(true);
+            if (skin.hasAdditionalRequirements)
+            {
+                skin.OnActivate.Invoke();
+            }
+        }
+
     }
 
     public void UpdateValues(UFOAttributes values)
@@ -55,4 +131,9 @@ public class CharacterLevelSelectInfo : MonoBehaviour
         _rateOfFire = values.RateOfFire;
     }
 
+}
+[System.Serializable]
+public class CompleteSkin
+{
+    public SkinStats[] skins;
 }

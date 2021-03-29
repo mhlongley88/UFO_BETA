@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour
     [Serializable]
     public class PlayerStatsDicMul : SerializableDictionaryBase<Player, PlayerStats> { }
     public PlayerStatsDicMul playersMul;
-
+    public ResultScreenUI resultScreenUI;
 
     public float spawnTimer = 5.0f;
     public bool debugP1join;
@@ -113,7 +113,7 @@ public class PlayerManager : MonoBehaviour
 
         if (LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            foreach (Player p in GameManager.Instance.GetActivePlayersMul(false))
+            foreach (Player p in GameManager.Instance.GetActivePlayers()/*GetActivePlayersMul(false)*/)
             {
                 LevelUIManager.Instance.ChangeLifeCount(p, players[p].lives);
             }
@@ -175,7 +175,36 @@ public class PlayerManager : MonoBehaviour
     {
         LevelUIManager.Instance.EnableUI(p);
 
-        players[p].instance = Instantiate(players[p].prefab, players[p].spawnPoint);
+        //GameObject prefab = players[p].prefab;
+        //Debug.Log(GameManager.Instance.GetTryProps());
+        //if (GameManager.Instance.GetTryProps() != null)
+        //{
+        //    SpawnPlayerTryOnly(p);
+        //}
+        //else
+        {
+            players[p].instance = Instantiate(players[p].prefab, players[p].spawnPoint);
+            //Debug.Log(players[p].instance);
+            players[p].rank = -1;
+            spawnedPlayerDictionary.Add(p, players[p].instance);
+        }
+
+        
+    }
+
+    public void SpawnPlayerTryOnly(Player p)
+    {
+        StoreItemHolder item = GameManager.Instance.GetTryProps();
+        int characterId = item.type == StoreItem.ItemType.Character ? item.itemId : item.skin_characterId;
+        GameObject prefab = GameManager.Instance.Characters[characterId].characterModel;
+        players[p].instance = Instantiate(prefab, players[p].spawnPoint);
+
+        if (item.type == StoreItem.ItemType.Skin)
+        {
+            players[p].instance.gameObject.GetComponent<CharacterLevelSelectInfo>().currentSkinId = item.itemId;
+            players[p].instance.gameObject.GetComponent<CharacterLevelSelectInfo>().ActivateSkin();
+        }
+
         players[p].rank = -1;
         spawnedPlayerDictionary.Add(p, players[p].instance);
     }
@@ -247,6 +276,7 @@ public class PlayerManager : MonoBehaviour
 
         foreach (Player i in activePlayers)
         {
+            
             SpawnPlayer(i);
 
             lastPlayerSpawned = i;
@@ -402,6 +432,7 @@ public class PlayerManager : MonoBehaviour
         {
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
+                //Debug.Log(i + " has " + players[i].lives);
                 if (players[i].lives > 0)
                 {
                     playersLeft++;
@@ -534,7 +565,7 @@ public class PlayerManager : MonoBehaviour
     public void PlayerDied(Player player, Transform playerModel)
     {
         if (GameManager.Instance.gameOver) return;
-
+        //Debug.Log(player);
         //GameManagerScript.Instance.PlayerDied(player);
         int currentLife = players[player].lives;
 
@@ -550,7 +581,7 @@ public class PlayerManager : MonoBehaviour
         //Debug.Log("Lifes Left = " + players[player].lives);
 
         int playersLeft = GetPlayersLeft();
-        // Debug.Log("Players Left = " + playersLeft);
+        //Debug.Log("Players Left = " + playersLeft);
 
         players[player].rank = playersLeft;
         
@@ -571,9 +602,9 @@ public class PlayerManager : MonoBehaviour
         }
         else if (playersLeft < 2 /*&& spawnedPlayerDictionary.Count == 1*/)
         {
-            
+              
             var lastPlayerAlive = GetLastAlivePlayer_Online();//spawnedPlayerDictionary.Keys.ToList()[0];
-            Debug.Log(lastPlayerAlive+" - last player");
+            //Debug.Log(lastPlayerAlive+" - last player");
             players[lastPlayerAlive].rank = 0;
         }
 
@@ -597,13 +628,15 @@ public class PlayerManager : MonoBehaviour
             foreach (Player i in GameManager.Instance.GetActivePlayers())
             {
                 //Debug.Log("Final Rank of " + i + " is: " + players[i].rank);
-                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i), player);
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i), i);
                 //Debug.Log("Rank of " + i + " :  " + players[i].rank);
             }
 
             UnlockSystem.instance.SaveOnlineMatchesCompleted();
-
-            GameManager.Instance.GameEnds();
+            var lastPlayerAlive = GetLastAlivePlayer_Online();
+            bool winner = lastPlayerAlive == GameManager.Instance.localPlayer;
+            //Debug.Log(winner + "---1");
+            GameManager.Instance.GameEnds(winner);
         }
 
         bool allTheActivePlayersAreBots = true;
@@ -742,7 +775,7 @@ public class PlayerManager : MonoBehaviour
                 }
 
                // Debug.Log("Rank of " + i + " :  " + players[i].rank);
-                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i), player);
+                RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i), i);
             }
 
            // if(!PlayerBot.active && activePlayers.Count == 4) //Full 4 player local multiplayer match

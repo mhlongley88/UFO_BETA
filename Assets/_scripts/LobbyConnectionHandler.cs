@@ -59,6 +59,18 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         pv.RPC("RPC_ChangeScene", RpcTarget.AllBuffered, sceneName);
     }
 
+    // To be used if needed
+    //public void BroadcastTargetStage(int levelId)
+    //{
+    //    pv.RPC("SetLevel", RpcTarget.All, levelId);
+    //}
+
+    //[PunRPC]
+    //public void SetLevel(int levelId)
+    //{
+    //    ShowLevelTitle.levelStaticInt = levelId + 1;
+    //}
+
     [PunRPC]
     public void SyncVisibleLevels_LevelSelect(string levelName, bool enable)
     {
@@ -96,6 +108,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
         if (pv.IsMine)
         {
+            
             if (sceneName == "MainMenu" || sceneName == "LoadingRoom")
             {
                 SceneManager.LoadScene(sceneName);
@@ -138,7 +151,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         LobbyUI.instance.EnterMultiplayerMode();
         Hashtable hash = new Hashtable();
-        hash.Add("LevelNumber", 1);
+        hash.Add("LevelNumber", GameManager.Instance.selectedLevelIndex);
 
         PhotonNetwork.JoinRandomRoom(hash, (byte)0);
     }
@@ -362,7 +375,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
                 break;
         }
         
-        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame(GameManager.Instance.GetUFODataChoice(GameManager.Instance.selectedCharacterIndex));
     }
 
 
@@ -376,7 +389,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //}
         //RefreshCharacterSelectMul();
         //List<Player> myplayerNumber = GameManager.Instance.GetActivePlayersMul(true);
-        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+        myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame(GameManager.Instance.GetUFODataChoice(GameManager.Instance.selectedCharacterIndex));
         
     }
     public bool showPlayersLeftText;
@@ -404,7 +417,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
             }
             RefreshCharacterSelectMul();
             myPlayerInGame.GetComponent<CharacterSelectUI>().isSynced = false;
-            myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame();
+            myPlayerInGame.GetComponent<CharacterSelectUI>().PlayerEnterGame(GameManager.Instance.GetUFODataChoice(GameManager.Instance.selectedCharacterIndex));
 
         }
         else
@@ -458,7 +471,7 @@ public class LobbyConnectionHandler : MonoBehaviourPunCallbacks, ILobbyCallbacks
         temp[0] = "LevelNumber";
 
         Hashtable hash = new Hashtable();
-        hash.Add("LevelNumber", 1);
+        hash.Add("LevelNumber", GameManager.Instance.selectedLevelIndex);
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;

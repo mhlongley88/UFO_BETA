@@ -68,18 +68,18 @@ public class NetworkCharacter : MonoBehaviour, IPunObservable, IPunInstantiateMa
     {
         if (!pv.IsMine)
         {
-            if(checkOwnerConnStatus)
-            {
-                if (ownerDisconnected)
-                {
-                    disconnectTimer += Time.deltaTime;
+            //if(checkOwnerConnStatus)
+            //{
+            //    if (ownerDisconnected)
+            //    {
+            //        disconnectTimer += Time.deltaTime;
                     
-                }
-                else
-                {
-                    disconnectTimer = 0;
-                }
-            }
+            //    }
+            //    else
+            //    {
+            //        disconnectTimer = 0;
+            //    }
+            //}
             this.transform.position = Vector3.Lerp(this.transform.position, toPos, Time.smoothDeltaTime * lerpSpeed);
             this.transform.rotation = Quaternion.Lerp(this.transform.rotation, toRot, Time.smoothDeltaTime * lerpRotSpeed);
             this.transform.localScale = Vector3.Lerp(this.transform.localScale, toScale, Time.smoothDeltaTime * lerpSpeed);
@@ -93,7 +93,7 @@ public class NetworkCharacter : MonoBehaviour, IPunObservable, IPunInstantiateMa
             toPos = (Vector3)stream.ReceiveNext();
             toRot = (Quaternion)stream.ReceiveNext();
             toScale = (Vector3)stream.ReceiveNext();
-            ownerDisconnected = false;
+            //ownerDisconnected = false;
         }
         else
         {

@@ -89,7 +89,7 @@ public class UserPrefs : MonoBehaviour
         else
         {
             contentUFOPrefs = JsonUtility.FromJson<UFOPrefs>(File.ReadAllText(pathUFOPrefs));
-            Debug.Log(contentUFOPrefs.ufoData.Count);
+            //Debug.Log(contentUFOPrefs.ufoData.Count);
         }
     }
 
@@ -102,6 +102,16 @@ public class UserPrefs : MonoBehaviour
         props.RateOfFire = character.RateOfFire;
         props.Accuracy = character.Accuracy;
         props.isUnlocked = character.isUnlocked;
+        props.currSkinId = -1;
+        props.priceGems = character.priceGems;
+        for (int i=0; i < character.Skins.Length; i++)
+        {
+            SkinProps skinProps = new SkinProps();
+            skinProps.isUnlocked = false;
+            skinProps.id = i;
+            skinProps.priceGems = 52;
+            props.Skins.Add(skinProps);
+        }
         return props;
     }
 

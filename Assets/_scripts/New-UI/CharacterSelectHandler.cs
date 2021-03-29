@@ -52,7 +52,16 @@ public class CharacterSelectHandler : MonoBehaviour
                 
                 AvailableCharacters[i].transform.SetParent(UnlockedCharacterContainers[unlockedContainerId]);
                 AvailableCharacters[i].SetSprite(false);
+
                 AvailableCharacters[i].gameObject.GetComponent<Button>().interactable = true;
+                AvailableCharacters[i].gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+                if (i < GameManager.Instance.Characters.Length)
+                {
+                    int temp = i;
+                    AvailableCharacters[i].gameObject.GetComponent<Button>().onClick.AddListener(() => OpenCharacterLoadOut(temp));
+                }
+                    
+
                 currentChildCount = UnlockedCharacterContainers[unlockedContainerId].childCount;
             }
             else if(attr != null)
@@ -65,6 +74,16 @@ public class CharacterSelectHandler : MonoBehaviour
 
                 AvailableCharacters[i].transform.SetParent(LockedCharacterContainers[lockedContainerId]);
                 AvailableCharacters[i].SetSprite(true);
+
+                AvailableCharacters[i].gameObject.GetComponent<Button>().interactable = true;
+                AvailableCharacters[i].gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+                if(i < GameManager.Instance.Characters.Length)
+                {
+                    int temp = i;
+                    AvailableCharacters[i].gameObject.GetComponent<Button>().onClick.AddListener(() => OpenCharacterLoadOut_Store(temp));
+                }
+                    
+
                 currentChildCount = LockedCharacterContainers[lockedContainerId].childCount;
             }
             else
@@ -86,12 +105,36 @@ public class CharacterSelectHandler : MonoBehaviour
 
     public void SelectCharacter_OnClick(int index)
     {
-
+        GameManager.Instance.selectedCharacterIndex = index;
     }
 
-    // Update is called once per frame
-    void Update()
+    void OpenCharacterLoadOut(int id)
     {
-        
+        MainMenuUIManager.Instance.touchMenuUI.characterLoadOut.gameObject.SetActive(true);
+        MainMenuUIManager.Instance.touchMenuUI.characterLoadOut.DisplayCharacterInfo_LoadOutScreen(id);
+        this.gameObject.SetActive(false);
     }
+
+    void OpenCharacterLoadOut_Store(int id)
+    {
+        GameManager.Instance.SetTryProps(AvailableCharacters[id].gameObject.GetComponent<StoreItem>());
+        MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.gameObject.SetActive(true);
+
+        MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.EmptyCart();
+        UFOAttributes attr = GameManager.Instance.GetUfoAttribute(id);
+        if (!attr.isUnlocked)
+        {
+            MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.LevelLockedObj.SetActive(true);
+            MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.AddUFOToCart(id);
+        }
+        else
+        {
+            MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.LevelLockedObj.SetActive(false);
+        }
+
+        MainMenuUIManager.Instance.touchMenuUI.characterLoadOutStore.DisplayCharacterInfo_LoadOut_StoreScreen(id);
+        this.gameObject.SetActive(false);
+    }
+
+    
 }

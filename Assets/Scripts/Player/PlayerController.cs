@@ -243,15 +243,15 @@ public class PlayerController : MonoBehaviour
         PlayerBot.aiSlots.Add(PlayerBotSlot.Three);
 
 
-        LevelUIManager.Instance.EnableUI(player);
+        
         PlayerManager.Instance.players[player].instance = this.gameObject;
         PlayerManager.Instance.players[player].isBot = true;
         var bot = PlayerManager.Instance.players[player].instance.AddComponent<PlayerBot>();
-        if (!pv.IsMine)
-        {
-            PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().checkOwnerConnStatus = true;
-            PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().StartCheckingConnection();
-        }
+        //if (!pv.IsMine)
+        //{
+        //    PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().checkOwnerConnStatus = true;
+        //    PlayerManager.Instance.players[player].instance.GetComponent<NetworkCharacter>().StartCheckingConnection();
+        //}
         //Debug.Log(bot + "???");
         bot.preset = BotConfigurator.instance.medPreset;
         //Debug.Log(bot.preset + "???");
@@ -281,7 +281,28 @@ public class PlayerController : MonoBehaviour
         powerMin = 0.0f;
 
         {
-            playerModel = Instantiate(pawn ? pawnModel : GameManager.Instance.GetPlayerModel(player), modelContainer);
+            if (GameManager.Instance.GetTryProps() != null)
+            {
+                StoreItemHolder item = GameManager.Instance.GetTryProps();
+                int characterId = item.type == StoreItem.ItemType.Character ? item.itemId : item.skin_characterId;
+                GameObject prefab = GameManager.Instance.Characters[characterId].characterModel;
+                playerModel = Instantiate(prefab, modelContainer);
+
+                if (item.type == StoreItem.ItemType.Skin)
+                {
+                    playerModel.GetComponent<CharacterLevelSelectInfo>().currentSkinId = item.itemId;
+                    playerModel.GetComponent<CharacterLevelSelectInfo>().ActivateSkin();
+                }
+
+                normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(characterId));
+                superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(characterId));
+            }
+            else
+            {
+                playerModel = Instantiate(pawn ? pawnModel : GameManager.Instance.GetPlayerModel(player), modelContainer);
+                normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
+                superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
+            }
             playerModel.transform.localRotation = Quaternion.identity;
             playerModel.transform.localPosition = Vector3.zero;
 
@@ -315,8 +336,8 @@ public class PlayerController : MonoBehaviour
 
             healthManager.ApplyTintOnCircles(characterInfo.CharacterLivesCircleTint);
         }
-        normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
-        superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
+        //normalWeapon.ChangeWeapon(GameManager.Instance.GetCharacterNormalWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
+        //superWeapon.ChangeWeapon(GameManager.Instance.GetCharacterSuperWeapon(GameManager.Instance.GetPlayerCharacterChoice(player)));
 
         normalWeapon.SetMuzzleFlash(characterInfo.MuzzleFlashVfx);
         superWeapon.SetMuzzleFlash(characterInfo.MuzzleFlashVfx);
@@ -358,12 +379,14 @@ public class PlayerController : MonoBehaviour
     {
         this.transform.SetParent(PlayerManager.Instance.players[player].spawnPoint);
         GameManager.Instance.AddPlayerToGame(player);
-        //Debug.Log("Player added to list: " + player);
+        //Debug.Log("Player added to list: " + player + " -Total players: " + GameManager.Instance.GetActivePlayers().Count);
         PlayerManager.Instance.players[player].instance = this.gameObject;
         if (PlayerManager.Instance.spawnedPlayerDictionary.ContainsKey(player))
             PlayerManager.Instance.spawnedPlayerDictionary[player] = PlayerManager.Instance.players[player].instance;
         else
             PlayerManager.Instance.spawnedPlayerDictionary.Add(player, PlayerManager.Instance.players[player].instance);
+
+        LevelUIManager.Instance.EnableUI(player);
     }
 
     private void OnDestroy()
@@ -989,7 +1012,7 @@ public class PlayerController : MonoBehaviour
     {
         //if (isPC)
         {
-            if (LobbyConnectionHandler.instance.IsMultiplayerMode && isControlledLocally)
+            if (LobbyConnectionHandler.instance.IsMultiplayerMode && isControlledLocally && !isControlledByBot)
             {
                 ProcessInput_PC();
 

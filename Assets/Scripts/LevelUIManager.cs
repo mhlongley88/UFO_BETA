@@ -97,6 +97,19 @@ public class LevelUIManager : MonoBehaviour
         GetDashUIManager(p).gameObject.SetActive(false);
     }
 
+    public void DisableAllUI()
+    {
+        foreach(DashUIManager ui in dashManager)
+        {
+            ui.gameObject.SetActive(false);
+        }
+
+        p1LifeManager.gameObject.SetActive(false);
+        p2LifeManager.gameObject.SetActive(false);
+        p3LifeManager.gameObject.SetActive(false);
+        p4LifeManager.gameObject.SetActive(false);
+    }
+
     public void RestartGame()
     {
         GameManager.Instance.RestartGame();

@@ -17,7 +17,7 @@ public class RankingPostGame : MonoBehaviour
     {
         instance = this;
         place = ranks.Length - 1;
-
+        //Debug.Log(this.name);
         for (int i = 0; i < ranksContainers.Length; i++)
         {
             ranksContainers[i].SetActive(false);
@@ -44,39 +44,49 @@ public class RankingPostGame : MonoBehaviour
     {
         if (rankNumber >= 0 && rankNumber < ranks.Length)
         {
-            GameObject obj = Instantiate(playerModel);
-            instantiatedObjects.Add(obj);
+            //GameObject obj = Instantiate(playerModel);
+            //instantiatedObjects.Add(obj);
 
-            Transform t = obj.transform;
+            //Transform t = obj.transform;
 
-            Transform rank = ranks[rankNumber];
-            ranksContainers[rankNumber].SetActive(true);
+            //Transform rank = ranks[rankNumber];
+            //ranksContainers[rankNumber].SetActive(true);
 
-            //Debug.Log(rankNumber);
+            ////Debug.Log(rankNumber);
 
-            t.gameObject.isStatic = false;
+            //t.gameObject.isStatic = false;
 
-            Transform rankParent = rank.parent;
+            //Transform rankParent = rank.parent;
 
-        
-            t.SetParent(rankParent);
-            t.position = rank.position;
 
-            t.rotation = rank.rotation;
-            t.localScale = rank.localScale;
+            //t.SetParent(rankParent);
+            //t.position = rank.position;
+
+            //t.rotation = rank.rotation;
+            //t.localScale = rank.localScale;
 
             if (rankNumber == 0)
             {
-                t.SetParent(firstPlaceTransform);
+                //t.SetParent(firstPlaceTransform);
                 TouchGameUI.instance.LevelScreenControls.SetActive(false);
-                TouchGameUI.instance.ResultScreenControls.SetActive(true);
-                GameManager.Instance.AssignRewardOnResultScreen();
+                //TouchGameUI.instance.ResultScreenControls.SetActive(true);
+                //GameManager.Instance.AssignRewardOnResultScreen();
             }
 
+
+
+            //rank.gameObject.SetActive(false);
+            //t.gameObject.SetActive(true);
+
+
+            // New Code
+            if (p != Player.None)
+            {
+                //Debug.Log(p);
+                PlayerManager.Instance.resultScreenUI.EnableResultContainer(rankNumber, GameManager.Instance.GetPlayerDataChoice(p));
+            }
             
-            
-            rank.gameObject.SetActive(false);
-            t.gameObject.SetActive(true);
+
         }
     }
 }

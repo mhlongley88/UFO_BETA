@@ -47,20 +47,20 @@ public class IAPManager : MonoBehaviour, IStoreListener
     {
         switch (id)
         {
-            case 0:
+            case 150:
                 //gems-150
                 BuyProductID(Gems150);
-                GameManager.Instance.AddGems(150);
+                GameManager.Instance.AddGems(150); // Remove this line when InApps work on Mobile
                 break;
-            case 1:
+            case 500:
                 //gems-500
                 BuyProductID(Gems500);
-                GameManager.Instance.AddGems(500);
+                GameManager.Instance.AddGems(500); // Remove this line when InApps work on Mobile
                 break;
-            case 2:
+            case 2500:
                 //gems-2500
                 BuyProductID(Gems2500);
-                GameManager.Instance.AddGems(2500);
+                GameManager.Instance.AddGems(2500); // Remove this line when InApps work on Mobile
                 break;
         }
         
@@ -110,21 +110,10 @@ public class IAPManager : MonoBehaviour, IStoreListener
 
     }
 
-    public void BuyCharacter(int id)
+    public void BuyCharacter(int id, int characterPrice)
     {
-        int characterPrice = 52;
-        if(id == 3)
-        {
-            characterPrice = 342;
-        }else if(id == 4)
-        {
-            characterPrice = 364;
-        }
-        //Debug.Log(GameManager.Instance.GetGems() + "---" + characterPrice);
-        if (GameManager.Instance.GetGems() >= characterPrice)
-        {
-            GameManager.Instance.UnlockUFO_Purchase(id, 52);
-        }
+        
+        
     }
 
     //Step 4 modify purchasing
@@ -234,6 +223,18 @@ public class IAPManager : MonoBehaviour, IStoreListener
         Debug.Log("OnInitialized: PASS");
         m_StoreController = controller;
         m_StoreExtensionProvider = extensions;
+
+        extensions.GetExtension<IAppleExtensions>().RestoreTransactions(result => {
+            if (result)
+            {
+                // This does not mean anything was restored,
+                // merely that the restoration process succeeded.
+            }
+            else
+            {
+                // Restoration failed.
+            }
+        });
     }
 
 

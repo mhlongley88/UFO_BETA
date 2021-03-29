@@ -27,7 +27,12 @@ public class LevelLoad : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene(levelSceneNames[ShowLevelTitle.levelStaticInt - 1]);
+                int index = GameManager.Instance.selectedLevelIndex;
+                if (GameManager.Instance.enterTutorial)
+                {
+                    index = levelSceneNames.Length-1 ;
+                }
+                SceneManager.LoadScene(levelSceneNames[index/*ShowLevelTitle.levelStaticInt - 1*/]);
                 SceneManager.LoadScene("LevelUI", LoadSceneMode.Additive);
             }
         }
@@ -36,7 +41,7 @@ public class LevelLoad : MonoBehaviour
             yield return new WaitForSeconds(3.0f);
             if (PhotonNetwork.IsMasterClient)
             {
-                this.GetComponent<PhotonView>().RPC("LoadSceneOnlineMultiplayer", RpcTarget.AllViaServer, ShowLevelTitle.levelStaticInt - 1);
+                this.GetComponent<PhotonView>().RPC("LoadSceneOnlineMultiplayer", RpcTarget.AllViaServer, GameManager.Instance.selectedLevelIndex/*ShowLevelTitle.levelStaticInt - 1*/);
             }
 
         }

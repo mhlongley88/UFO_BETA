@@ -14,12 +14,16 @@ public class ChangeNameUI : MonoBehaviour
     void Start()
     {
         playerNameKey = GameManager.Instance.playerNameKey;
-        Debug.Log(GameManager.Instance.GetDisplayName());
+        //Debug.Log(GameManager.Instance.GetDisplayName());
         if (GameManager.Instance.GetDisplayName() == "")
         {
             int rand = Random.Range(0, RandomNames.Length);
             GameManager.Instance.SetDisplayName(RandomNames[rand]);
-            
+
+            // Default Open Levels
+            UserPrefs.instance.SetBool("levelUnlocked0", true);
+            UserPrefs.instance.SetBool("levelUnlocked1", true);
+            UserPrefs.instance.SetBool("levelUnlocked2", true);
         }
         UpdateDisplayNameUI(GameManager.Instance.GetDisplayName());
     }

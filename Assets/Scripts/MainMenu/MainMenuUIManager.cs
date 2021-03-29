@@ -362,8 +362,9 @@ public class MainMenuUIManager : MonoBehaviour
 
     public void LoadScene_LoadingRoon()
     {
-        ShowLevelTitle.levelStaticInt = 1;
-        GameManager.Instance.SetPlayerCharacterChoice(tempPlayerChoice, tempAlienChoice);
+        ShowLevelTitle.levelStaticInt = GameManager.Instance.selectedCharacterIndex + 1;
+        PlayerData data = GameManager.Instance.GetUFODataChoice(tempAlienChoice);
+        GameManager.Instance.SetPlayerCharacterChoice(tempPlayerChoice, data);
         SceneManager.LoadScene("LoadingRoom");
     }
 
@@ -494,17 +495,17 @@ public class MainMenuUIManager : MonoBehaviour
         OnlineCharacterSelectionPanel.SetActive(true);
     }
     public Player myPlayerMul;
-    public void PlayerEnterMul(Player p)
-    {
-        //myPlayerMul = p;
-        foreach (var c in characterSelectMenusMul)
-        {
-            if (c.player == p)
-            {
-                c.PlayerEnterGame();
-            }
-        }
-    }
+    //public void PlayerEnterMul(Player p)
+    //{
+    //    //myPlayerMul = p;
+    //    foreach (var c in characterSelectMenusMul)
+    //    {
+    //        if (c.player == p)
+    //        {
+    //            c.PlayerEnterGame();
+    //        }
+    //    }
+    //}
 
     void ConsoleControls()
     {
@@ -654,6 +655,7 @@ public class MainMenuUIManager : MonoBehaviour
                             levelSelect.SetActive(false);
                             characterSelect.SetActive(true);
 
+                            // Check if this is causing problem in Bot levels! -- Nope
                             if (PlayerBot.active)
                             {
                                 // SetCameraView(vCam3CharacterSelect);
@@ -860,7 +862,7 @@ public class MainMenuUIManager : MonoBehaviour
             //AddOnlineBotToGame(Player.Four);
 
             //LobbyUI.instance.tempHolderLA.EnforceThisStageSettings();
-            ShowLevelTitle.levelStaticInt = 1;
+            //LobbyConnectionHandler.instance.BroadcastTargetStage(GameManager.Instance.selectedLevelIndex);
             yield return new WaitForSeconds(5f);
             LobbyConnectionHandler.instance.LoadSceneMaster("LoadingRoom");
         }
@@ -875,9 +877,11 @@ public class MainMenuUIManager : MonoBehaviour
         BotConfigurator.instance.bot3.enableBot = true;
         BotConfigurator.instance.bot3.preset = BotConfigurator.instance.medPreset;//LobbyUI.instance.tempHolderLA.gameObject.GetComponent<LevelSetBotPreset>().bot3.preset;
         GameManager.Instance.AddPlayerToGame(p);
-        int id = UnityEngine.Random.Range(0, 6);
-        GameManager.Instance.SetPlayerCharacterChoice(p, id/*BotConfigurator.instance.bot3.characterIndex*/);
-        Debug.Log(p + "---" + id);
+        int id = UnityEngine.Random.Range(0, 6); // GameManager.Instance.GetUFODataChoice(tempAlienChoice);
+        string randName = touchMenuUI.changeNameUI.RandomNames[UnityEngine.Random.Range(0, touchMenuUI.changeNameUI.RandomNames.Length)];
+        PlayerData data = GameManager.Instance.GetNewPlayerData(randName, id, UnityEngine.Random.Range(0,100), UnityEngine.Random.Range(0.1f,0.9f));
+        GameManager.Instance.SetPlayerCharacterChoice(p, data/*BotConfigurator.instance.bot3.characterIndex*/);
+        //Debug.Log(p + "---" + id);
         int characterIndexMenu = 0;
         switch (p)
         {
@@ -900,7 +904,7 @@ public class MainMenuUIManager : MonoBehaviour
         GameObject temp = Photon.Pun.PhotonNetwork.Instantiate(MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].name,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].transform.position,
                     MainMenuUIManager.Instance.characterSelectMenusMulPrefabs[characterIndexMenu].transform.rotation);
-        temp.GetComponent<CharacterSelectUI>().PlayerEnterGame(true);
+        temp.GetComponent<CharacterSelectUI>().PlayerEnterGame(data, true);
 
     }
 

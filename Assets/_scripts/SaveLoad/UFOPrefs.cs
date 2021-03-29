@@ -15,7 +15,9 @@ public class UFOAttributes
 {
     public UFOAttributes()
     {
+        Skins = new List<SkinProps>();
     }
+    public List<SkinProps> Skins;
 
     public int ufoIndex;
     public int ufoLevel;
@@ -24,4 +26,14 @@ public class UFOAttributes
     public float RateOfFire;
     public float Accuracy;
     public bool isUnlocked;
+    public int currSkinId;
+    public int priceGems;
+}
+
+[System.Serializable]
+public class SkinProps
+{
+    public int id;
+    public bool isUnlocked;
+    public int priceGems;
 }

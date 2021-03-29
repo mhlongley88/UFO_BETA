@@ -151,7 +151,7 @@ public class AirEnemy : Enemy
                 List<Player> activePlayers;// = GameManager.Instance.GetActivePlayers();
                 if (LobbyConnectionHandler.instance.IsMultiplayerMode)
                 {
-                    activePlayers = GameManager.Instance.GetActivePlayersMul(false);
+                    activePlayers = GameManager.Instance.GetActivePlayers(); //GetActivePlayersMul(false);
                 }else
                 {
                     activePlayers = GameManager.Instance.GetActivePlayers();

@@ -11,7 +11,7 @@ public class IntroCamEnable : MonoBehaviour
     void Start()
     {
         StartCoroutine(LateCall());
-        enableObject = GameObject.Find("/CAMERA/CM vcam1");
+        enableObject = GameObject.Find("/LevelObjects/CAMERA/CM vcam1");
         enableObject.SetActive(false);
     }
 

@@ -25,7 +25,8 @@ public class TutorialAnimations : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(RunTutorial());
+        if(GameManager.Instance.GetTryProps() == null)
+            StartCoroutine(RunTutorial());
 
         performedAction.Add(Player.One, false);
         performedAction.Add(Player.Two, false);

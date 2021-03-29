@@ -26,7 +26,9 @@ public class TutorialEnter : MonoBehaviour
         // Dont show intro now, just when going to LA really
         LoadIntroSceneLevel.introSceneLevel = "";
 
-        ShowLevelTitle.levelStaticInt = 17;
+        ShowLevelTitle.levelStaticInt = 11;
+        GameManager.Instance.enterTutorial = true;
+        //GameManager.Instance.selectedLevelIndex = 11;
         SceneManager.LoadScene("LoadingRoom");
     }
 }
