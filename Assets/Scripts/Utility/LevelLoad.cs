@@ -12,7 +12,7 @@ public class LevelLoad : MonoBehaviour
     {
         if (!LobbyConnectionHandler.instance.IsMultiplayerMode)
         {
-            lastLoadedLevel = levelSceneNames[ShowLevelTitle.levelStaticInt - 1];
+            //lastLoadedLevel = levelSceneNames[ShowLevelTitle.levelStaticInt - 1];
 
             UnlockSystem.instance.recentlyUnlockedCharacters.Clear();
             UnlockSystem.instance.recentlyUnlockedLevels.Clear();

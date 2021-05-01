@@ -39,4 +39,13 @@ public class LevelSetBotPreset : MonoBehaviour
             BotConfigurator.instance.bot3 = bot3;
         }
     }
+
+    public void SetBotSettings()
+    {
+        bot1.enableBot = true;
+
+        BotConfigurator.instance.bot1 = bot1;
+        BotConfigurator.instance.bot2 = bot2;
+        BotConfigurator.instance.bot3 = bot3;
+    }
 }

@@ -73,12 +73,12 @@ public class ResultScreenUI : MonoBehaviour
     {
         //Debug.Log(pd.plevel);
         WinDataUI[rank].container.SetActive(true);
-        WinDataUI[rank].plevel.text = (int.Parse(pd.plevel) + 1).ToString();
+        //WinDataUI[rank].plevel.text = (int.Parse(pd.plevel) + 1).ToString();
         WinDataUI[rank].pname.text = pd.pname;
         WinDataUI[rank].currLevelProgress.fillAmount = pd.currLevelProgress;
 
         LoseDataUI[rank].container.SetActive(true);
-        LoseDataUI[rank].plevel.text = (int.Parse(pd.plevel) + 1).ToString();
+        //LoseDataUI[rank].plevel.text = (int.Parse(pd.plevel) + 1).ToString();
         LoseDataUI[rank].pname.text = pd.pname;
         LoseDataUI[rank].currLevelProgress.fillAmount = pd.currLevelProgress;
 

@@ -13,6 +13,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
     //Step 1 create your products
 
     public string RemoveAds = "remove_ads";
+    public string BrawlPass = "BrawlPass";
     public string Gems150 = "Gems_150";
     public string Gems500 = "Gems_500";
     public string Gems2500 = "Gems_2500";
@@ -116,6 +117,18 @@ public class IAPManager : MonoBehaviour, IStoreListener
         
     }
 
+    //public void BuyBrawlPass()
+    //{
+    //    if (!GameManager.Instance.GetBrawlPassPurchased())
+    //    {
+    //        BuyProductID(BrawlPass);
+
+    //        // Comment following lines when IAP works with money - store details pending
+    //        //GameManager.Instance.SetBrawlPassPurchased(true);
+    //        //MainMenuUIManager.Instance.touchMenuUI.inGameEvent.SwitchToBrawlPass();
+    //    }
+    //}
+
     //Step 4 modify purchasing
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
@@ -123,6 +136,11 @@ public class IAPManager : MonoBehaviour, IStoreListener
         {
             Debug.Log("Remove Ads purchased");
         }
+        //else if(String.Equals(args.purchasedProduct.definition.id, BrawlPass, StringComparison.Ordinal))
+        //{
+            
+        //    GameManager.Instance.SetBrawlPassPurchased(true);
+        //}
         else if (String.Equals(args.purchasedProduct.definition.id, Gems150, StringComparison.Ordinal))
         {
             GameManager.Instance.AddGems(150);

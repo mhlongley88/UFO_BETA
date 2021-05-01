@@ -362,8 +362,8 @@ public class MainMenuUIManager : MonoBehaviour
 
     public void LoadScene_LoadingRoon()
     {
-        ShowLevelTitle.levelStaticInt = GameManager.Instance.selectedCharacterIndex + 1;
-        PlayerData data = GameManager.Instance.GetUFODataChoice(tempAlienChoice);
+        ShowLevelTitle.levelStaticInt = GameManager.Instance.selectedLevelIndex + 1;
+        PlayerData data = GameManager.Instance.GetUFODataChoice(GameManager.Instance.selectedCharacterIndex/*tempAlienChoice*/);
         GameManager.Instance.SetPlayerCharacterChoice(tempPlayerChoice, data);
         SceneManager.LoadScene("LoadingRoom");
     }

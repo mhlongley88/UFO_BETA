@@ -1010,7 +1010,7 @@ public class PlayerController : MonoBehaviour
     public bool isConsole = false, isPC = false;
     void Update()
     {
-        //if (isPC)
+        if (GameManager.Instance.fightStarted)
         {
             if (LobbyConnectionHandler.instance.IsMultiplayerMode && isControlledLocally && !isControlledByBot)
             {

@@ -74,33 +74,36 @@ public class PlayerBot : MonoBehaviour
     
     void Update()
     {
-        if (!pv)
+        if (GameManager.Instance.fightStarted)
         {
-            OfflineMode();
-        }
-        else
-        {
-            if (Photon.Pun.PhotonNetwork.IsMasterClient)
-                OnlineMode();
-            
-            if (preset.increaseHealth)
+            if (!pv)
             {
-                if (increaseHealthRateElapsed < Time.time)
-                {
-                    playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
-
-                    increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
-                }
+                OfflineMode();
             }
-
-
-            if (preset.increaseDamage)
+            else
             {
-                if (increaseDamageRateElapsed < Time.time)
-                {
-                    playerController.CurrentWeapon.healthDamageOffset += preset.amountDamageToIncrease;
+                if (Photon.Pun.PhotonNetwork.IsMasterClient)
+                    OnlineMode();
 
-                    increaseDamageRateElapsed = Time.time + preset.increaseDamageRate;
+                if (preset.increaseHealth)
+                {
+                    if (increaseHealthRateElapsed < Time.time)
+                    {
+                        playerController.healthManager.ChangeHealth(preset.amountHealthToIncrease);
+
+                        increaseHealthRateElapsed = Time.time + preset.increaseHealthRate;
+                    }
+                }
+
+
+                if (preset.increaseDamage)
+                {
+                    if (increaseDamageRateElapsed < Time.time)
+                    {
+                        playerController.CurrentWeapon.healthDamageOffset += preset.amountDamageToIncrease;
+
+                        increaseDamageRateElapsed = Time.time + preset.increaseDamageRate;
+                    }
                 }
             }
         }

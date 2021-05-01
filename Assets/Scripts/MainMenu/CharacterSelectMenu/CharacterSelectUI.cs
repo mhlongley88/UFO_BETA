@@ -404,7 +404,7 @@ public class CharacterSelectUI : MonoBehaviour
         //    //UnlockSystem.instance.recentlyUnlockedCharacters.RemoveAt(0);
         //}
 
-        var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
+        //var info = currentCharacterModel.GetComponent<CharacterLevelSelectInfo>();
 
         //characterLabel.text = info.Name;
         //weaponTypeImage.sprite = info.WeaponType;

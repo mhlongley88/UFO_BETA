@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     }
     public bool gameOver;
     public bool canAdvance = false;
+    public bool fightStarted = false;
     public LayerMask boundaryMask;
     public GameObject pauseScreen;
     public bool paused = false;
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour
     public int localPlayerRank;
     public Player localPlayer;
     public int LocalPlayerId;
+
+    public bool isEventMatch_FinalReward;
 
     private CinemachineTargetGroup MyTargetGroup;
 
@@ -474,6 +477,7 @@ public class GameManager : MonoBehaviour
 
         //winsText.SetActive(true);
         gameOver = true;
+        fightStarted = false;
         StartCoroutine(DelayThis(gameWon));
         instanceMe.instance.gameObject.SetActive(true);
         //instanceUI.instance.gameObject.SetActive(false);
@@ -482,9 +486,24 @@ public class GameManager : MonoBehaviour
         //bool winner = lastPlayerAlive == localPlayer;
         //Debug.Log(lastPlayerAlive + " - " + localPlayer);
 
-        GameManager.Instance.AssignRewardOnResultScreen(gameWon);
+        TouchGameUI.instance.LevelScreenControls.SetActive(false);
 
-        
+        GameManager.Instance.AssignRewardOnResultScreen(gameWon);
+        if (LobbyConnectionHandler.instance.IsMultiplayerMode)
+        {
+            AddMatchesPlayed(1); // Only online matches count for Event rewards!
+        }
+
+        if (isLocalSPMode)
+        {
+            
+            if (gameWon && isEventMatch_FinalReward)
+            {
+                UserPrefs.instance.SetBool("levelUnlocked7", true);
+                UserPrefs.instance.SetBool("FinalReward_Egypt", true);
+            }
+        }
+
         LevelUIManager.Instance.DisableAllUI();
 
         GamesCompletedTally.gameWasCompleted = true;
@@ -1017,6 +1036,41 @@ public class GameManager : MonoBehaviour
         tryItem = null;
     }
 
+    public void SetBrawlPassPurchased(bool en)
+    {
+        UserPrefs.instance.SetBool("BP-purchased", en);
+    }
+
+    public bool GetBrawlPassPurchased()
+    {
+        return UserPrefs.instance.GetBool("BP-purchased");
+    }
+
+    public void SetMatchesPlayed(int amt)
+    {
+        UserPrefs.instance.SetInt("MatchesCounter", amt);
+    }
+
+    public void AddMatchesPlayed(int amt)
+    {
+        UserPrefs.instance.SetInt("MatchesCounter", GetMatchesPlayed() +  amt);
+    }
+
+    public int GetMatchesPlayed()
+    {
+        return UserPrefs.instance.GetInt("MatchesCounter");
+    }
+
+    public string GetLastFreeRewardTime()
+    {
+
+        return UserPrefs.instance.GetString("LastRewardTime");
+    }
+    public void SetLastFreeRewardTime(string dateTime)
+    {
+
+        UserPrefs.instance.SetString("LastRewardTime", dateTime);
+    }
     public void AssignRewardOnResultScreen(bool gameWon)
     {
         //int lowerBound = (4 - localPlayerRank)* 20;
@@ -1039,6 +1093,7 @@ public class GameManager : MonoBehaviour
             SetGems((GetGems() + UnityEngine.Random.Range(10, 20)));
         }
         SetUfoAttribute(selectedCharacterIndex, attr);
+
         
     }
 }

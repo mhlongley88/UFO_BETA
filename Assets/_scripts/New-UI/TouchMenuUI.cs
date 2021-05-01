@@ -6,6 +6,8 @@ using Photon.Pun;
 using UnityEngine.UI;
 public class TouchMenuUI : MonoBehaviour
 {
+    public DailyPushNotifications pushNotifications;
+    public InGameEvents inGameEvent;
     public LevelSelectionUI levelSelectUI;
     public CharacterLoadOutUI characterLoadOut, characterLoadOutStore;
     public RewardsUI RewardScreen;
@@ -28,7 +30,11 @@ public class TouchMenuUI : MonoBehaviour
     public int matchmakingCounter;
     public bool matchmakingStarted;
 
-    
+    public enum MenuScreens
+    {
+        MainHub, Reward, CharacterLoadOut, CharacterLoadOutStore, Store, Events, Arenas
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,11 +43,24 @@ public class TouchMenuUI : MonoBehaviour
             UserPrefs.instance.SetBool("playedBefore", true);
 
             UserPrefs.instance.SetBool("FreeBox1", true);
-            UserPrefs.instance.SetBool("FreeBox2", true);
-            UserPrefs.instance.SetBool("FreeBox3", true);
+            
 
             StartCoroutine(ActivateTutorialPrompt());
         }
+        if(!UserPrefs.instance.GetBool("FreeBox1"))
+        {
+            string dateTimeStr = GameManager.Instance.GetLastFreeRewardTime();
+            System.DateTime dateTime = System.DateTime.Parse(dateTimeStr);
+            System.DateTime dateTimeNow = System.DateTime.Now;
+            if (((dateTime.Hour - dateTimeNow.Hour) >= 0) || ((dateTime.Minute - dateTimeNow.Minute) >= 10))
+            {
+                UserPrefs.instance.SetBool("FreeBox1", true);
+            }
+        }
+
+        
+
+        GameManager.Instance.isEventMatch_FinalReward = false;
         GameManager.Instance.enterTutorial = false;
         GameManager.Instance.ResetTryProps();
     }
@@ -231,19 +250,45 @@ public class TouchMenuUI : MonoBehaviour
     {
         StoreMenu.SetActive(false);
         RewardScreen.gameObject.SetActive(true);
-        RewardScreen.SpawnRewardScreen();
+        RewardScreen.SpawnRewardScreen(MenuScreens.Store);
         ConsumeRewardBox(id);
     }
 
+    public void OpenRewardsScreen_Events_OnClick(string id)
+    {
+        inGameEvent.DisableEventsScreen();
+        RewardScreen.gameObject.SetActive(true);
+        RewardScreen.SpawnRewardScreen(MenuScreens.Events);
+        //ConsumeRewardBox(id);
+    }
     public void OpenStore_OnClick()
     {
         StoreMenu.SetActive(true);
         CheckRewardBoxesConsumed();
     }
-
+    public void OpenEvents_OnClick()
+    {
+        inGameEvent.EventsScreen.SetActive(true);
+        inGameEvent.EnableEventsScreen();
+    }
+    void ConsumeRewardBox(string id)
+    {
+        UserPrefs.instance.SetBool(id, true);
+    }
     void ConsumeRewardBox(int id)
     {
+        //if (!UserPrefs.instance.GetBool("pushNotificationsActivated"))
+        //{
+        //    UserPrefs.instance.SetBool("pushNotificationsActivated", true);
+            
+        //}
+
+        System.DateTime dateTimeNow = System.DateTime.Now;
+
+        GameManager.Instance.SetLastFreeRewardTime(dateTimeNow.ToString("yyyy-MM-dd"));
         UserPrefs.instance.SetBool(rewardBoxes[id].boxId, false);
+
+        pushNotifications.ActivatePushNotifications();
     }
 
 

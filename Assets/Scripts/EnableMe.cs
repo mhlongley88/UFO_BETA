@@ -10,7 +10,7 @@ public class EnableMe : MonoBehaviour
 
     float elapsed = 0.0f;
     bool processed = false;
-
+    public bool isStartFightText = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,12 +29,24 @@ public class EnableMe : MonoBehaviour
         {
             enableObject.SetActive(true);
             processed = true;
+
+            if (isStartFightText)
+            {
+                StartCoroutine(StartFightAfterDelay());
+            }
         }
     }
 
     void Awake()
     {
        // StartCoroutine(LateCall());
+    }
+
+    IEnumerator StartFightAfterDelay()
+    {
+        yield return new WaitForSeconds(4f);
+        GameManager.Instance.fightStarted = true;
+
     }
 
     IEnumerator LateCall()

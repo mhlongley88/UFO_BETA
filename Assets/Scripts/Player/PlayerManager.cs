@@ -478,10 +478,10 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("Rank of " + i + " :  " + players[i].rank);
             RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));
         }
-
+        bool gameWon = players[GameManager.Instance.localPlayer].rank == 0 ? true : false;
         DOVirtual.DelayedCall(Boss.instance.delayToShowDeathAnim, () =>
             {
-                GameManager.Instance.GameEnds();
+                GameManager.Instance.GameEnds(gameWon);
             });
     }
 
@@ -673,17 +673,17 @@ public class PlayerManager : MonoBehaviour
             // If the player is dead and the boss was or wasnt defeated, make sure it doesnt unlock the level for local/online
 
 
-            if (nonBotPlayer.Count <= 0 && Boss.instance != null && !Boss.defeatedBefore)
-            {
-                if (Boss.instance != null && (Boss.instance.health > 0 || Boss.instance.health <= 0) )
-                    LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
+            //if (nonBotPlayer.Count <= 0 && Boss.instance != null && !Boss.defeatedBefore)
+            //{
+            //    if (Boss.instance != null && (Boss.instance.health > 0 || Boss.instance.health <= 0) )
+            //        LevelUnlockCheck.ResetUnlockByBoss(ShowLevelTitle.levelStaticInt);
 
-                LevelUIManager.Instance.lostToBots.SetActive(true);
-                return;
-            }
-         
+            //    LevelUIManager.Instance.lostToBots.SetActive(true);
+            //    return;
+            //}
 
-            if(Boss.instance != null && !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt) && nonBotPlayer.Count > 0)
+            //Debug.Log();
+            if(Boss.instance != null /*&& !LevelUnlockCheck.IsUnlockedByBoss(ShowLevelTitle.levelStaticInt)*/ && nonBotPlayer.Count > 0)
             {
                 // Boss still got health and there is one more player left
                 if (Boss.instance.health > 0 && playersLeft >= 1)
@@ -784,7 +784,11 @@ public class PlayerManager : MonoBehaviour
             if (GameManager.Instance.isLocalSPMode)
             {
                 bool gameWon = allTheActivePlayersAreBots ? false : true;
-                
+                //if(gameWon && GameManager.Instance.isEventMatch_FinalReward)
+                //{
+                //    UserPrefs.instance.SetBool("levelUnlocked7", true);
+                //    UserPrefs.instance.SetBool("FinalReward_Egypt", true);
+                //}
                 GameManager.Instance.GameEnds(gameWon);
             }
             else
@@ -796,7 +800,7 @@ public class PlayerManager : MonoBehaviour
         {
             //if(allTheActivePlayersAreBots)
             {
-                LevelUIManager.Instance.lostToBots.SetActive(true);
+                //LevelUIManager.Instance.lostToBots.SetActive(true);
                 // I tested the game yesterday. 1 and 2 worked all good. Game really never came into this if block. I oommented update to ranks just in case(3 and 4)
                 //You can test now!
                 int rank = 0;
@@ -807,10 +811,10 @@ public class PlayerManager : MonoBehaviour
                     //if (players[i].rank < 0)
                     if(PlayerBot.chosenPlayer.Contains(i))
                     {
-                       // players[i].rank = rank++; //3
+                        players[i].rank = rank++; //3
                     }
-
-                    //RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));//4
+                    Debug.Log("rank of " + i + " = " + players[i].rank);
+                    RankingPostGame.instance.SubmitPlayer(players[i].rank, GameManager.Instance.GetPlayerModel(i));//4
                 }
 
                 // Make sure tthat if the boss was defeated by the player and the player lost to the bots, dont unlock the level for local/online

@@ -83,6 +83,12 @@ public class ShowLevelTitle : MonoBehaviour
             MainMenuUIManager.Instance.tryTutorialScreen.SetActive(false);
     }
 
+    public void SetStageSettings()
+    {
+        levelStaticInt = levelNum;
+        GameManager.Instance.selectedLevelIndex = levelNum;
+    }
+
     public void EnforceThisStageSettings()
     {
         OnLevelIsHovered.Invoke(transform);
